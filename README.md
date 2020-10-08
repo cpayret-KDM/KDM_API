@@ -16,13 +16,23 @@ Use maven package manager to build the application.
 mvn clean install
 ```
 
+## Dependency
+
+You need to have a running instance of a postgresql database.  One easy way is with docker image
+
+```bash
+docker run -p 5432:5432 --name postgres-db -e POSTGRES_USER=kdm -e POSTGRES_PASSWORD=dbpassword -d postgres:12.4
+
+```
+
 ## Usage
 
 Run the application with the following command:
 
 ```bash
-mvn spring-boot:run
+mvn spring-boot:run -Dspring-boot.run.arguments="'--spring.datasource.username=kdm' '--spring.datasource.password=dbpassword' '--spring.datasource.url=jdbc:postgresql://localhost:5432/kdm'"
 ```
+
 
 ## API
 
