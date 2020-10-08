@@ -1,2 +1,7 @@
 /target/
 .classpath
+
+# Ignore Microsoft Visual Studio Code configuration
+.vscode
+.settings
+.project
