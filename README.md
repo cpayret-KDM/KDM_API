@@ -49,6 +49,15 @@ First make sure to build with Maven, then create a docker image with the command
 docker build --build-arg JAR_FILE=./target/kdm_api-0.0.1-SNAPSHOT.jar --build-arg VERSION=0.0.1 -t kdm/kdm-api-be:0.0.1 .
 ```
 
+## Running - Maven
+
+Use the following command line to run the application with Maven.  Replace the database connection values accordingly 
+
+```bash
+mvn spring-boot:run -Dspring-boot.run.arguments="'--spring.datasource.username=kdm' '--spring.datasource.password=dbpassword' '--spring.datasource.url=jdbc:postgresql://localhost:5432/kdm'
+ '-e spring.flyway.enabled=true'"
+```
+
 ## Running - Docker Image 
 
 To run this app from the docker image, we need to supply the database parameters to connect to. If the database is also a docker image running locally, you need to provide the IP address of your computer in the following command line:  
