@@ -14,5 +14,7 @@ public class ApiConstants {
 
 	// API endpoints
 	public static final String PROPERTY_MAPPING = V1 + "/property";
+	public static final String LOAN_MAPPING = V1 + "/loan";
+	public static final String SPONSOR_MAPPING = V1 + "/sponsor";
 
 }
