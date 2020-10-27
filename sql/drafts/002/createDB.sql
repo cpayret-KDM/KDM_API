@@ -17,10 +17,10 @@ CREATE TABLE "Loan" (
   "originationDate" TIMESTAMP,
   "maturityDate" TIMESTAMP,
   "tradeDate" TIMESTAMP,
-  "loanStatus" ENUM,
+  "loanStatus" VARCHAR(16),
   "initialAmount" NUMERIC(12,2),
-  "pipelineStatus" ENUM,
-  "underwritenLTV" Number(2,2),
+  "pipelineStatus" VARCHAR(16),
+  "underwritenLTV" NUMERIC(2,2),
   "offeringMemoURL" VARCHAR(256),
   PRIMARY KEY ("loanID")
 );
@@ -32,7 +32,7 @@ CREATE TABLE "Sponsor" (
   "addressId" INTEGER,
   "Company" Varchar(256),
   "firstName" VARCHAR(256),
-  "lastName" VARCHAR(256,
+  "lastName" VARCHAR(256),
   "phone" VARCHAR(256),
   "email" VARCHAR(256),
   PRIMARY KEY ("sponsorID")
@@ -56,7 +56,7 @@ CREATE TABLE "MSN" (
   "number" VARCHAR(256),
   "tradeDate" TIMESTAMP,
   "maturityDate" TIMESTAMP,
-  "rating" NUMBER(2,2),
+  "rating" NUMERIC(2,2),
   PRIMARY KEY ("msnID")
 );
 
@@ -74,7 +74,7 @@ CREATE TABLE "Borrower" (
   "addressId" INTEGER,
   "Company" Varchar(256),
   "firstName" VARCHAR(256),
-  "lastName" VARCHAR(256,
+  "lastName" VARCHAR(256),
   "phone" VARCHAR(256),
   "email" VARCHAR(256),
   PRIMARY KEY ("borrowerId")
