@@ -34,7 +34,7 @@ CREATE TABLE "Sponsor" (
   "addressId" INTEGER,
   "Company" Varchar(256),
   "firstName" VARCHAR(256),
-  "lastName" VARCHAR(256,
+  "lastName" VARCHAR(256),
   "phone" VARCHAR(256),
   "email" VARCHAR(256),
   "registrationState" VARCHAR(64),
@@ -48,7 +48,7 @@ CREATE TABLE "Borrower" (
   "addressId" INTEGER,
   "Company" VARCHAR(256),
   "firstName" VARCHAR(256),
-  "lastName" VARCHAR(256,
+  "lastName" VARCHAR(256),
   "phone" VARCHAR(256),
   "email" VARCHAR(256),
   PRIMARY KEY ("borrowerId")
