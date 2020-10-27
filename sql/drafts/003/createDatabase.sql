@@ -7,7 +7,7 @@ CREATE TABLE "CUSIP" (
   PRIMARY KEY ("cusipID")
 );
 
-CREATE INDEX "KEY" ON  "CUSIP" ("ticker");
+CREATE UNIQUE INDEX "unique_cusip_ticker" ON  "CUSIP" ("ticker");
 
 CREATE TABLE "Loan" (
   "loanID" SERIAL,
@@ -27,7 +27,7 @@ CREATE TABLE "Loan" (
   PRIMARY KEY ("loanID")
 );
 
-CREATE INDEX "Key" ON  "Loan" ("loanNumber");
+CREATE UNIQUE INDEX "unique_loan_loanNumber" ON  "Loan" ("loanNumber");
 
 CREATE TABLE "Sponsor" (
   "sponsorID" SERIAL,
@@ -41,7 +41,7 @@ CREATE TABLE "Sponsor" (
   PRIMARY KEY ("sponsorID")
 );
 
-CREATE INDEX "Key" ON  "Sponsor" ("Company");
+CREATE UNIQUE INDEX "unique_sponsor_company" ON  "Sponsor" ("Company");
 
 CREATE TABLE "Borrower" (
   "borrowerId" SERIAL,
@@ -54,7 +54,7 @@ CREATE TABLE "Borrower" (
   PRIMARY KEY ("borrowerId")
 );
 
-CREATE INDEX "Key" ON  "Borrower" ("Company");
+CREATE UNIQUE INDEX "unique_borrower_company" ON  "Borrower" ("Company");
 
 CREATE TABLE "Address" (
   "addressID" SERIAL,
@@ -76,7 +76,7 @@ CREATE TABLE "MSN" (
   PRIMARY KEY ("msnID")
 );
 
-CREATE INDEX "Key" ON  "MSN" ("number");
+CREATE UNIQUE INDEX "unique_msn_number" ON  "MSN" ("number");
 
 CREATE TABLE "Property" (
   "propertyID" Serial,
@@ -103,6 +103,4 @@ CREATE TABLE "Rating" (
   "rating" VARCHAR(8),
   PRIMARY KEY ("ratingID")
 );
-
-CREATE INDEX "Key" ON  "Rating" ("msnID");
 
