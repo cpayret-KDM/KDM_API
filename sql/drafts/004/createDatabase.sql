@@ -12,7 +12,7 @@
  Target Server Version : 130000
  File Encoding         : 65001
 
- Date: 27/10/2020 13:39:48
+ Date: 27/10/2020 13:57:04
 */
 
 
@@ -145,6 +145,7 @@ ALTER TABLE "public"."Address" OWNER TO "cs_korth";
 BEGIN;
 INSERT INTO "public"."Address" VALUES (1, '4771 78th Avenue', NULL, 'Miami', 'fl', '33101');
 INSERT INTO "public"."Address" VALUES (2, '14120 Palm Street', NULL, 'Miami', 'fl', '33101');
+INSERT INTO "public"."Address" VALUES (3, '8440 Grand Canal Dr', NULL, 'Miami', 'fl', '33101');
 COMMIT;
 
 -- ----------------------------
@@ -166,6 +167,7 @@ ALTER TABLE "public"."Appraisal" OWNER TO "cs_korth";
 BEGIN;
 INSERT INTO "public"."Appraisal" VALUES (1, 1, 960000.00, '2020-10-27 13:34:30');
 INSERT INTO "public"."Appraisal" VALUES (2, 2, 960000.00, '2020-10-27 13:35:03');
+INSERT INTO "public"."Appraisal" VALUES (3, 3, 1605000.00, '2020-10-27 13:56:37');
 COMMIT;
 
 -- ----------------------------
@@ -190,6 +192,7 @@ ALTER TABLE "public"."Borrower" OWNER TO "cs_korth";
 BEGIN;
 INSERT INTO "public"."Borrower" VALUES (1, NULL, '4771 78th Avenue LLC', NULL, NULL, NULL, NULL);
 INSERT INTO "public"."Borrower" VALUES (2, NULL, '14120 Palm Street LLC', NULL, NULL, NULL, NULL);
+INSERT INTO "public"."Borrower" VALUES (3, NULL, '8400 Grand Canal Dr LLC', NULL, NULL, NULL, NULL);
 COMMIT;
 
 -- ----------------------------
@@ -211,6 +214,7 @@ ALTER TABLE "public"."CUSIP" OWNER TO "cs_korth";
 -- ----------------------------
 BEGIN;
 INSERT INTO "public"."CUSIP" VALUES (1, NULL, 'AI', NULL, '50067AAC6');
+INSERT INTO "public"."CUSIP" VALUES (2, NULL, 'AI', NULL, '50067AAD4');
 COMMIT;
 
 -- ----------------------------
@@ -241,6 +245,7 @@ ALTER TABLE "public"."Loan" OWNER TO "cs_korth";
 -- ----------------------------
 BEGIN;
 INSERT INTO "public"."Loan" VALUES (1, NULL, 1, 'KDM2017-L001', NULL, NULL, '2027-05-01 00:00:01', NULL, 'performing', 1059000.00, 'closed', 53.70, NULL, 5.25);
+INSERT INTO "public"."Loan" VALUES (2, NULL, NULL, 'KDM2017-L002', NULL, NULL, '2020-12-21 00:00:01', NULL, 'performing', 950000.00, 'closed', 59.19, NULL, 6.50);
 COMMIT;
 
 -- ----------------------------
@@ -263,6 +268,7 @@ ALTER TABLE "public"."MSN" OWNER TO "cs_korth";
 -- ----------------------------
 BEGIN;
 INSERT INTO "public"."MSN" VALUES (1, 1, 'KDM2017-N001', NULL, '2017-05-01 00:00:00', 5.00);
+INSERT INTO "public"."MSN" VALUES (2, 2, 'KDM2017-N002', NULL, '2020-12-21 00:00:01', 6.00);
 COMMIT;
 
 -- ----------------------------
@@ -285,6 +291,7 @@ ALTER TABLE "public"."Property" OWNER TO "cs_korth";
 BEGIN;
 INSERT INTO "public"."Property" VALUES (1, 1, 1, 1, 'multi-family');
 INSERT INTO "public"."Property" VALUES (2, 2, 1, 2, 'multi-family');
+INSERT INTO "public"."Property" VALUES (3, 3, 2, 3, 'multi-family');
 COMMIT;
 
 -- ----------------------------
@@ -306,6 +313,7 @@ ALTER TABLE "public"."Rating" OWNER TO "cs_korth";
 -- ----------------------------
 BEGIN;
 INSERT INTO "public"."Rating" VALUES (1, 1, '2020-10-27 13:38:36', 'EJ', 'A+');
+INSERT INTO "public"."Rating" VALUES (2, 2, '2020-10-27 13:55:43', 'EJ', 'A');
 COMMIT;
 
 -- ----------------------------
@@ -336,56 +344,56 @@ COMMIT;
 -- ----------------------------
 ALTER SEQUENCE "public"."Address_addressID_seq"
 OWNED BY "public"."Address"."addressID";
-SELECT setval('"public"."Address_addressID_seq"', 3, true);
+SELECT setval('"public"."Address_addressID_seq"', 4, true);
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
 ALTER SEQUENCE "public"."Appraisal_appraisalID_seq"
 OWNED BY "public"."Appraisal"."appraisalID";
-SELECT setval('"public"."Appraisal_appraisalID_seq"', 3, true);
+SELECT setval('"public"."Appraisal_appraisalID_seq"', 4, true);
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
 ALTER SEQUENCE "public"."Borrower_borrowerId_seq"
 OWNED BY "public"."Borrower"."borrowerId";
-SELECT setval('"public"."Borrower_borrowerId_seq"', 3, true);
+SELECT setval('"public"."Borrower_borrowerId_seq"', 4, true);
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
 ALTER SEQUENCE "public"."CUSIP_cusipID_seq"
 OWNED BY "public"."CUSIP"."cusipID";
-SELECT setval('"public"."CUSIP_cusipID_seq"', 2, true);
+SELECT setval('"public"."CUSIP_cusipID_seq"', 3, true);
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
 ALTER SEQUENCE "public"."Loan_loanID_seq"
 OWNED BY "public"."Loan"."loanID";
-SELECT setval('"public"."Loan_loanID_seq"', 2, true);
+SELECT setval('"public"."Loan_loanID_seq"', 3, true);
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
 ALTER SEQUENCE "public"."MSN_msnID_seq"
 OWNED BY "public"."MSN"."msnID";
-SELECT setval('"public"."MSN_msnID_seq"', 2, true);
+SELECT setval('"public"."MSN_msnID_seq"', 3, true);
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
 ALTER SEQUENCE "public"."Property_propertyID_seq"
 OWNED BY "public"."Property"."propertyID";
-SELECT setval('"public"."Property_propertyID_seq"', 3, true);
+SELECT setval('"public"."Property_propertyID_seq"', 4, true);
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
 ALTER SEQUENCE "public"."Rating_ratingID_seq"
 OWNED BY "public"."Rating"."ratingID";
-SELECT setval('"public"."Rating_ratingID_seq"', 2, true);
+SELECT setval('"public"."Rating_ratingID_seq"', 3, true);
 
 -- ----------------------------
 -- Alter sequences owned by
