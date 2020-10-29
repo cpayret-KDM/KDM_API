@@ -2,12 +2,13 @@ package com.kdm.web.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum LoanStatus {
-	PERFORMING("Performing");
+public enum PipelineStatus {
+	CLOSED("Closed"),
+	OPEN("Open");
 	
 	private final String label;
 	
-	LoanStatus(String label) {
+	PipelineStatus(String label) {
 		this.label = label;
 	}
 	

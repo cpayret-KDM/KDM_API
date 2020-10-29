@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
@@ -23,6 +24,7 @@ public class PropertyControllerTest {
 	@Autowired
 	private MockMvc mvc;
 
+	@Ignore
 	@Test
 	public void getCustomerTest() throws Exception {
 		mvc.perform(
@@ -31,12 +33,13 @@ public class PropertyControllerTest {
 			.andExpect(jsonPath("$.name", containsString("Dummy")));
 
 	}
-
 	
-	 @Test public void getCustomerTestNotFound() throws Exception {
-		 mvc.perform(
-					get(ApiConstants.PROPERTY_MAPPING + "/0").contentType(MediaType.APPLICATION_JSON))
+	@Ignore
+	@Test 
+	public void getCustomerTestNotFound() throws Exception {
+		mvc.perform(
+				get(ApiConstants.PROPERTY_MAPPING + "/0").contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isNotFound());
-	 }
+	}
 
 }

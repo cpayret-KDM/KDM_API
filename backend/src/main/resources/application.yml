@@ -17,10 +17,16 @@ spring:
     table: FLYWAY_SCHEMA_HISTORY
   jpa:
     hibernate:
-      database-platform: org.hibernate.dialect.PostgreSQLDialect
-#    properties:
-#      hibernate:
+      database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
 #        format_sql: true
+        temp: 
+          use_jdbc_metadata_defaults: false
 #    show-sql: true
   main:
     banner-mode: "off"
