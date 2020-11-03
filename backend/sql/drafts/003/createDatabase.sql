@@ -3,15 +3,16 @@ CREATE TABLE "CUSIP" (
   "crossID" VARCHAR(256),
   "class" VARCHAR(256),
   "type" VARCHAR(256),
+  "ticker" VARCHAR(16),
   PRIMARY KEY ("cusipID")
 );
 
+CREATE UNIQUE INDEX "unique_cusip_ticker" ON  "CUSIP" ("ticker");
+
 CREATE TABLE "Loan" (
-  "loanID" INTEGER,
+  "loanID" SERIAL,
   "sponsorID" INTEGER,
-  "borrowerID" INTEGER,
   "msnID" INTEGER,
-  "propertyID" INTEGER,
   "loanNumber" VARCHAR(16),
   "dealName" VARCHAR(256),
   "originationDate" TIMESTAMP,
@@ -20,12 +21,13 @@ CREATE TABLE "Loan" (
   "loanStatus" VARCHAR(16),
   "initialAmount" NUMERIC(12,2),
   "pipelineStatus" VARCHAR(16),
-  "underwritenLTV" NUMERIC(2,2),
-  "offeringMemoURL" VARCHAR(256),
+  "LTV" NUMERIC(5,2),
+  "memoURL" VARCHAR(256),
+  "loanRate" NUMERIC(5,2),
   PRIMARY KEY ("loanID")
 );
 
-CREATE INDEX "Key" ON  "Loan" ("loanNumber");
+CREATE UNIQUE INDEX "unique_loan_loanNumber" ON  "Loan" ("loanNumber");
 
 CREATE TABLE "Sponsor" (
   "sponsorID" SERIAL,
@@ -35,10 +37,24 @@ CREATE TABLE "Sponsor" (
   "lastName" VARCHAR(256),
   "phone" VARCHAR(256),
   "email" VARCHAR(256),
+  "registrationState" VARCHAR(64),
   PRIMARY KEY ("sponsorID")
 );
 
-CREATE INDEX "Key" ON  "Sponsor" ("Company");
+CREATE UNIQUE INDEX "unique_sponsor_company" ON  "Sponsor" ("Company");
+
+CREATE TABLE "Borrower" (
+  "borrowerId" SERIAL,
+  "addressId" INTEGER,
+  "Company" VARCHAR(256),
+  "firstName" VARCHAR(256),
+  "lastName" VARCHAR(256),
+  "phone" VARCHAR(256),
+  "email" VARCHAR(256),
+  PRIMARY KEY ("borrowerId")
+);
+
+CREATE UNIQUE INDEX "unique_borrower_company" ON  "Borrower" ("Company");
 
 CREATE TABLE "Address" (
   "addressID" SERIAL,
@@ -52,33 +68,39 @@ CREATE TABLE "Address" (
 
 CREATE TABLE "MSN" (
   "msnID" SERIAL,
-  "cuspiID" INTEGER,
+  "cusipID" INTEGER,
   "number" VARCHAR(256),
   "tradeDate" TIMESTAMP,
   "maturityDate" TIMESTAMP,
-  "rating" NUMERIC(2,2),
+  "noteRate" NUMERIC(5,2),
   PRIMARY KEY ("msnID")
 );
 
-CREATE INDEX "Key" ON  "MSN" ("number");
+CREATE UNIQUE INDEX "unique_msn_number" ON  "MSN" ("number");
 
 CREATE TABLE "Property" (
   "propertyID" Serial,
   "addressID" INTEGER,
   "loanID" INTEGER,
+  "borrowerID" INTEGER,
+  "type" VARCHAR(256),
   PRIMARY KEY ("propertyID")
 );
 
-CREATE TABLE "Borrower" (
-  "borrowerId" SERIAL,
-  "addressId" INTEGER,
-  "Company" Varchar(256),
-  "firstName" VARCHAR(256),
-  "lastName" VARCHAR(256),
-  "phone" VARCHAR(256),
-  "email" VARCHAR(256),
-  PRIMARY KEY ("borrowerId")
+CREATE TABLE "Appraisal" (
+  "appraisalID" SERIAL,
+  "propertyID" INTEGER,
+  "value" NUMERIC(12,2),
+  "date" TIMESTAMP,
+  PRIMARY KEY ("appraisalID")
 );
 
-CREATE INDEX "Key" ON  "Borrower" ("Company");
+CREATE TABLE "Rating" (
+  "ratingID" SERIAL,
+  "msnID" INTEGER,
+  "date" TIMESTAMP,
+  "agency" VARCHAR(256),
+  "rating" VARCHAR(8),
+  PRIMARY KEY ("ratingID")
+);
 
