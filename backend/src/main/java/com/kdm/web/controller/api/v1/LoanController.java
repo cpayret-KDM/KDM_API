@@ -23,6 +23,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -51,9 +52,13 @@ import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 
 @RestController
 @RequestMapping(ApiConstants.LOAN_MAPPING)
+@PreAuthorize(LoanController.CREATE_LOAN_PERMISSION)
 public class LoanController {
 	
 	Logger logger = LoggerFactory.getLogger(LoanController.class);
+	
+	public static final String CREATE_LOAN_PERMISSION = "hasAuthority('PERMISSION_create:loan')";
+	public static final String READ_LOAN_PERMISSION = "hasAuthority('PERMISSION_read:loan')";
 	
 	@Autowired
 	private MessageSource messageSource;
@@ -112,6 +117,7 @@ public class LoanController {
 	)
 	@ResponseBody
 	@GetMapping
+	@PreAuthorize(LoanController.READ_LOAN_PERMISSION)
 	public ResponseEntity<Page<Loan>> getLoans(
 			@Parameter(hidden = true) LoanSpec loanSpec, 
 			@PageableDefault(size = 25) @Parameter(hidden = true) Pageable pageable) {
@@ -126,6 +132,7 @@ public class LoanController {
 			@ApiResponse(responseCode = "404", description = "loan not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
 	@ResponseBody
 	@GetMapping(path = "/{loanId}")
+	@PreAuthorize(LoanController.READ_LOAN_PERMISSION)
 	public ResponseEntity<Loan> getLoan(
 			@PathVariable("loanId") Long loanId) throws Exception {
 
@@ -147,7 +154,7 @@ public class LoanController {
 			@ApiResponse(responseCode = "200", description = "loan created"),
 			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
 	@ResponseBody
-	@PostMapping(path = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = {"/",""}, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Loan> saveLoan(@RequestBody @Valid Loan loan, BindingResult bindingResult) throws BindException {
 		if (bindingResult.hasErrors()) {
 			throw new BindException(bindingResult);

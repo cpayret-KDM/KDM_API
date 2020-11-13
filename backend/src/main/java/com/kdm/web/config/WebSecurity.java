@@ -1,10 +1,21 @@
 package com.kdm.web.config;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -12,8 +23,9 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtDecoders;
 import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.util.StringUtils;
 
-import com.kdm.web.config.security.AudienceValidator;
 import com.kdm.web.controller.CustomAccessDeniedHandler;
 import com.kdm.web.controller.CustomHttp403ForbiddenEntryPoint;
 
@@ -32,6 +44,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 			.anyRequest().authenticated()
 			.and().cors()
 			.and().oauth2ResourceServer().jwt()
+			.jwtAuthenticationConverter(jwtAuthenticationConverter())
 			.and().accessDeniedHandler(customAccessDeniedHandler())
 			.authenticationEntryPoint(customHttp403ForbiddenEntryPoint());
 	}
@@ -41,13 +54,21 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         NimbusJwtDecoder jwtDecoder = (NimbusJwtDecoder)
                 JwtDecoders.fromOidcIssuerLocation(issuer);
 
-        OAuth2TokenValidator<Jwt> audienceValidator = new AudienceValidator(audience);
+        //OAuth2TokenValidator<Jwt> audienceValidator = new AudienceValidator(audience);
         OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(issuer);
-        OAuth2TokenValidator<Jwt> withAudience = new DelegatingOAuth2TokenValidator<>(withIssuer, audienceValidator);
+        OAuth2TokenValidator<Jwt> withAudience = new DelegatingOAuth2TokenValidator<>(withIssuer);
 
         jwtDecoder.setJwtValidator(withAudience);
+        //jwtDecoder.setJwtValidator(withIssuer);
 
         return jwtDecoder;
+    }
+	
+	JwtAuthenticationConverter jwtAuthenticationConverter() {
+        CustomAuthoritiesConverter customAuthoritiesConverter = new CustomAuthoritiesConverter();
+        JwtAuthenticationConverter authenticationConverter = new JwtAuthenticationConverter();
+        authenticationConverter.setJwtGrantedAuthoritiesConverter(customAuthoritiesConverter);
+        return authenticationConverter;
     }
 	
 	@Bean
@@ -59,5 +80,44 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 	CustomHttp403ForbiddenEntryPoint customHttp403ForbiddenEntryPoint() {
 		return new CustomHttp403ForbiddenEntryPoint();
 	}
+	
+	static class CustomAuthoritiesConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
+        // extract authorities from "scope", "https://example.com/role", "https://example.com/group", and "permissions" claims.
+        private static final Map<String, String> CLAIMS_TO_AUTHORITY_PREFIX_MAP = new HashMap<String, String>() {{
+            //put("scope", "SCOPE_");
+            put("http://kdm.com/role", "ROLE_");
+            put("http://kdm.com/group", "GROUP_");
+            put("http://kdm.com/permissions", "PERMISSION_");
+        }};
+
+        @Override
+        public Collection<GrantedAuthority> convert(Jwt jwt) {
+            return CLAIMS_TO_AUTHORITY_PREFIX_MAP.entrySet().stream()
+                .map(entry -> getAuthorities(jwt, entry.getKey(), entry.getValue()))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+        }
+
+        private Collection<GrantedAuthority> getAuthorities(Jwt jwt, String authorityClaimName, String authorityPrefix) {
+            Object authorities = jwt.getClaim(authorityClaimName);
+            if (authorities instanceof String) {
+                if (StringUtils.hasText((String) authorities)) {
+                    List<String> claims = Arrays.asList(((String) authorities).split(" "));
+                    return claims.stream()
+                        .map(claim -> new SimpleGrantedAuthority(authorityPrefix + claim))
+                        .collect(Collectors.toList());
+                } else {
+                    return Collections.emptyList();
+                }
+            } else if (authorities instanceof Collection) {
+                Collection<String> authoritiesCollection = (Collection<String>) authorities;
+                Collection<GrantedAuthority> ret = authoritiesCollection.stream()
+                        .map(authority -> new SimpleGrantedAuthority(authorityPrefix + authority))
+                        .collect(Collectors.toList()); 
+                return ret;
+            }
+            return Collections.emptyList();
+        }
+    }
 
 }
