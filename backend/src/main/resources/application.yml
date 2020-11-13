@@ -1,4 +1,6 @@
 ## Spring boot and dependencies properties - start here
+auth0:
+  audience: http://localhost:8080/api/
 server:
   error:
     include-message: always
@@ -14,7 +16,7 @@ spring:
     enabled: false
     ignoreMissingMigrations: true
     outOfOrder: true
-    table: FLYWAY_SCHEMA_HISTORY
+    table: FLYWAY_SCHEMA_HISTORY    
   jpa:
     hibernate:
       database-platform: org.hibernate.dialect.PostgreSQL9Dialect
@@ -33,6 +35,11 @@ spring:
   output:
     ansi:
       enabled: DETECT
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-2wiawl6z.us.auth0.com/
 logging:
   pattern:
     console: ${CONSOLE_LOG_PATTERN:%clr(%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(---){faint} %clr([%15.15t]){faint} %clr(%-70.70logger{69}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%xEx}}
