@@ -20,7 +20,7 @@ import com.kdm.web.util.error.ErrorResponse;
 import com.kdm.web.util.error.ValidationError;
 
 @ControllerAdvice
-public class RestResponseEntityExceptionHandler {
+public class RestResponseEntityExceptionHandler  {
 
 	Logger logger = LoggerFactory.getLogger(RestResponseEntityExceptionHandler.class);
 
@@ -43,6 +43,13 @@ public class RestResponseEntityExceptionHandler {
 		
 		return handleBindingResult(ex.getBindingResult(), request);
 		
+	}
+	
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ErrorResponse> handleException(Exception ex, WebRequest request) {
+		logger.debug(String.format("Exception: %s", ex.getMessage()), ex);
+		
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	private ResponseEntity<ErrorResponse> handleBindingResult(BindingResult bindingResult, WebRequest request) {
