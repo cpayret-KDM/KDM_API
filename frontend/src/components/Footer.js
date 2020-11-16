@@ -9,12 +9,15 @@ const Footer = () => {
             <footer className="footer">
                 <div className="container-fluid">
                     <Row>
-                        <Col md={6}>{currentYear} © Hyper - Coderthemes.com</Col>
+                        <Col md={6}>
+                            {currentYear} &copy; Korth Direct Mortgage Inc. (NMLS ID 1579547)
+                            <span className="pl-2 pr-2">|</span> 2937 SW 27th Ave, Ste 307, Miami, FL 33133
+                        </Col>
 
                         <Col md={6}>
                             <div className="text-md-right footer-links d-none d-md-block">
-                                <a href="/">About</a>
-                                <a href="/">Support</a>
+                                <a href="/">Privacy Policy</a>
+                                <a href="/">Code of Ethics</a>
                                 <a href="/">Contact Us</a>
                             </div>
                         </Col>

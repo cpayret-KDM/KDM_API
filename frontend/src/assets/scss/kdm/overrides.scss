@@ -1,0 +1,30 @@
+
+
+
+.topnav {
+  background: $blue;
+}
+
+a {
+  color: $blue;
+
+  &:hover {
+    color: darken($blue, 50%);
+  }
+}
+
+.btn-primary {
+  background-color: $blue;
+  border-color: $blue;
+  box-shadow: none;
+}
+
+
+
+
+
+
+.page-item.active .page-link {
+  background-color: $blue;
+  border-color: $blue;
+}
