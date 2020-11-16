@@ -2,29 +2,33 @@
 
 
 .topnav {
-  background: $blue;
+  background: $darkBlue;
 }
 
 a {
-  color: $blue;
+  color: $darkBlue;
 
   &:hover {
-    color: darken($blue, 50%);
+    color: darken($darkBlue, 50%);
   }
 }
 
-.btn-primary {
-  background-color: $blue;
-  border-color: $blue;
+.btn-primary,
+.btn-success {
+  background-color: $darkBlue;
+  border-color: $darkBlue;
   box-shadow: none;
 }
 
+.bg-primary {
+  background-color: $darkBlue !important;
+}
 
 
 
 
 
 .page-item.active .page-link {
-  background-color: $blue;
-  border-color: $blue;
+  background-color: $darkBlue;
+  border-color: $darkBlue;
 }
