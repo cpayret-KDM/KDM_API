@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -45,29 +46,36 @@ public class RestResponseEntityExceptionHandler  {
 		
 	}
 	
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
+		logger.debug(String.format("AccessDeniedException: %s", ex.getMessage()), ex);
+		
+		ErrorResponse response = buildResponse(HttpStatus.FORBIDDEN, request.getDescription(false), ex.getMessage());
+		return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+	}
+	
+	
+
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorResponse> handleException(Exception ex, WebRequest request) {
 		logger.debug(String.format("Exception: %s", ex.getMessage()), ex);
 		
-		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		ErrorResponse response = buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, request.getDescription(false), ex.getMessage());
+		
+		return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	private ResponseEntity<ErrorResponse> handleBindingResult(BindingResult bindingResult, WebRequest request) {
-		ErrorResponse response = new ErrorResponse();
-		response.setError("Bad Request");
-		response.setStatus(HttpStatus.BAD_REQUEST.value());
-		response.setTimestamp(LocalDateTime.now());
-		
-		response.setPath(request.getDescription(false));
-		
-		String errorMessage = "unhandled error";
+						
+		String errorMessage = "";
 		if (bindingResult.hasGlobalErrors() && bindingResult.getGlobalError().getDefaultMessage() != null) {
 			errorMessage = bindingResult.getGlobalError().getDefaultMessage();
 		} else if (bindingResult.hasFieldErrors()) {
 			errorMessage = bindingResult.getFieldError().getDefaultMessage();
 		}
-		response.setMessage(errorMessage);
 		
+		ErrorResponse response = buildResponse(HttpStatus.BAD_REQUEST, request.getDescription(false), errorMessage);
+
 		List<ValidationError> errors = bindingResult.getFieldErrors().stream()
 				.map(er -> {
 					return ValidationError.builder()
@@ -81,5 +89,15 @@ public class RestResponseEntityExceptionHandler  {
 		response.setErrors(errors);
 		
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
+	
+	private ErrorResponse buildResponse(HttpStatus httpStatus, String requestPath, String errorMessage) {	
+		ErrorResponse response = new ErrorResponse();
+		response.setError(httpStatus.getReasonPhrase());
+		response.setStatus(httpStatus.value());
+		response.setTimestamp(LocalDateTime.now());
+		response.setPath(requestPath);
+		response.setMessage(errorMessage);
+		return response;
 	}
 }
