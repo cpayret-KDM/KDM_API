@@ -199,6 +199,11 @@ const columns = [
     text: 'Monthly Spread',
     sort: false,
   },
+  {
+    dataField: 'buttons',
+    text: '',
+    sort: false,
+  }
 ];
 
 const defaultSorted = [

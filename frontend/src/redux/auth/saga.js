@@ -26,6 +26,7 @@ const setSession = user => {
     if (user) cookies.set('user', JSON.stringify(user), { path: '/' });
     else cookies.remove('user', { path: '/' });
 };
+
 /**
  * Login the user
  * @param {*} payload - username and password
@@ -101,7 +102,7 @@ function* register({ payload: { fullname, email, password } }) {
 }
 
 /**
- * forget password
+ * Forget Password
  */
 function* forgetPassword({ payload: { username } }) {
     const options = {
