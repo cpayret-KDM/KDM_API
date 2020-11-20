@@ -35,7 +35,7 @@ const PageTitle = (props: PageTitleProps) => {
                             })}
                         </Breadcrumb>
                     </div>
-                    <h4 className="page-title">{props.title}</h4>
+                    <h3 className="page-title">{props.title}</h3>
                 </div>
             </Col>
         </Row>

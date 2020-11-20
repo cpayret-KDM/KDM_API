@@ -1,0 +1,8 @@
+/* LOANS */
+export const GET_LOANS = 'GET_LOANS';
+export const GET_LOANS_SUCCESS = 'GET_LOANS_SUCCESS';
+export const GET_LOANS_FAILURE = 'GET_LOANS_FAILURE';
+
+export const GET_LOAN = 'GET_LOAN';
+export const GET_LOAN_SUCCESS = 'GET_LOAN_SUCCESS';
+export const GET_LOAN_FAILURE = 'GET_LOAN_FAILURE';

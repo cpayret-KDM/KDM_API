@@ -6,8 +6,6 @@ import { fetchJSON } from '../../helpers/api';
 
 import { LOGIN_USER, LOGOUT_USER, REGISTER_USER, FORGET_PASSWORD } from './constants';
 
-const SERVER_URL = process.env.REACT_APP_KDM_API_ENDPOINT;
-
 import {
     loginUserSuccess,
     loginUserFailed,

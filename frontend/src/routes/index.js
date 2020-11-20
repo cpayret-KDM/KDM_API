@@ -13,6 +13,7 @@ const Confirm = React.lazy(() => import('../hyper-pages/auth/Confirm'));
 
 // pages
 const LoanDashboard = React.lazy(() => import('../pages/LoanDashboard'));
+const LoanDetails = React.lazy(() => import('../pages/LoanDetails'));
 //const Starter = React.lazy(() => import('../hyper-pages/Starter'));
 // const Profile = React.lazy(() => import('../hyper-pages/profile'));
 //const ErrorPageNotFound = React.lazy(() => import('../hyper-pages/error/PageNotFound'));
@@ -63,9 +64,9 @@ const loanRoutes = {
       route: PrivateRoute,
     },
     {
-      path: '/loans/create',
-      name: 'Create Loan',
-      component: LoanDashboard,
+      path: '/loans/:id',
+      name: 'Loan Details',
+      component: LoanDetails,
       route: PrivateRoute,
     },
     {
