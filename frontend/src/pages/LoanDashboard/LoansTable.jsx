@@ -134,7 +134,7 @@ const LoansTable = (props) => {
         <h4 className="header-title">Current Loans</h4>
 
         {!loans ? (
-          <p className="text-center"><Spinner size="lg" color="primary" /></p>
+          <div className="text-center"><Spinner size="lg" color="primary" /></div>
         ) : (
           <>
             {loans.length === 0 ? (

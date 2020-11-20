@@ -8,7 +8,7 @@ import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstr
 import { loginUser } from '../../redux/actions';
 import { isUserAuthenticated } from '../../helpers/authUtils';
 import LoaderWidget from '../../components/Loader';
-import logo from '../../assets/images/logos/K_Direct_Mortgage_blue_w.fw.png';
+import logo from '../../assets/images/logos/K_Direct_Mortgage_transparent_white_font.fw.png';
 
 class Login extends Component {
     _isMounted = false;
