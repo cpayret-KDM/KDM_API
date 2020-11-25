@@ -2,3 +2,10 @@ config:
   aws:region: us-west-2
   cloud-aws:useFargate: "true"
   cloud:provider: aws
+  infra:dbdb: kdm
+  infra:dbpassword:
+    secure: AAABAJCV5ii46f9asFgV+b/9K4CgnI8o3gE09tvZ1SSSVRce5Bi0W/0c2w==
+  infra:dbusername: cs_korth
+  infra:isFlyway: "true"
+  infra:springProfile: no_kdm_security
+  infra:username: cs_korth
