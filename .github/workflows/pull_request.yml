@@ -1,8 +1,6 @@
 name: Pulumi
 on:
   - pull_request
-  paths:
-    - 'backend/*'
 jobs:
   preview:
     name: Preview
