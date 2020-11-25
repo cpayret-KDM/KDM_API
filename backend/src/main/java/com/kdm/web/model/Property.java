@@ -2,10 +2,16 @@ package com.kdm.web.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -18,18 +24,21 @@ public class Property {
 	private Long id;
 
 	@JsonProperty
-	@Column(name = "addressID" /*, insertable = false, updatable = false*/)
+	@OneToOne
+    @JoinColumn(name = "addressID", referencedColumnName = "addressID", nullable = true)
+	private Address address;
+	
+	@JsonIgnore
+	@Column(name = "addressID", insertable = false, updatable = false)
 	private Long addressID;
 	
-	/*
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "loanID", referencedColumnName = "loanID", nullable = true)
 	private Loan loan;
-	*/
 	
 	@JsonProperty
-	@Column(name = "loanID"/*, insertable = false, updatable = false*/)
+	@Column(name = "loanID", insertable = false, updatable = false)
 	private Long loanId;
 	
 	@JsonProperty
@@ -37,9 +46,9 @@ public class Property {
 	private Long borrowerID;
 	
 	@JsonProperty(value = "type")
-	@Column(length = 256, nullable = true)
-	@Size(max = 256)
-	private String type;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "type")
+	private PropertyType type;
 
 	public Property() {
 		
@@ -77,11 +86,19 @@ public class Property {
 		this.borrowerID = borrowerID;
 	}
 
-	public String getType() {
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
+	public PropertyType getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(PropertyType type) {
 		this.type = type;
 	}
 

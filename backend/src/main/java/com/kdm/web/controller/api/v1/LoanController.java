@@ -141,7 +141,7 @@ public class LoanController {
 					messageSource.getMessage("controller.invalid_id", Arrays.array(loanId), Locale.US));
 		}
 		
-		Optional<Loan> loan = loanRepository.findById(loanId);
+		Optional<Loan> loan = loanRepository.getLoanById(loanId);
 		if (loan.isPresent()) {
 			return new ResponseEntity<Loan>(loan.get(), OK);
 		} else {
