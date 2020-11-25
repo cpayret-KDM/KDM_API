@@ -29,13 +29,13 @@ mvn clean package
 To run the application, execute the following command:
 
 ```bash
-mvn spring-boot:run -Dspring-boot.run.arguments="'--spring.datasource.username=kdm' '--spring.datasource.password=dbpassword' '--spring.datasource.url=jdbc:postgresql://localhost:5432/kdm'"
+mvn spring-boot:run -Dspring-boot.run.arguments="'--spring.datasource.username=cs_korth' '--spring.datasource.password=cs_korth_pw' '--spring.datasource.url=jdbc:postgresql://localhost:5432/kdm'"
 ```
 
 By default, flyway database migration scripts are not executed automatically, in order to enable so, you need to pass the parameter: --spring.flyway.enabled=true
 
 ```bash
-mvn spring-boot:run -Dspring-boot.run.arguments="'--spring.datasource.username=kdm' '--spring.datasource.password=dbpassword' '--spring.datasource.url=jdbc:postgresql://localhost:5432/kdm' '--spring.flyway.enabled=true'"
+mvn spring-boot:run -Dspring-boot.run.arguments="'--spring.datasource.username=cs_korth' '--spring.datasource.password=cs_korth_pw' '--spring.datasource.url=jdbc:postgresql://kdm30e5152.cgaqu5r9jgep.us-west-2.rds.amazonaws.com:5432/kdm' '--spring.flyway.enabled=true'"
 ```
 
 
@@ -54,8 +54,8 @@ docker build --build-arg JAR_FILE=./target/kdm_api-0.0.1-SNAPSHOT.jar --build-ar
 Use the following command line to run the application with Maven.  Replace the database connection values accordingly 
 
 ```bash
-mvn spring-boot:run -Dspring-boot.run.arguments="'--spring.datasource.username=kdm' '--spring.datasource.password=dbpassword' '--spring.datasource.url=jdbc:postgresql://localhost:5432/kdm'
- '-e spring.flyway.enabled=true'"
+mvn spring-boot:run -Dspring-boot.run.arguments="'--spring.datasource.username=cs_korth' '--spring.datasource.password=cs_korth_pw' '--spring.datasource.url=jdbc:postgresql://kdm30e5152.cgaqu5r9jgep.us-west-2.rds.amazonaws.com:5432/kdm'
+ '-e spring.flyway.enabled=true' '--spring.profiles.active=no_kdm_security'"
 ```
 
 ## Running - Docker Image 
@@ -65,7 +65,7 @@ To run this app from the docker image, we need to supply the database parameters
 
 
 ```bash
-docker run -p 8080:8080 --name kdm-api-be -e spring.datasource.url='jdbc:postgresql://LOCAL_IP_ADDRESS:5432/kdm' -e spring.datasource.username=kdm -e spring.datasource.password=dbpassword -d kdm/kdm-api-be:0.0.1
+docker run -p 8080:8080 --name kdm-api-be -e spring.profiles.active=no_kdm_security -e spring.datasource.url='jdbc:postgresql://kdm-db3d453a5.cgaqu5r9jgep.us-west-2.rds.amazonaws.com:5432/kdm' -e spring.datasource.username=cs_korth -e spring.datasource.password=cs_korth_pw -d kdm/kdm-api-be:0.0.1
 ```
 
 ## Flyway - Enable/Disable

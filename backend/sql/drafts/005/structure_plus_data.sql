@@ -12,7 +12,7 @@
  Target Server Version : 130000
  File Encoding         : 65001
 
- Date: 27/10/2020 13:57:04
+ Date: 03/11/2020 08:08:00
 */
 
 
@@ -146,6 +146,7 @@ BEGIN;
 INSERT INTO "public"."Address" VALUES (1, '4771 78th Avenue', NULL, 'Miami', 'fl', '33101');
 INSERT INTO "public"."Address" VALUES (2, '14120 Palm Street', NULL, 'Miami', 'fl', '33101');
 INSERT INTO "public"."Address" VALUES (3, '8440 Grand Canal Dr', NULL, 'Miami', 'fl', '33101');
+INSERT INTO "public"."Address" VALUES (5, '345 NE 80 St', NULL, 'Miami', 'fl', '33138');
 COMMIT;
 
 -- ----------------------------
@@ -193,6 +194,7 @@ BEGIN;
 INSERT INTO "public"."Borrower" VALUES (1, NULL, '4771 78th Avenue LLC', NULL, NULL, NULL, NULL);
 INSERT INTO "public"."Borrower" VALUES (2, NULL, '14120 Palm Street LLC', NULL, NULL, NULL, NULL);
 INSERT INTO "public"."Borrower" VALUES (3, NULL, '8400 Grand Canal Dr LLC', NULL, NULL, NULL, NULL);
+INSERT INTO "public"."Borrower" VALUES (5, 5, '345 NE LLC', NULL, NULL, NULL, NULL);
 COMMIT;
 
 -- ----------------------------
@@ -244,8 +246,12 @@ ALTER TABLE "public"."Loan" OWNER TO "cs_korth";
 -- Records of Loan
 -- ----------------------------
 BEGIN;
-INSERT INTO "public"."Loan" VALUES (1, NULL, 1, 'KDM2017-L001', NULL, NULL, '2027-05-01 00:00:01', NULL, 'performing', 1059000.00, 'closed', 53.70, NULL, 5.25);
-INSERT INTO "public"."Loan" VALUES (2, NULL, NULL, 'KDM2017-L002', NULL, NULL, '2020-12-21 00:00:01', NULL, 'performing', 950000.00, 'closed', 59.19, NULL, 6.50);
+INSERT INTO "public"."Loan" VALUES (1, NULL, 1, 'KDM2017-L001', NULL, NULL, '2027-05-01 00:00:01', NULL, 'PERFORMING', 1059000.00, 'CLOSED', 53.70, NULL, 5.25);
+INSERT INTO "public"."Loan" VALUES (2, NULL, 2, 'KDM2017-L002', NULL, NULL, '2020-12-21 00:00:01', NULL, 'PERFORMING', 950000.00, 'CLOSED', 59.19, NULL, 6.50);
+INSERT INTO "public"."Loan" VALUES (4, NULL, 4, 'KDM2018-L001', NULL, NULL, '2023-03-13 00:00:01', NULL, 'PERFORMING', 1850000.00, 'CLOSED', 66.67, NULL, 6.50);
+INSERT INTO "public"."Loan" VALUES (5, NULL, NULL, 'KDM2018-L002', NULL, NULL, '2021-02-04 00:00:01', NULL, 'PERFORMING', 341250.00, 'CLOSED', 59.21, NULL, 6.50);
+INSERT INTO "public"."Loan" VALUES (6, NULL, NULL, 'KDM2018-L003', NULL, NULL, '2023-05-25 00:00:01', NULL, 'PERFORMING', 6300000.00, 'CLOSED', 60.00, NULL, 6.50);
+INSERT INTO "public"."Loan" VALUES (7, NULL, NULL, 'KDM2018-L004', NULL, NULL, '2023-09-25 00:00:01', NULL, 'PERFORMING', 2700000.00, 'CLOSED', 64.98, NULL, 6.75);
 COMMIT;
 
 -- ----------------------------
@@ -269,6 +275,7 @@ ALTER TABLE "public"."MSN" OWNER TO "cs_korth";
 BEGIN;
 INSERT INTO "public"."MSN" VALUES (1, 1, 'KDM2017-N001', NULL, '2017-05-01 00:00:00', 5.00);
 INSERT INTO "public"."MSN" VALUES (2, 2, 'KDM2017-N002', NULL, '2020-12-21 00:00:01', 6.00);
+INSERT INTO "public"."MSN" VALUES (4, NULL, 'KDM2018-L001', NULL, '2023-03-13 00:00:01', 5.50);
 COMMIT;
 
 -- ----------------------------
@@ -292,6 +299,7 @@ BEGIN;
 INSERT INTO "public"."Property" VALUES (1, 1, 1, 1, 'multi-family');
 INSERT INTO "public"."Property" VALUES (2, 2, 1, 2, 'multi-family');
 INSERT INTO "public"."Property" VALUES (3, 3, 2, 3, 'multi-family');
+INSERT INTO "public"."Property" VALUES (6, 5, 4, 5, 'warehouse flex-space');
 COMMIT;
 
 -- ----------------------------
@@ -314,6 +322,7 @@ ALTER TABLE "public"."Rating" OWNER TO "cs_korth";
 BEGIN;
 INSERT INTO "public"."Rating" VALUES (1, 1, '2020-10-27 13:38:36', 'EJ', 'A+');
 INSERT INTO "public"."Rating" VALUES (2, 2, '2020-10-27 13:55:43', 'EJ', 'A');
+INSERT INTO "public"."Rating" VALUES (4, 4, '2020-11-02 17:56:31', 'EJ', 'A-');
 COMMIT;
 
 -- ----------------------------
@@ -344,63 +353,63 @@ COMMIT;
 -- ----------------------------
 ALTER SEQUENCE "public"."Address_addressID_seq"
 OWNED BY "public"."Address"."addressID";
-SELECT setval('"public"."Address_addressID_seq"', 4, true);
+SELECT setval('"public"."Address_addressID_seq"', 6, true);
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
 ALTER SEQUENCE "public"."Appraisal_appraisalID_seq"
 OWNED BY "public"."Appraisal"."appraisalID";
-SELECT setval('"public"."Appraisal_appraisalID_seq"', 4, true);
+SELECT setval('"public"."Appraisal_appraisalID_seq"', 5, true);
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
 ALTER SEQUENCE "public"."Borrower_borrowerId_seq"
 OWNED BY "public"."Borrower"."borrowerId";
-SELECT setval('"public"."Borrower_borrowerId_seq"', 4, true);
+SELECT setval('"public"."Borrower_borrowerId_seq"', 6, true);
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
 ALTER SEQUENCE "public"."CUSIP_cusipID_seq"
 OWNED BY "public"."CUSIP"."cusipID";
-SELECT setval('"public"."CUSIP_cusipID_seq"', 3, true);
+SELECT setval('"public"."CUSIP_cusipID_seq"', 4, true);
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
 ALTER SEQUENCE "public"."Loan_loanID_seq"
 OWNED BY "public"."Loan"."loanID";
-SELECT setval('"public"."Loan_loanID_seq"', 3, true);
+SELECT setval('"public"."Loan_loanID_seq"', 7, true);
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
 ALTER SEQUENCE "public"."MSN_msnID_seq"
 OWNED BY "public"."MSN"."msnID";
-SELECT setval('"public"."MSN_msnID_seq"', 3, true);
+SELECT setval('"public"."MSN_msnID_seq"', 5, true);
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
 ALTER SEQUENCE "public"."Property_propertyID_seq"
 OWNED BY "public"."Property"."propertyID";
-SELECT setval('"public"."Property_propertyID_seq"', 4, true);
+SELECT setval('"public"."Property_propertyID_seq"', 7, true);
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
 ALTER SEQUENCE "public"."Rating_ratingID_seq"
 OWNED BY "public"."Rating"."ratingID";
-SELECT setval('"public"."Rating_ratingID_seq"', 3, true);
+SELECT setval('"public"."Rating_ratingID_seq"', 5, true);
 
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
 ALTER SEQUENCE "public"."Sponsor_sponsorID_seq"
 OWNED BY "public"."Sponsor"."sponsorID";
-SELECT setval('"public"."Sponsor_sponsorID_seq"', 2, false);
+SELECT setval('"public"."Sponsor_sponsorID_seq"', 3, false);
 
 -- ----------------------------
 -- Primary Key structure for table Address
@@ -481,3 +490,41 @@ CREATE UNIQUE INDEX "unique_sponsor_company" ON "public"."Sponsor" USING btree (
 -- Primary Key structure for table Sponsor
 -- ----------------------------
 ALTER TABLE "public"."Sponsor" ADD CONSTRAINT "Sponsor_pkey" PRIMARY KEY ("sponsorID");
+
+-- ----------------------------
+-- Foreign Keys structure for table Appraisal
+-- ----------------------------
+ALTER TABLE "public"."Appraisal" ADD CONSTRAINT "fk_appraisal_property" FOREIGN KEY ("propertyID") REFERENCES "public"."Property" ("propertyID") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- ----------------------------
+-- Foreign Keys structure for table Borrower
+-- ----------------------------
+ALTER TABLE "public"."Borrower" ADD CONSTRAINT "fk_borrower_address" FOREIGN KEY ("addressId") REFERENCES "public"."Address" ("addressID") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- ----------------------------
+-- Foreign Keys structure for table Loan
+-- ----------------------------
+ALTER TABLE "public"."Loan" ADD CONSTRAINT "fk_loan_msn" FOREIGN KEY ("msnID") REFERENCES "public"."MSN" ("msnID") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE "public"."Loan" ADD CONSTRAINT "fk_loan_sponsor" FOREIGN KEY ("sponsorID") REFERENCES "public"."Sponsor" ("sponsorID") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- ----------------------------
+-- Foreign Keys structure for table MSN
+-- ----------------------------
+ALTER TABLE "public"."MSN" ADD CONSTRAINT "fk_msn_cusip" FOREIGN KEY ("cusipID") REFERENCES "public"."CUSIP" ("cusipID") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- ----------------------------
+-- Foreign Keys structure for table Property
+-- ----------------------------
+ALTER TABLE "public"."Property" ADD CONSTRAINT "fk_property_address" FOREIGN KEY ("addressID") REFERENCES "public"."Address" ("addressID") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE "public"."Property" ADD CONSTRAINT "fk_property_borrower" FOREIGN KEY ("borrowerID") REFERENCES "public"."Borrower" ("borrowerId") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE "public"."Property" ADD CONSTRAINT "fk_property_loan" FOREIGN KEY ("loanID") REFERENCES "public"."Loan" ("loanID") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- ----------------------------
+-- Foreign Keys structure for table Rating
+-- ----------------------------
+ALTER TABLE "public"."Rating" ADD CONSTRAINT "fk_rating_msn" FOREIGN KEY ("msnID") REFERENCES "public"."MSN" ("msnID") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- ----------------------------
+-- Foreign Keys structure for table Sponsor
+-- ----------------------------
+ALTER TABLE "public"."Sponsor" ADD CONSTRAINT "fk_sponsor_address" FOREIGN KEY ("addressId") REFERENCES "public"."Address" ("addressID") ON DELETE NO ACTION ON UPDATE NO ACTION;

@@ -36,17 +36,18 @@ const dbSubnets = new aws.rds.SubnetGroup("dbsubnets", {
 
 const alb = new awsx.lb.ApplicationLoadBalancer("kdm-web-traffic", { vpc });
 
+
 const cert = new aws.acm.Certificate("kdm-cert", { 
-    validationMethod: "DNS",
+    validationMethod: "EMAIL",
     domainName: alb.loadBalancer.dnsName.apply(domainName => `${domainName}`)
 });
 
 const target = alb.createTargetGroup("kdm-spring-target", { port: 8080, vpc })
 
 const listener = target.createListener("kdm-web-listener", { 
-    port: 443,
+    port: 8080,
     vpc,
-    certificateArn: cert.arn.apply(arn => `${arn}`)
+    //certificateArn: cert.arn.apply(arn => `${arn}`)
 });
 
 /*******************************************************************************
@@ -115,6 +116,5 @@ let service = new awsx.ecs.FargateService("kdm_api", {
     }
 })
 
-exports.db = kdmPgsqlInstance
+exports.db = kdmPgsqlInstance.endpoint
 exports.service = listener.endpoint
-exports.alb = alb
