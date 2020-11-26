@@ -1,11 +1,43 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import { Row, Col} from 'reactstrap';
 
-const LoanDashboard = () => {
+import PageTitle from '../../components/PageTitle';
+import LoansTable from './LoansTable';
+import { getLoans } from '../../redux/actions';
+
+const LoanDashboard = (props) => {
+
+  useEffect(() => {
+    props.getLoans();
+  }, []);
+
+  const { loans } = props;
   return (
     <>
-      Dashboard
+      <PageTitle
+        breadCrumbItems={[
+          { label: 'Loans', path: '/loans/list' },
+        ]}
+        title={'Loans'}
+      />
+
+      <Row>
+        <Col sm={12}>
+          <LoansTable loans={loans?.content} />
+        </Col>
+      </Row>
     </>
   );
 };
 
-export default LoanDashboard;
+const mapStateToProps = state => {
+  const { loans } = state.Loan;
+  return { loans };
+};
+
+export default connect(
+  mapStateToProps,
+  { getLoans }
+)(LoanDashboard);
+

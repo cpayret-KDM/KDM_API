@@ -1,10 +1,9 @@
-
+  
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import LanguageDropdown from './LanguageDropdown';
 import NotificationDropdown from './NotificationDropdown';
 import ProfileDropdown from './ProfileDropdown';
 import SearchDropdown from './SearchDropdown';
@@ -14,7 +13,7 @@ import { showRightSidebar } from '../redux/actions';
 
 import profilePic from '../assets/images/users/avatar-1.jpg';
 import logoSm from '../assets/images/logo_sm.png';
-import logo from '../assets/images/logo-light.png';
+import logo from '../assets/images/logos/K_Direct_Mortgage_transparent.fw.png';
 
 const Notifications = [
     {
@@ -168,7 +167,7 @@ class Topbar extends Component<TopbarProps> {
                         {!hideLogo && (
                             <Link to="/" className="topnav-logo">
                                 <span className="topnav-logo-lg">
-                                    <img src={logo} alt="logo" height="16" />
+                                    <img src={logo} alt="logo" height="50" />
                                 </span>
                                 <span className="topnav-logo-sm">
                                     <img src={logoSm} alt="logo" height="16" />
@@ -187,9 +186,6 @@ class Topbar extends Component<TopbarProps> {
                                     <i className="mdi mdi-settings-outline noti-icon"></i>
                                 </button>
                             </li>
-                            <li className="notification-list topbar-dropdown d-none d-lg-block">
-                                <LanguageDropdown />
-                            </li>
                             <li className="notification-list">
                                 <NotificationDropdown notifications={Notifications} />
                             </li>
@@ -200,8 +196,8 @@ class Topbar extends Component<TopbarProps> {
                                 <ProfileDropdown
                                     profilePic={profilePic}
                                     menuItems={ProfileMenus}
-                                    username={'Dominic Keller'}
-                                    userTitle={'Founder'}
+                                    username={'Holly MacDonald-Korth'}
+                                    userTitle={'President'}
                                 />
                             </li>
                         </ul>

@@ -12,10 +12,12 @@ const ForgetPassword = React.lazy(() => import('../hyper-pages/auth/ForgetPasswo
 const Confirm = React.lazy(() => import('../hyper-pages/auth/Confirm'));
 
 // pages
-const Starter = React.lazy(() => import('../hyper-pages/Starter'));
-const Profile = React.lazy(() => import('../hyper-pages/profile'));
-const ErrorPageNotFound = React.lazy(() => import('../hyper-pages/error/PageNotFound'));
-const ServerError = React.lazy(() => import('../hyper-pages/error/ServerError'));
+const LoanDashboard = React.lazy(() => import('../pages/LoanDashboard'));
+const LoanDetails = React.lazy(() => import('../pages/LoanDetails'));
+//const Starter = React.lazy(() => import('../hyper-pages/Starter'));
+// const Profile = React.lazy(() => import('../hyper-pages/profile'));
+//const ErrorPageNotFound = React.lazy(() => import('../hyper-pages/error/PageNotFound'));
+//const ServerError = React.lazy(() => import('../hyper-pages/error/ServerError'));
 
 // handle auth and authorization
 const PrivateRoute = ({ component: Component, roles, ...rest }) => (
@@ -51,26 +53,26 @@ const rootRoute = {
 // pages
 const loanRoutes = {
   path: '/loans',
-  name: 'Pages',
+  name: 'Loans',
   icon: 'uil-copy-alt',
   header: 'Custom',
   children: [
     {
       path: '/loans/list',
       name: 'Loans',
-      component: Profile,
+      component: LoanDashboard,
       route: PrivateRoute,
     },
     {
-      path: '/loans/create',
-      name: 'Create Loan',
-      component: Profile,
+      path: '/loans/:id',
+      name: 'Loan Details',
+      component: LoanDetails,
       route: PrivateRoute,
     },
     {
       path: '/loans/edit',
       name: 'Edit Loan',
-      component: Profile,
+      component: LoanDashboard,
       route: PrivateRoute,
     },
   ],
@@ -78,40 +80,40 @@ const loanRoutes = {
 
 // auth
 const authRoutes = {
-    path: '/account',
-    name: 'Auth',
-    children: [
-        {
-            path: '/account/login',
-            name: 'Login',
-            component: Login,
-            route: Route,
-        },
-        {
-            path: '/account/logout',
-            name: 'Logout',
-            component: Logout,
-            route: Route,
-        },
-        {
-            path: '/account/register',
-            name: 'Register',
-            component: Register,
-            route: Route,
-        },
-        {
-            path: '/account/confirm',
-            name: 'Confirm',
-            component: Confirm,
-            route: Route,
-        },
-        {
-            path: '/account/forget-password',
-            name: 'Forget Password',
-            component: ForgetPassword,
-            route: Route,
-        },
-    ],
+  path: '/account',
+  name: 'Auth',
+  children: [
+    {
+      path: '/account/login',
+      name: 'Login',
+      component: Login,
+      route: Route,
+    },
+    {
+      path: '/account/logout',
+      name: 'Logout',
+      component: Logout,
+      route: Route,
+    },
+    {
+      path: '/account/register',
+      name: 'Register',
+      component: Register,
+      route: Route,
+    },
+    {
+      path: '/account/confirm',
+      name: 'Confirm',
+      component: Confirm,
+        route: Route,
+    },
+    {
+      path: '/account/forget-password',
+      name: 'Forget Password',
+      component: ForgetPassword,
+      route: Route,
+    },
+  ],
 };
 
 // flatten the list of all nested routes

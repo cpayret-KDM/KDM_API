@@ -6,8 +6,6 @@ import { fetchJSON } from '../../helpers/api';
 
 import { LOGIN_USER, LOGOUT_USER, REGISTER_USER, FORGET_PASSWORD } from './constants';
 
-const SERVER_URL = process.env.REACT_APP_KDM_API_ENDPOINT;
-
 import {
     loginUserSuccess,
     loginUserFailed,
@@ -26,6 +24,7 @@ const setSession = user => {
     if (user) cookies.set('user', JSON.stringify(user), { path: '/' });
     else cookies.remove('user', { path: '/' });
 };
+
 /**
  * Login the user
  * @param {*} payload - username and password
@@ -101,7 +100,7 @@ function* register({ payload: { fullname, email, password } }) {
 }
 
 /**
- * forget password
+ * Forget Password
  */
 function* forgetPassword({ payload: { username } }) {
     const options = {

@@ -1,0 +1,44 @@
+
+
+
+.topnav {
+  background: $darkBlue;
+}
+
+a {
+  color: $darkBlue;
+
+  &:hover {
+    color: darken($darkBlue, 50%);
+  }
+}
+
+.btn-primary,
+.btn-success {
+  background-color: $darkBlue;
+  border-color: $darkBlue;
+  box-shadow: none;
+}
+
+.bg-primary {
+  background-color: $darkBlue !important;
+}
+
+.page-title-box .page-title {
+  font-size: 20px;
+}
+
+.page-item.active .page-link {
+  background-color: $darkBlue;
+  border-color: $darkBlue;
+}
+
+.spinner-border.text-primary {
+  color: $darkBlue !important;
+}
+
+@media (min-width: 992px) {
+  body[data-layout="topnav"] .container-fluid, body[data-layout="topnav"] .container-sm, body[data-layout="topnav"] .container-md, body[data-layout="topnav"] .container-lg, body[data-layout="topnav"] .container-xl {
+    max-width: 95%;
+  }
+}
