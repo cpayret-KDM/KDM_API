@@ -16,7 +16,10 @@ const db = {
 
 const springProfile = config.require("springProfile")
 const isFlyway = config.get("isFlyway") || "false"
-
+const dns = {
+    zoneId: config.get("dns_zoneId"),
+    dnsName: config.get("dns_dnsName")
+}
 /*******************************************************************************
 *   Networking
 *******************************************************************************/
@@ -26,28 +29,37 @@ const cluster = new awsx.ecs.Cluster("kdm_cloud", { vpc })
 
 const securityGroupIds = cluster.securityGroups.map(g => g.id)
 
-const dbSubnets = new aws.rds.SubnetGroup("dbsubnets", {
+const publicSubnets = new aws.rds.SubnetGroup("dbsubnets", {
     vpc,
     subnetIds: vpc.publicSubnetIds,
 })
 
+const alb = new awsx.lb.NetworkLoadBalancer("kdm-web-traffic", { vpc });
 
-
-
-const alb = new awsx.lb.ApplicationLoadBalancer("kdm-web-traffic", { vpc });
-
+const domain = new aws.route53.Record("kdm-staging", {
+    zoneId: dns.zoneId,
+    name: dns.dnsName,
+    type: "CNAME",
+    ttl: "300",
+    records: [alb.loadBalancer.dnsName.apply(domainName => `${domainName}`)]
+})
 
 const cert = new aws.acm.Certificate("kdm-cert", { 
-    validationMethod: "EMAIL",
-    domainName: alb.loadBalancer.dnsName.apply(domainName => `${domainName}`)
+    validationMethod: "DNS",
+    domainName: domain.fqdn.apply(domainName => `${domainName}`)
 });
 
-const target = alb.createTargetGroup("kdm-spring-target", { port: 8080, vpc })
-
-const listener = target.createListener("kdm-web-listener", { 
+const target = alb.createTargetGroup("kdm-spring-target", { 
     port: 8080,
     vpc,
-    //certificateArn: cert.arn.apply(arn => `${arn}`)
+    protocol: "TCP"
+})
+
+const listener = target.createListener("kdm-web-listener", { 
+    port: 443,
+    protocol: "TLS",
+    vpc,
+    certificateArn: cert.arn.apply(arn => `${arn}`)
 });
 
 /*******************************************************************************
@@ -64,7 +76,7 @@ const kdmPgsqlInstance = new aws.rds.Instance("kdm-db", {
     username: db.username,
     publiclyAccessible: true,
     skipFinalSnapshot: true,
-    dbSubnetGroupName: dbSubnets.id,
+    dbSubnetGroupName: publicSubnets.id,
     vpcSecurityGroupIds: securityGroupIds,
     vpc
 })

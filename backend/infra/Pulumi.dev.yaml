@@ -6,6 +6,9 @@ config:
   infra:dbpassword:
     secure: AAABAJCV5ii46f9asFgV+b/9K4CgnI8o3gE09tvZ1SSSVRce5Bi0W/0c2w==
   infra:dbusername: cs_korth
+  infra:dns_dnsName: kdm-staging
+  infra:dns_zoneId: Z2I7T1WMAPGFC
   infra:isFlyway: "true"
   infra:springProfile: no_kdm_security
   infra:username: cs_korth
+  infra:zoneId: Z2I7T1WMAPGFC
