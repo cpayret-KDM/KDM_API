@@ -16,6 +16,7 @@ const db = {
 
 const springProfile = config.require("springProfile")
 const isFlyway = config.get("isFlyway") || "false"
+const allowedOrigins = config.get("allowedOrigins")
 const dns = {
     zoneId: config.get("dns_zoneId"),
     dnsName: config.get("dns_dnsName")
@@ -125,6 +126,10 @@ let service = new awsx.ecs.FargateService("kdm_api", {
                     {
                         name: "server.use-forward-headers",
                         value: "true"
+                    },
+                    {
+                        name: " kdm.api.allowedOrigins",
+                        value: allowedOrigins
                     }
 
                 ]

@@ -2,6 +2,7 @@ config:
   aws:region: us-west-2
   cloud-aws:useFargate: "true"
   cloud:provider: aws
+  infra:allowedOrigins: http://localhost:8080,https://kdm-frontend-staging.codingscape.com
   infra:dbdb: kdm
   infra:dbpassword:
     secure: AAABAJCV5ii46f9asFgV+b/9K4CgnI8o3gE09tvZ1SSSVRce5Bi0W/0c2w==
