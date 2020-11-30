@@ -88,6 +88,9 @@ http://localhost:8080/v3/api-docs
 
 This specificacion can be use with any other OpenAPI ready tools like: PostMan, SoapUI, etc.
 
+## Continuous Deploys
+See `infra/README.md`
+
 
 ## License
 Copyright (C) KDM Real Estate - All Rights Reserved

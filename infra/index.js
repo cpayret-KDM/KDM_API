@@ -16,6 +16,7 @@ const db = {
 
 const springProfile = config.require("springProfile")
 const isFlyway = config.get("isFlyway") || "false"
+const allowedOrigins = config.get("allowedOrigins")
 const dns = {
     zoneId: config.get("dns_zoneId"),
     dnsName: config.get("dns_dnsName")
@@ -86,7 +87,7 @@ const kdmPgsqlInstance = new aws.rds.Instance("kdm-db", {
 *   ECR Repository and Docker Image Build/Push                                 * 
 *******************************************************************************/
 const repo = new awsx.ecr.Repository("kdm-repo")
-const image = repo.buildAndPushImage("../")
+const image = repo.buildAndPushImage("../backend/")
 
 /*******************************************************************************
 *   Deploy Containers to AWS ECS using Fargate
@@ -121,6 +122,14 @@ let service = new awsx.ecs.FargateService("kdm_api", {
                     {
                         name: "spring.flyway.enabled",
                         value: isFlyway
+                    },
+                    {
+                        name: "server.use-forward-headers",
+                        value: "true"
+                    },
+                    {
+                        name: " kdm.api.allowedOrigins",
+                        value: allowedOrigins
                     }
 
                 ]
