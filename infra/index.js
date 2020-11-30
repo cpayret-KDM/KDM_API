@@ -86,7 +86,7 @@ const kdmPgsqlInstance = new aws.rds.Instance("kdm-db", {
 *   ECR Repository and Docker Image Build/Push                                 * 
 *******************************************************************************/
 const repo = new awsx.ecr.Repository("kdm-repo")
-const image = repo.buildAndPushImage("../")
+const image = repo.buildAndPushImage("backend/")
 
 /*******************************************************************************
 *   Deploy Containers to AWS ECS using Fargate
