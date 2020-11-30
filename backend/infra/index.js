@@ -121,6 +121,10 @@ let service = new awsx.ecs.FargateService("kdm_api", {
                     {
                         name: "spring.flyway.enabled",
                         value: isFlyway
+                    },
+                    {
+                        name: "server.use-forward-headers",
+                        value: "true"
                     }
 
                 ]
