@@ -18,8 +18,8 @@ class Login extends Component {
 
         this.handleValidSubmit = this.handleValidSubmit.bind(this);
         this.state = {
-            username: 'test',
-            password: 'test',
+            username: 'johnfoo@gmail.com',
+            password: 'abcd1234$',
         };
     }
 
