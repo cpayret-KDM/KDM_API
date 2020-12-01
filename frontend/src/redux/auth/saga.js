@@ -15,6 +15,12 @@ import {
     forgetPasswordFailed,
 } from './actions';
 
+const DOMAIN = process.env.REACT_APP_AUTH0_DOMAIN;
+const CLIENT_ID = process.env.REACT_APP_AUTH0_CLIENT_ID;
+const GRANT_TYPE = process.env.REACT_APP_AUTH0_GRANT_TYPE;
+const REALM = process.env.REACT_APP_AUTH0_REALM;
+const CLIENT = process.env.REACT_APP_AUTH0_CLIENT;
+
 /**
  * Sets the session
  * @param {*} user
@@ -31,13 +37,22 @@ const setSession = user => {
  */
 function* login({ payload: { username, password } }) {
     const options = {
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ 
+            username: username, 
+            password: password, 
+            client_id: CLIENT_ID, 
+            grant_type: GRANT_TYPE, 
+            realm: REALM }),
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'auth0-client':CLIENT },
     };
-
     try {
-        const response = yield call(fetchJSON, '/users/authenticate', options);
+        const response = yield call(fetchJSON, `${DOMAIN}/oauth/token`, options);
+        if (response.error) {
+            var error = new Error(response.error_description);
+            error.status = 401;
+            throw error;
+        }
         setSession(response);
         yield put(loginUserSuccess(response));
     } catch (error) {

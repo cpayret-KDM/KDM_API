@@ -18,8 +18,8 @@ class Login extends Component {
 
         this.handleValidSubmit = this.handleValidSubmit.bind(this);
         this.state = {
-            username: 'test',
-            password: 'test',
+            username: 'johnfoo@gmail.com',
+            password: 'abcd1234$',
         };
     }
 
@@ -119,8 +119,8 @@ class Login extends Component {
                                                 </FormGroup>
 
                                                 <p>
-                                                    <strong>Username:</strong> test &nbsp;&nbsp;{' '}
-                                                    <strong>Password:</strong> test
+                                                    <strong>Username:</strong> {this.state.username} &nbsp;&nbsp;{' '}
+                                                    <strong>Password:</strong> {this.state.password}
                                                 </p>
                                             </AvForm>
                                         </CardBody>
