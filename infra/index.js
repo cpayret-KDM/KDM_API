@@ -128,10 +128,9 @@ let service = new awsx.ecs.FargateService("kdm_api", {
                         value: "true"
                     },
                     {
-                        name: " kdm.api.allowedOrigins",
+                        name: "kdm.api.allowedOrigins",
                         value: allowedOrigins
                     }
-
                 ]
             }
         }
