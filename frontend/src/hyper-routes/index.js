@@ -2,7 +2,7 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 
-import { isUserAuthenticated, getLoggedInUser } from '../helpers/authUtils';
+import { isUserAuthenticated, getLoggedInUserRole } from '../helpers/authUtils';
 
 // lazy load all the views
 
@@ -111,9 +111,10 @@ const PrivateRoute = ({ component: Component, roles, ...rest }) => (
                 return <Redirect to={{ pathname: '/account/login', state: { from: props.location } }} />;
             }
 
-            const loggedInUser = getLoggedInUser();
+            const userRole = getLoggedInUserRole();
+
             // check if route is restricted by role
-            if (roles && roles.indexOf(loggedInUser.role) === -1) {
+            if (roles && roles.indexOf(userRole) === -1) {
                 // role not authorised so redirect to home page
                 return <Redirect to={{ pathname: '/' }} />;
             }
