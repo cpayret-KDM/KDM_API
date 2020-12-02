@@ -2,15 +2,21 @@ package com.kdm.web.model;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -24,7 +30,13 @@ public class Loan {
 	@JsonProperty(value = "id")
 	@Id
 	@Column(name = "loanID")
+	@SequenceGenerator(name="Loan_loanID_seq", sequenceName="Loan_loanID_seq", allocationSize=1)
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "Loan_loanID_seq")
 	private Long id;
+	
+	@JsonProperty
+	@OneToMany(mappedBy="loan", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
+	private List<Property> properties;
 	
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -90,6 +102,10 @@ public class Loan {
 	@Column(name = "memoURL", length = 256, nullable = true)
 	@Size(max = 256)
 	private String memoUrl;
+	
+	@JsonProperty(value = "KDMRating")
+	@Column(name="KDMRating", precision = 5, scale = 2)
+	private BigDecimal kdmRating;
 	
 	public Loan(){
 		
@@ -223,6 +239,30 @@ public class Loan {
 
 	public void setMemoUrl(String memoUrl) {
 		this.memoUrl = memoUrl;
+	}
+
+	public List<Property> getProperties() {
+		return properties;
+	}
+
+	public void setProperties(List<Property> properties) {
+		this.properties = properties;
+	}
+
+	public MSN getMsn() {
+		return msn;
+	}
+
+	public void setMsn(MSN msn) {
+		this.msn = msn;
+	}
+
+	public BigDecimal getKdmRating() {
+		return kdmRating;
+	}
+
+	public void setKdmRating(BigDecimal kdmRating) {
+		this.kdmRating = kdmRating;
 	}
 	
 }
