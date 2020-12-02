@@ -2,7 +2,7 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 
-import { isUserAuthenticated, getLoggedInUser } from '../helpers/authUtils';
+import { isUserAuthenticated, getLoggedInUserRole } from '../helpers/authUtils';
 
 // auth
 const Login = React.lazy(() => import('../hyper-pages/auth/Login'));
@@ -29,9 +29,10 @@ const PrivateRoute = ({ component: Component, roles, ...rest }) => (
         return <Redirect to={{ pathname: '/account/login', state: { from: props.location } }} />;
       }
 
-      const loggedInUser = getLoggedInUser();
+      const userRole = getLoggedInUserRole();
       // check if route is restricted by role
-      if (roles && roles.indexOf(loggedInUser.role) === -1) {
+
+      if (roles && roles.indexOf(userRole) === -1) {
         // role not authorised so redirect to home page
         return <Redirect to={{ pathname: '/' }} />;
       }
@@ -62,18 +63,21 @@ const loanRoutes = {
       name: 'Loans',
       component: LoanDashboard,
       route: PrivateRoute,
+      roles: ['user','admin'],
     },
     {
       path: '/loans/:id',
       name: 'Loan Details',
       component: LoanDetails,
       route: PrivateRoute,
+      roles: ['user','admin'],
     },
     {
       path: '/loans/edit',
       name: 'Edit Loan',
       component: LoanDashboard,
       route: PrivateRoute,
+      roles: ['admin'],
     },
   ],
 };
