@@ -18,14 +18,15 @@ import net.kaczmarzyk.spring.data.jpa.web.SpecificationArgumentResolver;
 public class WebConfig implements WebMvcConfigurer {
 
 	@Value("${kdm.api.allowedOrigins:http://localhost:3000}")
-	private String allowerdOrigin;
+	private String allowedOrigin;
 
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry
 			.addMapping("/api/**")
-			.allowedOrigins(allowerdOrigin.split(","))
-			.allowedHeaders("*");
+			.allowedOrigins(allowedOrigin.split(","))
+			.allowedHeaders("*")
+			.allowedMethods("*");
 	}
 	
 	@Bean
