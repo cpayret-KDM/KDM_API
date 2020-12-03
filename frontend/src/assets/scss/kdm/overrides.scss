@@ -18,6 +18,15 @@ a {
   background-color: $darkBlue;
   border-color: $darkBlue;
   box-shadow: none;
+
+  &:hover {
+    background-color: darken($darkBlue, 5%);
+    border-color: darken($darkBlue, 5%);
+  }
+}
+
+.btn-secondary {
+  box-shadow: none;
 }
 
 .bg-primary {
@@ -35,6 +44,10 @@ a {
 
 .spinner-border.text-primary {
   color: $darkBlue !important;
+}
+
+.react-datepicker-wrapper {
+  width: 95.5%;
 }
 
 @media (min-width: 992px) {
