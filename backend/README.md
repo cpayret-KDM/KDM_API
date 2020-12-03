@@ -76,6 +76,20 @@ This feature is disabled by default. So sensitive environemnts like Production, 
 
 For other environments like local development, test, staging, etc.  This feature can be turned on, by adding the spring parameter:  **-e spring.flyway.enabled=true**
 
+## Flyway - Test Data
+
+Executing migration scripts targeted for testing or development enviroments can be done with activating the spring profile: flyway_testdata
+
+parameter is: spring.profiles.active=flyway_testdata
+(either from command line or environment variable)
+
+## Disable Web Security
+
+To turn off Auth0 integration and security altogether, run the spring boot application with the profile: no\_kdm\_security
+
+parameter is: spring.profiles.active=no\_kdm\_security
+(either from command line or environment variable)
+
 ## API
 
 Once the application is up and running, visit the following url to explore the API:

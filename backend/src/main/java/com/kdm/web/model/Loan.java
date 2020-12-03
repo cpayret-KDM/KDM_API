@@ -38,8 +38,8 @@ public class Loan {
 	@OneToMany(mappedBy="loan", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
 	private List<Property> properties;
 	
-	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonProperty
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sponsorID", referencedColumnName = "sponsorID", nullable = true)
 	private Sponsor sponsor;
 	

@@ -5,7 +5,6 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 
 import java.util.Locale;
-import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -38,7 +37,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.kdm.web.data.repository.LoanRepository;
+import com.kdm.web.data.repository.SponsorRepository;
 import com.kdm.web.model.Loan;
+import com.kdm.web.model.Sponsor;
 import com.kdm.web.util.error.ErrorResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -68,6 +69,9 @@ public class LoanController {
 	
 	@Autowired
 	private LoanRepository loanRepository;
+	
+	@Autowired
+	private SponsorRepository sponsorRepository;
 	
 	@Operation(
 		summary = "Get list of loans according to search criteria and pagination options", 
@@ -136,18 +140,9 @@ public class LoanController {
 	public ResponseEntity<Loan> getLoan(
 			@PathVariable("loanId") Long loanId) throws Exception {
 
-		if (ObjectUtils.isEmpty(loanId)) {
-			throw new ResponseStatusException(BAD_REQUEST,
-					messageSource.getMessage("controller.invalid_id", Arrays.array(loanId), Locale.US));
-		}
+		Loan loan = tryGetEntiy(Loan.class, loanId);
 		
-		Optional<Loan> loan = loanRepository.getLoanById(loanId);
-		if (loan.isPresent()) {
-			return new ResponseEntity<Loan>(loan.get(), OK);
-		} else {
-			throw new ResponseStatusException(NOT_FOUND,
-					messageSource.getMessage("controller.entity_no_exists", Arrays.array(loanId), Locale.US));
-		}
+		return new ResponseEntity<Loan>(loan, OK);
 	}
 	
 	@Operation(summary = "Create a loan", tags = "loan", responses = {
@@ -183,15 +178,36 @@ public class LoanController {
 			throw new BindException(bindingResult);
 		}
 		
-		Optional<Loan> prevloan = loanRepository.findById(loanId);
-		if (!prevloan.isPresent()) {
-			throw new ResponseStatusException(NOT_FOUND,
-					messageSource.getMessage("controller.entity_no_exists", Arrays.array(loanId), Locale.US));
-		}
+		// do this just to make sure it exist
+		Loan prevloan = tryGetEntiy(Loan.class, loanId);
 		
+		// merge will update the entity give by its id
 		Loan updatedLoan = entityManager.merge(loan);
 		
 		return new ResponseEntity<Loan>(updatedLoan, OK);
+	}
+	
+	@Operation(summary = "assign a sponsor to a loan", tags = "loan", responses = {
+			@ApiResponse(responseCode = "200", description = "sponsor assigned"),
+			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+			@ApiResponse(responseCode = "404", description = "loan or sponsor not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
+	)
+	@ResponseBody
+	@PutMapping(path = "/{loanId}/sponsor/{sponsorId}")
+	@Transactional
+	public ResponseEntity<Void> assignSponsor(@PathVariable("loanId") Long loanId, @PathVariable("sponsorId") Long sponsorId) {
+		Loan loan = tryGetEntiy(Loan.class, loanId);
+		
+		Sponsor sponsor = tryGetEntiy(Sponsor.class, sponsorId);
+		
+		if ((loan.getSponsor() != null) && (loan.getSponsor().getId().equals(sponsor.getId()))) {
+			// nothing changed
+			return new ResponseEntity<Void>(OK);
+		}
+		loan.setSponsor(sponsor);
+		loanRepository.saveAndFlush(loan);
+		
+		return new ResponseEntity<Void>(OK);
 	}
 	
 	@Operation(summary = "delete a loan", tags = "loan", responses = {
@@ -202,20 +218,26 @@ public class LoanController {
 	@ResponseBody
 	@DeleteMapping(path = "/{loanId}")
 	public ResponseEntity<Void> deleteLoan(@PathVariable("loanId") Long loanId) {
-		if (ObjectUtils.isEmpty(loanId)) {
-			throw new ResponseStatusException(BAD_REQUEST,
-					messageSource.getMessage("controller.bad_request", Arrays.array("loanId is invalid"), Locale.US));
-		}
+		Loan loan = tryGetEntiy(Loan.class, loanId);
 		
-		Optional<Loan> loan = loanRepository.findById(loanId);
-		if (!loan.isPresent()) {
-			throw new ResponseStatusException(NOT_FOUND,
-					messageSource.getMessage("controller.entity_no_exists", Arrays.array(loanId), Locale.US));
-		} 
-		
-		loanRepository.delete(loan.get());
+		loanRepository.delete(loan);
 		
 		return new ResponseEntity<Void>(OK);
+	}
+	
+	private <T> T tryGetEntiy(Class<T> clazz, Object primaryKey) {
+		if (ObjectUtils.isEmpty(primaryKey)) {
+			throw new ResponseStatusException(BAD_REQUEST,
+					messageSource.getMessage("controller.bad_request", Arrays.array("id is invalid"), Locale.US));
+		}
+		
+		T entity = entityManager.find(clazz, primaryKey);
+		if (entity == null) {
+			throw new ResponseStatusException(NOT_FOUND,
+					messageSource.getMessage("controller.entity_no_exists", Arrays.array(primaryKey.toString()), Locale.US));
+		}
+		
+		return entity;
 	}
 
 }
