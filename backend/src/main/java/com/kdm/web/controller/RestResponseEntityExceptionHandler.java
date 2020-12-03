@@ -16,6 +16,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.kdm.web.util.error.ErrorResponse;
 import com.kdm.web.util.error.ValidationError;
@@ -54,8 +55,15 @@ public class RestResponseEntityExceptionHandler  {
 		return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
 	}
 	
+	@ExceptionHandler(ResponseStatusException.class)
+	public ResponseEntity<ErrorResponse> handleException(ResponseStatusException ex, WebRequest request) {
+		logger.debug(String.format("Exception: %s", ex.getMessage()), ex);
+		
+		ErrorResponse response = buildResponse(ex.getStatus(), request.getDescription(false), ex.getReason());
+		
+		return new ResponseEntity<>(response, ex.getStatus());
+	}
 	
-
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorResponse> handleException(Exception ex, WebRequest request) {
 		logger.debug(String.format("Exception: %s", ex.getMessage()), ex);
