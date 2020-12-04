@@ -37,8 +37,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.kdm.web.data.repository.LoanRepository;
-import com.kdm.web.data.repository.SponsorRepository;
+import com.kdm.web.data.repository.PropertyRepository;
 import com.kdm.web.model.Loan;
+import com.kdm.web.model.Property;
 import com.kdm.web.model.Sponsor;
 import com.kdm.web.util.error.ErrorResponse;
 
@@ -71,7 +72,7 @@ public class LoanController {
 	private LoanRepository loanRepository;
 	
 	@Autowired
-	private SponsorRepository sponsorRepository;
+	private PropertyRepository propertyRepository;
 	
 	@Operation(
 		summary = "Get list of loans according to search criteria and pagination options", 
@@ -206,6 +207,30 @@ public class LoanController {
 		}
 		loan.setSponsor(sponsor);
 		loanRepository.saveAndFlush(loan);
+		
+		return new ResponseEntity<Void>(OK);
+	}
+	
+	@Operation(summary = "add a property to a loan", tags = "loan", responses = {
+			@ApiResponse(responseCode = "200", description = "property added"),
+			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+			@ApiResponse(responseCode = "404", description = "loan or property not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
+	)
+	@ResponseBody
+	@PutMapping(path = "/{loanId}/property/{propertyId}")
+	@Transactional
+	public ResponseEntity<Void> addProperty(@PathVariable("loanId") Long loanId, @PathVariable("propertyId") Long propertyId) {
+		Loan loan = tryGetEntiy(Loan.class, loanId);
+		
+		Property property = tryGetEntiy(Property.class, propertyId);
+		
+		if ((property.getLoan() != null) && (property.getLoan().equals(loan))) {
+			// nothing changed
+			return new ResponseEntity<Void>(OK);
+		}
+				
+		property.setLoan(loan);
+		propertyRepository.saveAndFlush(property);
 		
 		return new ResponseEntity<Void>(OK);
 	}

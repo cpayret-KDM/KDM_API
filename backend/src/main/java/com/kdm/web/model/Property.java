@@ -5,22 +5,34 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 @Entity
 @Table(name="Property", schema = "public")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Property {
 
 	@JsonProperty(value = "id")
 	@Id
 	@Column(name = "propertyID")
+	@SequenceGenerator(name="Property_propertyID_seq", sequenceName="Property_propertyID_seq", allocationSize=1)
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "Property_propertyID_seq")
 	private Long id;
 
 	@JsonProperty
@@ -50,56 +62,39 @@ public class Property {
 	@Column(name = "type")
 	private PropertyType type;
 
-	public Property() {
-		
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((addressID == null) ? 0 : addressID.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
 	}
 
-	public Long getId() {
-		return id;
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Property other = (Property) obj;
+		if (addressID == null) {
+			if (other.addressID != null)
+				return false;
+		} else if (!addressID.equals(other.addressID))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (type != other.type)
+			return false;
+		return true;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Long getAddressID() {
-		return addressID;
-	}
-
-	public void setAddressID(Long addressID) {
-		this.addressID = addressID;
-	}
-
-	public Long getLoanId() {
-		return loanId;
-	}
-
-	public void setLoanId(Long loanId) {
-		this.loanId = loanId;
-	}
-
-	public Long getBorrowerID() {
-		return borrowerID;
-	}
-
-	public void setBorrowerID(Long borrowerID) {
-		this.borrowerID = borrowerID;
-	}
-
-	public Address getAddress() {
-		return address;
-	}
-
-	public void setAddress(Address address) {
-		this.address = address;
-	}
-
-	public PropertyType getType() {
-		return type;
-	}
-
-	public void setType(PropertyType type) {
-		this.type = type;
-	}
 
 }
