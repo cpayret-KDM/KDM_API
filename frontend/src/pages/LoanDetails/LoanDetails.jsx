@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Row, Col, Label, Button, InputGroupAddon, Card, CardBody, Spinner } from 'reactstrap';
 import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 
 import PageTitle from '../../components/PageTitle';
 import PropertyMap from './PropertyMap';
+import ModalProperty from './ModalProperty';
+import ModalDeleteProperty from './ModalDeleteProperty';
 import HyperDatepicker from '../../components/Datepicker';
 import { getLoan, createLoan, editLoan, deleteLoan } from '../../redux/actions';
 
@@ -23,6 +25,9 @@ const LoanDetails = (props) => {
       props.getLoan(id);
     }
   }, [mode]);
+
+  const [showPropertyModal, setShowPropertyModal] = useState(0);
+  const [showDeletePropertyModal, setShowDeletePropertyModal] = useState(0);
 
   const breadcrumb = ((mode) => {
     switch (mode) {
@@ -45,6 +50,7 @@ const LoanDetails = (props) => {
     };
 
     if (editing) {
+      console.log('loan',newLoan)
       props.editLoan(newLoan);
     }
     if (creating) {
@@ -52,7 +58,26 @@ const LoanDetails = (props) => {
     }
   }
 
-  console.log('Loan:', loan)
+  const addNewProperty = () => {
+    console.log('add new property')
+  }
+
+  const editProperty = (propertyId) => {
+    console.log('edit property')
+  }
+
+  const deleteProperty = (propertyId) => {
+    console.log('delete property')
+    setShowPropertyModal(true);
+  }
+
+  const toggleDeletePropertyModal = () => {
+    setShowDeletePropertyModal(!showDeletePropertyModal);
+  }
+
+  const toggleShowPropertyModal = () => {
+    setShowPropertyModal(!showPropertyModal);
+  }
 
   return (
     <>
@@ -201,14 +226,27 @@ const LoanDetails = (props) => {
 
               <Card>
                 <CardBody>
-                  <h4>Properties</h4>
+                  <div className="d-flex justify-content-between">
+                    <h4>Properties</h4>
+                    <div className="">
+                      <Button className="btn btn-secondary" onClick={() => addNewProperty()}>Add New Property</Button>
+                    </div>
+                  </div>
 
                   <Row>
                     {loan?.properties?.map((property) => (
                       <Col sm={4}>
                         <Card>
                           <CardBody>
-                            <strong>{property.address.street1}</strong>
+                            <p>
+                              <strong>{property.address.street1}</strong><br />
+                              {property.address.street2 && (<>{property.address.street2}<br /></>)}
+                              {property.address.city}, <span className="text-uppercase">{property.address.state}</span> {property.address.zip}
+                            </p>
+                            <p className="mb-0">
+                              <Button className="btn btn-secondary mr-2" onClick={() => editProperty(property.id)}>Edit</Button>
+                              <Button className="btn btn-danger" onClick={() => deleteProperty(property.id)}>Delete</Button>
+                            </p>
                           </CardBody>
                         </Card>
                       </Col>
@@ -230,6 +268,9 @@ const LoanDetails = (props) => {
           )}
         </Col>
       </Row>
+
+      <ModalProperty isOpen={showPropertyModal} toggle={toggleShowPropertyModal} />
+      <ModalDeleteProperty isOpen={showDeletePropertyModal} toggle={toggleDeletePropertyModal} />
     </>
   );
 };

@@ -12,10 +12,18 @@ const ActionButtons = (cell, row) => {
       <a
         href={`/loans/${row.id}`}
         type="button"
-        className="btn btn-outline-primary btn-sm ts-buttom"
+        className="btn btn-primary ts-buttom"
         size="sm"
       >
         View
+      </a>
+      <a
+        href={`/loans/${row.id}/edit`}
+        type="button"
+        className="btn btn-primary ts-buttom"
+        size="sm"
+      >
+        Edit
       </a>
     </div>
   );
