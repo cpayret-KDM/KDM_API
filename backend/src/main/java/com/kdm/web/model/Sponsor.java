@@ -2,14 +2,27 @@ package com.kdm.web.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name="Sponsor", schema = "public")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Sponsor {
 
 	@JsonProperty
@@ -17,15 +30,14 @@ public class Sponsor {
 	@Column(name = "sponsorID")
 	private Long id;
 	
-	/*
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "addressId", referencedColumnName = "addressId", nullable = true)
+    @JoinColumn(name = "addressId", referencedColumnName = "addressID", nullable = true)
 	private Address address;
-	*/
+	
 	
 	@JsonProperty
-	@Column(name = "addressId"/*, insertable = false, updatable = false*/)
+	@Column(name = "addressId", insertable = false, updatable = false)
 	private Long addressId;
 	
 	@JsonProperty
@@ -58,72 +70,4 @@ public class Sponsor {
 	@Size(max = 64)
 	private String registrationState;
 	
-	public Sponsor() {
-		
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Long getAddressId() {
-		return addressId;
-	}
-
-	public void setAddressId(Long addressId) {
-		this.addressId = addressId;
-	}
-
-	public String getCompany() {
-		return company;
-	}
-
-	public void setCompany(String company) {
-		this.company = company;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getRegistrationState() {
-		return registrationState;
-	}
-
-	public void setRegistrationState(String registrationState) {
-		this.registrationState = registrationState;
-	}
-
 }

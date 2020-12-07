@@ -2,6 +2,7 @@ package com.kdm.web.model;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -23,8 +24,15 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 @Entity
 @Table(name="Loan", schema = "public")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Loan {
 
 	@JsonProperty(value = "id")
@@ -107,162 +115,46 @@ public class Loan {
 	@Column(name="KDMRating", precision = 5, scale = 2)
 	private BigDecimal kdmRating;
 	
-	public Loan(){
+	public void addProperty(Property property) {
+		if (this.properties == null) {
+			this.properties = new ArrayList<>();
+		}
+		
+		if (!this.properties.contains(property)) {
+			this.properties.add(property);
+		}
 		
 	}
 
-	public String getLoanNumber() {
-		return loanNumber;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((loanNumber == null) ? 0 : loanNumber.hashCode());
+		return result;
 	}
 
-	public void setLoanNumber(String loanNumber) {
-		this.loanNumber = loanNumber;
-	}
-
-	public String getDealName() {
-		return dealName;
-	}
-
-	public void setDealName(String dealName) {
-		this.dealName = dealName;
-	}
-
-	public ZonedDateTime getOriginationDate() {
-		return originationDate;
-	}
-
-	public void setOriginationDate(ZonedDateTime originationDate) {
-		this.originationDate = originationDate;
-	}
-
-	public ZonedDateTime getMaturityDate() {
-		return maturityDate;
-	}
-
-	public void setMaturityDate(ZonedDateTime maturityDate) {
-		this.maturityDate = maturityDate;
-	}
-
-	public ZonedDateTime getTradeDate() {
-		return tradeDate;
-	}
-
-	public void setTradeDate(ZonedDateTime tradeDate) {
-		this.tradeDate = tradeDate;
-	}
-
-	public BigDecimal getInitialAmount() {
-		return initialAmount;
-	}
-
-	public void setInitialAmount(BigDecimal initialAmount) {
-		this.initialAmount = initialAmount;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
-	public Sponsor getSponsor() {
-		return sponsor;
-	}
-
-	public void setSponsor(Sponsor sponsor) {
-		this.sponsor = sponsor;
-	}
-	
-	public Long getSponsorID() {
-		return sponsorID;
-	}
-
-	public void setSponsorID(Long sponsorID) {
-		this.sponsorID = sponsorID;
-	}
-
-	/*
-	public MSN getMsn() {
-		return msn;
-	}
-
-	public void setMsn(MSN msn) {
-		this.msn = msn;
-	}*/
-
-	/*
-	public Long getMsnId() {
-		return msnId;
-	}
-
-	public void setMsnId(Long msnId) {
-		this.msnId = msnId;
-	}*/
-
-	public LoanStatus getLoanStatus() {
-		return loanStatus;
-	}
-
-	public void setLoanStatus(LoanStatus loanStatus) {
-		this.loanStatus = loanStatus;
-	}
-
-	public PipelineStatus getPipelineStatus() {
-		return pipelineStatus;
-	}
-
-	public void setPipelineStatus(PipelineStatus pipelineStatus) {
-		this.pipelineStatus = pipelineStatus;
-	}
-
-	public BigDecimal getLtv() {
-		return ltv;
-	}
-
-	public void setLtv(BigDecimal ltv) {
-		this.ltv = ltv;
-	}
-
-	public BigDecimal getLoanRate() {
-		return loanRate;
-	}
-
-	public void setLoanRate(BigDecimal loanRate) {
-		this.loanRate = loanRate;
-	}
-
-	public String getMemoUrl() {
-		return memoUrl;
-	}
-
-	public void setMemoUrl(String memoUrl) {
-		this.memoUrl = memoUrl;
-	}
-
-	public List<Property> getProperties() {
-		return properties;
-	}
-
-	public void setProperties(List<Property> properties) {
-		this.properties = properties;
-	}
-
-	public MSN getMsn() {
-		return msn;
-	}
-
-	public void setMsn(MSN msn) {
-		this.msn = msn;
-	}
-
-	public BigDecimal getKdmRating() {
-		return kdmRating;
-	}
-
-	public void setKdmRating(BigDecimal kdmRating) {
-		this.kdmRating = kdmRating;
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Loan other = (Loan) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (loanNumber == null) {
+			if (other.loanNumber != null)
+				return false;
+		} else if (!loanNumber.equals(other.loanNumber))
+			return false;
+		return true;
 	}
 	
 }

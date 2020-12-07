@@ -37,8 +37,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.kdm.web.data.repository.LoanRepository;
-import com.kdm.web.data.repository.SponsorRepository;
+import com.kdm.web.data.repository.PropertyRepository;
 import com.kdm.web.model.Loan;
+import com.kdm.web.model.Property;
 import com.kdm.web.model.Sponsor;
 import com.kdm.web.util.error.ErrorResponse;
 
@@ -71,7 +72,7 @@ public class LoanController {
 	private LoanRepository loanRepository;
 	
 	@Autowired
-	private SponsorRepository sponsorRepository;
+	private PropertyRepository propertyRepository;
 	
 	@Operation(
 		summary = "Get list of loans according to search criteria and pagination options", 
@@ -140,7 +141,7 @@ public class LoanController {
 	public ResponseEntity<Loan> getLoan(
 			@PathVariable("loanId") Long loanId) throws Exception {
 
-		Loan loan = tryGetEntiy(Loan.class, loanId);
+		Loan loan = tryGetEntity(Loan.class, loanId);
 		
 		return new ResponseEntity<Loan>(loan, OK);
 	}
@@ -179,7 +180,7 @@ public class LoanController {
 		}
 		
 		// do this just to make sure it exist
-		Loan prevloan = tryGetEntiy(Loan.class, loanId);
+		Loan prevloan = tryGetEntity(Loan.class, loanId);
 		
 		// merge will update the entity give by its id
 		Loan updatedLoan = entityManager.merge(loan);
@@ -196,9 +197,9 @@ public class LoanController {
 	@PutMapping(path = "/{loanId}/sponsor/{sponsorId}")
 	@Transactional
 	public ResponseEntity<Void> assignSponsor(@PathVariable("loanId") Long loanId, @PathVariable("sponsorId") Long sponsorId) {
-		Loan loan = tryGetEntiy(Loan.class, loanId);
+		Loan loan = tryGetEntity(Loan.class, loanId);
 		
-		Sponsor sponsor = tryGetEntiy(Sponsor.class, sponsorId);
+		Sponsor sponsor = tryGetEntity(Sponsor.class, sponsorId);
 		
 		if ((loan.getSponsor() != null) && (loan.getSponsor().getId().equals(sponsor.getId()))) {
 			// nothing changed
@@ -206,6 +207,30 @@ public class LoanController {
 		}
 		loan.setSponsor(sponsor);
 		loanRepository.saveAndFlush(loan);
+		
+		return new ResponseEntity<Void>(OK);
+	}
+	
+	@Operation(summary = "add a property to a loan", tags = "loan", responses = {
+			@ApiResponse(responseCode = "200", description = "property added"),
+			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+			@ApiResponse(responseCode = "404", description = "loan or property not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
+	)
+	@ResponseBody
+	@PutMapping(path = "/{loanId}/property/{propertyId}")
+	@Transactional
+	public ResponseEntity<Void> addProperty(@PathVariable("loanId") Long loanId, @PathVariable("propertyId") Long propertyId) {
+		Loan loan = tryGetEntity(Loan.class, loanId);
+		
+		Property property = tryGetEntity(Property.class, propertyId);
+		
+		if ((property.getLoan() != null) && (property.getLoan().equals(loan))) {
+			// nothing changed
+			return new ResponseEntity<Void>(OK);
+		}
+				
+		property.setLoan(loan);
+		propertyRepository.saveAndFlush(property);
 		
 		return new ResponseEntity<Void>(OK);
 	}
@@ -218,14 +243,14 @@ public class LoanController {
 	@ResponseBody
 	@DeleteMapping(path = "/{loanId}")
 	public ResponseEntity<Void> deleteLoan(@PathVariable("loanId") Long loanId) {
-		Loan loan = tryGetEntiy(Loan.class, loanId);
+		Loan loan = tryGetEntity(Loan.class, loanId);
 		
 		loanRepository.delete(loan);
 		
 		return new ResponseEntity<Void>(OK);
 	}
 	
-	private <T> T tryGetEntiy(Class<T> clazz, Object primaryKey) {
+	private <T> T tryGetEntity(Class<T> clazz, Object primaryKey) {
 		if (ObjectUtils.isEmpty(primaryKey)) {
 			throw new ResponseStatusException(BAD_REQUEST,
 					messageSource.getMessage("controller.bad_request", Arrays.array("id is invalid"), Locale.US));
