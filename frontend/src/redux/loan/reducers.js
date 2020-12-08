@@ -100,7 +100,7 @@ const Loan = (state: State = {}, action: Action) => {
       return { 
         ...state,
         loan: action.payload,
-        };
+      };
 
     default:
       return state;

@@ -114,49 +114,11 @@ function* createLoan({ payload: { loan } }) {
 function* editLoan({ payload: { loan } }) {
   const options = {
     method: 'PUT',
-    body: loan,
+    body: JSON.stringify(loan),
     headers: { 'Content-Type': 'application/json' },
   };
 
-
-  // {
-  //   "sponsorID": 0,
-  //   "msnId": 0,
-  //   "id": 0,
-  //   "loanNumber": "string",
-  //   "dealName": "string",
-  //   "originationDate": "2020-12-03T02:04:14.066Z",
-  //   "maturityDate": "2020-12-03T02:04:14.066Z",
-  //   "tradeDate": "2020-12-03T02:04:14.066Z",
-  //   "loanStatus": "Performing",
-  //   "initialAmount": 0,
-  //   "pipelineStatus": "Closed",
-  //   "ltv": 0,
-  //   "loanRate": 0,
-  //   "memoUrl": "string"
-  // }
- 
- 
   console.log('saga loan',loan)
-  //JSON parse error: Cannot deserialize instance of `com.kdm.web.model.Loan` out of START_ARRAY token;
-  // {
-  //   KDMRating: "A+"
-  //   dealName: "Test"
-  //   id: 1
-  //   initialAmount: 1059000
-  //   loanNumber: "KDM2017-L001"
-  //   loanRate: 5.25
-  //   loanStatus: "Performing"
-  //   ltv: 53.7
-  //   maturityDate: "2027-05-01T00:00:01Z"
-  //   memoUrl: null
-  //   msnId: 1
-  //   originationDate: null
-  //   pipelineStatus: "Closed"
-  //   properties: (2) [{…}, {…}]
-  //   sponsorID: null
-  //   tradeDate: null
-  // }
 
   try {
     const response = yield call(fetchJSON, `${SERVER_URL}/loan/${loan.id}`, options);

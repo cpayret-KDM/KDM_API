@@ -4,6 +4,7 @@ import authSaga from './auth/saga';
 import layoutSaga from './layout/saga';
 import appMenuSaga from './appMenu/saga';
 import loanSaga from './loan/saga';
+import propertySaga from './property/saga';
 
 export default function* rootSaga(getState: any): any {
   yield all([
@@ -12,5 +13,6 @@ export default function* rootSaga(getState: any): any {
     appMenuSaga(),
 
     loanSaga(),
+    propertySaga(),
   ]);
 }

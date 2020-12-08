@@ -1,27 +1,52 @@
-import React from 'react';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from 'reactstrap';
+
+import { deleteProperty } from '../../redux/actions';
 
 const ModalDeleteProperty = (props) => {
-  const { isOpen, toggle, property, deleteProperty, deletePropertySuccess, className } = props;
+  const { isOpen, toggle, propertyId, loanId } = props;
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (props.deletePropertySuccess) {
+      setIsSaving(false);
+      toggle();
+    }
+  }, [props.deletePropertySuccess]);
 
   const handleDeleteProperty = () => {
-    
+    setIsSaving(true);
+    props.deleteProperty(propertyId, loanId);
   }
 
   return (
-    <Modal isOpen={isOpen} toggle={toggle} className={className}>
+    <Modal isOpen={isOpen} toggle={toggle}>
       <ModalHeader toggle={toggle}>Delete Property</ModalHeader>
       <ModalBody>
         Are you sure you wish to delete this property? Changes made cannot be undone.
       </ModalBody>
       <ModalFooter>
-        <Button color="secondary" onClick={toggle} className="mr-2">Cancel</Button>
-        <Button color="primary" onClick={handleDeleteProperty}>
-          Delete Property
+        <Button color="secondary" onClick={toggle} className="mr-2" disabled={isSaving}>Cancel</Button>
+        <Button color="danger" onClick={handleDeleteProperty} disabled={isSaving}>
+          {isSaving 
+            ? (<Spinner size="sm" color="primary" />) 
+            : (<>Delete</>)
+          }
         </Button>
       </ModalFooter>
     </Modal>
   );
 }
 
-export default ModalDeleteProperty;
+const mapStateToProps = state => {
+  const { deletePropertySuccess } = state.Property;
+  return { deletePropertySuccess };
+};
+
+export default connect(
+  mapStateToProps,
+  { 
+    deleteProperty,
+  }
+)(ModalDeleteProperty);

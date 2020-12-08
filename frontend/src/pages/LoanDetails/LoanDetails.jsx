@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import { Row, Col, Label, Button, InputGroupAddon, Card, CardBody, Spinner } from 'reactstrap';
 import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 
@@ -8,15 +9,16 @@ import PropertyMap from './PropertyMap';
 import ModalProperty from './ModalProperty';
 import ModalDeleteProperty from './ModalDeleteProperty';
 import HyperDatepicker from '../../components/Datepicker';
-import { getLoan, createLoan, editLoan, deleteLoan } from '../../redux/actions';
-
-
+import { 
+  getLoan, createLoan, editLoan, deleteLoan,
+  createProperty, editProperty, deleteProperty,
+} from '../../redux/actions';
 
 
 const LoanDetails = (props) => {
-  const { mode, loan = {} } = props;
-  const creating = (mode === 'create');
-  const editing = (mode === 'edit');
+  const { loan = {} } = props;
+  const creating = (props.mode === 'create');
+  const editing = (props.mode === 'edit');
   const viewing = !editing && !creating;
 
   const { id } = props?.match?.params;
@@ -24,10 +26,12 @@ const LoanDetails = (props) => {
     if (!creating) {      
       props.getLoan(id);
     }
-  }, [mode]);
+  }, [props.mode]);
 
-  const [showPropertyModal, setShowPropertyModal] = useState(0);
-  const [showDeletePropertyModal, setShowDeletePropertyModal] = useState(0);
+  const [property, setProperty] = useState({});
+  const [propertyMode, setPropertyMode] = useState('create');
+  const [showPropertyModal, setShowPropertyModal] = useState(false);
+  const [showDeletePropertyModal, setShowDeletePropertyModal] = useState(false);
 
   const breadcrumb = ((mode) => {
     switch (mode) {
@@ -38,7 +42,7 @@ const LoanDetails = (props) => {
       default:
         return { label: 'Loan Details', path: `/loans/${id}` };
     }
-  })(mode);
+  })(props.mode);
 
   const submitLoan = (e, errors, values) => {
     e.preventDefault();
@@ -58,26 +62,33 @@ const LoanDetails = (props) => {
     }
   }
 
-  const addNewProperty = () => {
-    console.log('add new property')
-  }
-
-  const editProperty = (propertyId) => {
-    console.log('edit property')
-  }
-
-  const deleteProperty = (propertyId) => {
-    console.log('delete property')
+  const handleAddNewProperty = () => {
+    setProperty({});
+    setPropertyMode('create');
     setShowPropertyModal(true);
   }
 
+  const handleEditProperty = (property) => {
+    setProperty({...property});
+    setPropertyMode('edit');
+    setShowPropertyModal(true);
+  }
+
+  const handleDeleteProperty = (property) => {
+    setProperty({...property});
+    setShowDeletePropertyModal(true);
+  }
+
   const toggleDeletePropertyModal = () => {
+    console.log('asdf')
     setShowDeletePropertyModal(!showDeletePropertyModal);
   }
 
   const toggleShowPropertyModal = () => {
     setShowPropertyModal(!showPropertyModal);
   }
+
+  console.log(loan)
 
   return (
     <>
@@ -95,7 +106,7 @@ const LoanDetails = (props) => {
             <div className="text-center"><Spinner size="lg" color="primary" /></div>
           ) : (
             <AvForm onSubmit={submitLoan}>
-              <LoanActionButtons creating={creating} editing={editing} viewing={viewing} />
+              <LoanActionButtons creating={creating} editing={editing} viewing={viewing} loanId={loan.id} />
               <Card>
                 <CardBody>
                   <h4>Details</h4>
@@ -229,7 +240,7 @@ const LoanDetails = (props) => {
                   <div className="d-flex justify-content-between">
                     <h4>Properties</h4>
                     <div className="">
-                      <Button className="btn btn-secondary" onClick={() => addNewProperty()}>Add New Property</Button>
+                      <Button className="btn btn-secondary" onClick={() => handleAddNewProperty()}>Add New Property</Button>
                     </div>
                   </div>
 
@@ -239,13 +250,15 @@ const LoanDetails = (props) => {
                         <Card>
                           <CardBody>
                             <p>
+                              {property.name && (<h5>{property.name}</h5>)}
                               <strong>{property.address.street1}</strong><br />
                               {property.address.street2 && (<>{property.address.street2}<br /></>)}
-                              {property.address.city}, <span className="text-uppercase">{property.address.state}</span> {property.address.zip}
+                              {property.address.city}, <span className="text-uppercase">{property.address.state}</span> {property.address.zip}<br />
+                              <i>{property.type}</i>
                             </p>
                             <p className="mb-0">
-                              <Button className="btn btn-secondary mr-2" onClick={() => editProperty(property.id)}>Edit</Button>
-                              <Button className="btn btn-danger" onClick={() => deleteProperty(property.id)}>Delete</Button>
+                              <Button className="btn btn-secondary mr-2" onClick={() => handleEditProperty(property)}>Edit</Button>
+                              <Button className="btn btn-danger" onClick={() => handleDeleteProperty(property.id)}>Delete</Button>
                             </p>
                           </CardBody>
                         </Card>
@@ -263,24 +276,42 @@ const LoanDetails = (props) => {
                 </CardBody>
               </Card>
 
-              <LoanActionButtons creating={creating} editing={editing} viewing={viewing} />
+              <LoanActionButtons creating={creating} editing={editing} viewing={viewing} loanId={loan.id} />
             </AvForm>
           )}
         </Col>
       </Row>
 
-      <ModalProperty isOpen={showPropertyModal} toggle={toggleShowPropertyModal} />
-      <ModalDeleteProperty isOpen={showDeletePropertyModal} toggle={toggleDeletePropertyModal} />
+      <ModalProperty 
+        isOpen={showPropertyModal} 
+        toggle={toggleShowPropertyModal}
+        mode={propertyMode}
+        property={property}
+        loanId={loan?.id}
+      />
+      <ModalDeleteProperty 
+        isOpen={showDeletePropertyModal} 
+        toggle={toggleDeletePropertyModal}
+        propertyId={property.id}
+        loanId={loan?.id}
+      />
     </>
   );
 };
 
-const LoanActionButtons = ({ creating, editing, viewing }) => {
+const LoanActionButtons = ({ creating, editing, viewing, loanId }) => {
+  const handleEditLoan = () => {
+    window.location = `/loans/${loanId}/edit`;
+  }
+  const handleCancel = () => {
+    window.location = `/loans/${loanId}`;
+  }
+
   return (
     <div className="d-flex justify-content-end mb-3">
-      {!viewing && (
+      {!viewing ? (
         <>
-          <Button color="secondary" type="cancel" className="mr-2">Cancel</Button>
+          <Button color="secondary" className="mr-2" onClick={(e) => handleCancel(loanId)}>Cancel</Button>
           <Button color="primary" type="submit">
             {editing && (
               <>Save Changes</>
@@ -289,6 +320,10 @@ const LoanActionButtons = ({ creating, editing, viewing }) => {
               <>Create New Loan</>
             )}
           </Button>
+        </>
+      ) : (
+        <>
+          <Button color="primary" onClick={() => handleEditLoan(loanId)}>Edit Loan</Button>
         </>
       )}
     </div>

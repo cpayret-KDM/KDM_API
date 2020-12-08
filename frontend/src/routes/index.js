@@ -86,7 +86,7 @@ const loanRoutes = {
       name: 'Loan Details',
       component: LoanDetails,
       route: PrivateRoute,
-      roles: ['admin'],
+      roles: ['user','admin'],
       exact: true,
     },
   ],

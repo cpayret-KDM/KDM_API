@@ -23,6 +23,20 @@ a {
     background-color: darken($darkBlue, 5%);
     border-color: darken($darkBlue, 5%);
   }
+
+  &:disabled {
+    background-color: lighten($darkBlue, 5%);
+    border-color: lighten($darkBlue, 5%);
+
+    .spinner-border.text-primary {
+      color: #fff !important;
+    }
+  }
+}
+
+.btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active, .show > .btn-primary.dropdown-toggle {
+  background-color: darken($darkBlue, 5%);
+  border-color: darken($darkBlue, 5%);
 }
 
 .btn-secondary {
