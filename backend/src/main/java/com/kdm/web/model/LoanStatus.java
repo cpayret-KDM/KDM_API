@@ -1,9 +1,12 @@
 package com.kdm.web.model;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 public enum LoanStatus {
-	PERFORMING("Performing");
+	PERFORMING("Performing"),
+	LATE_30_DAYS("30 Days Late"),
+	LATE_60_DAYS("60 Days Late"),
+	LATE_90_DAYS("90 Days Late"),
+	DEFAULT("Default"),
+	FORECLOSURE("Foreclosure");
 	
 	private final String label;
 	
@@ -11,7 +14,7 @@ public enum LoanStatus {
 		this.label = label;
 	}
 	
-	@JsonValue
+	//@JsonValue
 	public String getLabel() {
 		return this.label;
 	}

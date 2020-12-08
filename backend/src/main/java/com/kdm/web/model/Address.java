@@ -7,12 +7,21 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name="Address", schema = "public")
+@JsonRootName("address")
+@Getter @Setter @NoArgsConstructor @EqualsAndHashCode
 public class Address {
 	
 	@JsonProperty(value="id")
@@ -35,64 +44,23 @@ public class Address {
 	@JsonProperty
 	@Column(name = "city")
 	@Size(max = 256)
+	@NotBlank
 	private String city;
 	
 	@JsonProperty
 	@Column(name = "state")
 	@Size(max = 256)
+	@NotBlank
 	private String state;
 	
 	@JsonProperty
 	@Column(name = "zip")
 	@Size(max = 256)
 	private String zip;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getStreet1() {
-		return street1;
-	}
-
-	public void setStreet1(String street1) {
-		this.street1 = street1;
-	}
-
-	public String getStreet2() {
-		return street2;
-	}
-
-	public void setStreet2(String street2) {
-		this.street2 = street2;
-	}
-
-	public String getCity() {
-		return city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public String getState() {
-		return state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
-
-	public String getZip() {
-		return zip;
-	}
-
-	public void setZip(String zip) {
-		this.zip = zip;
-	}
 	
+	@JsonProperty
+	@Column(name = "name")
+	@Size(max = 256)
+	private String name;	
+
 }

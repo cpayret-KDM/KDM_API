@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -62,6 +63,15 @@ public class RestResponseEntityExceptionHandler  {
 		ErrorResponse response = buildResponse(ex.getStatus(), request.getDescription(false), ex.getReason());
 		
 		return new ResponseEntity<>(response, ex.getStatus());
+	}
+	
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	public ResponseEntity<ErrorResponse> handleMessageNotReadableException(HttpMessageNotReadableException ex, WebRequest request) {
+		logger.debug(String.format("Exception: %s", ex.getMessage()), ex);
+		
+		ErrorResponse response = buildResponse(HttpStatus.BAD_REQUEST, request.getDescription(false), ex.getMostSpecificCause().getMessage());
+		
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(Exception.class)

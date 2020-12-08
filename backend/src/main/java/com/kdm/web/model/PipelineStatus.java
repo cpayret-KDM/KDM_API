@@ -1,10 +1,12 @@
 package com.kdm.web.model;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 public enum PipelineStatus {
-	CLOSED("Closed"),
-	OPEN("Open");
+	
+	NEW("New"),
+	IN_PROGRESS("In Progress"),
+	FUNDED("Funded"),
+	CLOSED("Closed");
+	
 	
 	private final String label;
 	
@@ -12,7 +14,7 @@ public enum PipelineStatus {
 		this.label = label;
 	}
 	
-	@JsonValue
+	//@JsonValue
 	public String getLabel() {
 		return this.label;
 	}
