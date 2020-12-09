@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -128,6 +129,20 @@ public class LoanController {
 			@PageableDefault(size = 25) @Parameter(hidden = true) Pageable pageable) {
 		
 		Page<Loan> page = loanRepository.findAll(loanSpec, pageable); 
+		return new ResponseEntity<Page<Loan>>(page, OK); 
+
+	}
+	
+	@Operation(summary = "Get loans with anniversay within the next given days", tags = "loan", responses = {
+	@ApiResponse(responseCode = "200", description = "loan information"),
+	@ApiResponse(responseCode = "404", description = "loan not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
+	@ResponseBody
+	@GetMapping(path = "/anniversary")
+	public ResponseEntity<Page<Loan>> getLoansInAnniversary(
+			@RequestParam(name="days", defaultValue="30") int days,
+			@PageableDefault(size = 25) @Parameter(hidden = true) Pageable pageable) {
+		
+		Page<Loan> page = loanRepository.findAniversaryNextDays(days, pageable); 
 		return new ResponseEntity<Page<Loan>>(page, OK); 
 
 	}
