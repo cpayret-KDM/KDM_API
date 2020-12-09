@@ -7,6 +7,7 @@ import DatePicker from 'react-datepicker';
 type DatepickerInputProps = {
     onClick?: PropTypes.func,
     value?: string,
+    disabled?: Boolean,
 };
 class DatepickerInput extends Component<DatepickerInputProps> {
     constructor(props) {
@@ -35,6 +36,7 @@ class DatepickerInput extends Component<DatepickerInputProps> {
 type DatepickerInputWithAddonProps = {
     onClick?: PropTypes.func,
     value?: string,
+    disabled?: Boolean,
 };
 
 class DatepickerInputWithAddon extends Component<DatepickerInputWithAddonProps> {
@@ -89,6 +91,7 @@ class HyperDatepicker extends Component<HyperDatepickerProps, HyperDatepickerSta
         return (
             <DatePicker
                 {...this.props}
+                disabled={this.props.disabled}
                 customInput={input}
                 selected={this.state.startDate}
                 onChange={this.handleDateSelectChange}

@@ -4,6 +4,9 @@ import { fetchJSON } from '../../helpers/api';
 import {
   GET_LOANS,
   GET_LOAN,
+  CREATE_LOAN,
+  EDIT_LOAN,
+  DELETE_LOAN,
 } from './constants';
 
 import {
@@ -11,6 +14,12 @@ import {
   getLoansFailure,
   getLoanSuccess,
   getLoanFailure,
+  createLoanSuccess,
+  createLoanFailure,
+  editLoanSuccess,
+  editLoanFailure,
+  deleteLoanSuccess,
+  deleteLoanFailure,
 } from './actions';
 
 const SERVER_URL = process.env.REACT_APP_KDM_API_ENDPOINT;
@@ -18,7 +27,6 @@ const SERVER_URL = process.env.REACT_APP_KDM_API_ENDPOINT;
 // Get Loans
 function* getLoans({ payload: { loanNumber, size, page, sort } }) {
   const options = {
-    //body: JSON.stringify({ loanNumber }),
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   };
@@ -49,7 +57,7 @@ function* getLoans({ payload: { loanNumber, size, page, sort } }) {
   }
 }
 
-// Get Loans
+// Get Loan
 function* getLoan({ payload: { loanId } }) {
   const options = {
     method: 'GET',
@@ -75,6 +83,88 @@ function* getLoan({ payload: { loanId } }) {
   }
 }
 
+// Create Loan
+function* createLoan({ payload: { loan } }) {
+  const options = {
+    method: 'POST',
+    body: JSON.stringify({ loan }),
+    headers: { 'Content-Type': 'application/json' },
+  };
+
+  try {
+    const response = yield call(fetchJSON, `${SERVER_URL}/loan`, options);
+    yield put(createLoanSuccess(response));
+  } catch (error) {
+    let message;
+    switch (error.status) {
+      case 500:
+        message = 'Internal Server Error';
+        break;
+      case 401:
+        message = 'Invalid credentials';
+        break;
+      default:
+        message = error;
+      }
+      yield put(createLoanFailure(message));
+  }
+}
+
+// Edit Loan
+function* editLoan({ payload: { loan } }) {
+  const options = {
+    method: 'PUT',
+    body: JSON.stringify(loan),
+    headers: { 'Content-Type': 'application/json' },
+  };
+
+  console.log('saga loan',loan)
+
+  try {
+    const response = yield call(fetchJSON, `${SERVER_URL}/loan/${loan.id}`, options);
+    yield put(editLoanSuccess(response));
+  } catch (error) {
+    let message;
+    switch (error.status) {
+      case 500:
+        message = 'Internal Server Error';
+        break;
+      case 401:
+        message = 'Invalid credentials';
+        break;
+      default:
+        message = error;
+      }
+      yield put(editLoanFailure(message));
+  }
+}
+
+// Delete Loan
+function* deleteLoan({ payload: { loanId } }) {
+  const options = {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+  };
+
+  try {
+    const response = yield call(fetchJSON, `${SERVER_URL}/loan/${loanId}`, options);
+    yield put(deleteLoanSuccess(response));
+  } catch (error) {
+    let message;
+    switch (error.status) {
+      case 500:
+        message = 'Internal Server Error';
+        break;
+      case 401:
+        message = 'Invalid credentials';
+        break;
+      default:
+        message = error;
+      }
+      yield put(deleteLoanFailure(message));
+  }
+}
+
 
 /**
  * Watchers
@@ -87,20 +177,25 @@ export function* watchGetLoan(): any {
   yield takeEvery(GET_LOAN, getLoan);
 }
 
-// export function* watchGetLoansSuccess(): any {
-//   yield takeEvery(GET_LOANS_SUCCESS, getLoansSuccess);
-// }
+export function* watchCreateLoan(): any {
+  yield takeEvery(CREATE_LOAN, createLoan);
+}
 
-// export function* watchGetLoansFailure(): any {
-//   yield takeEvery(GET_LOANS_FAILURE, getLoansFailure);
-// }
+export function* watchEditLoan(): any {
+  yield takeEvery(EDIT_LOAN, editLoan);
+}
+
+export function* watchDeleteLoan(): any {
+  yield takeEvery(DELETE_LOAN, deleteLoan);
+}
 
 function* LoanSaga(): any {
   yield all([
     fork(watchGetLoans),
     fork(watchGetLoan),
-    // fork(watchGetLoansSuccess),
-    // fork(watchGetLoansFailure),
+    fork(watchCreateLoan),
+    fork(watchEditLoan),
+    fork(watchDeleteLoan),
   ]);
 }
 

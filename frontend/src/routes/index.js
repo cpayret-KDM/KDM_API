@@ -64,6 +64,22 @@ const loanRoutes = {
       component: LoanDashboard,
       route: PrivateRoute,
       roles: ['user','admin'],
+      exact: true,
+    },
+    {
+      path: '/loans/create',
+      name: 'Create Loan',
+      component: (props) => <LoanDetails {...props} mode="create" />,
+      route: PrivateRoute,
+      roles: ['user','admin'],
+      exact: true,
+    },
+    {
+      path: '/loans/:id/edit',
+      name: 'Edit Loan',
+      component: (props) => <LoanDetails {...props} mode="edit" />,
+      route: PrivateRoute,
+      exact: true,
     },
     {
       path: '/loans/:id',
@@ -71,13 +87,7 @@ const loanRoutes = {
       component: LoanDetails,
       route: PrivateRoute,
       roles: ['user','admin'],
-    },
-    {
-      path: '/loans/edit',
-      name: 'Edit Loan',
-      component: LoanDashboard,
-      route: PrivateRoute,
-      roles: ['admin'],
+      exact: true,
     },
   ],
 };
