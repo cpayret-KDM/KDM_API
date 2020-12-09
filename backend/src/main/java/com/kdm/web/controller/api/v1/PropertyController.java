@@ -139,7 +139,7 @@ public class PropertyController {
 			@ApiResponse(responseCode = "200", description = "property created"),
 			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
 	@ResponseBody
-	@PostMapping(path = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = {"/",""}, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Property> saveProperty(@RequestBody @Valid Property property, BindingResult bindingResult) throws BindException {
 		if (bindingResult.hasErrors()) {
 			throw new BindException(bindingResult);

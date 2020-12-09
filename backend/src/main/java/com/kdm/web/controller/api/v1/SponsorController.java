@@ -167,7 +167,7 @@ public class SponsorController {
 			@ApiResponse(responseCode = "200", description = "sponsor created"),
 			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
 	@ResponseBody
-	@PostMapping(path = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = {"/",""}, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Sponsor> saveSponsor(@RequestBody @Valid Sponsor sponsor, BindingResult bindingResult) throws BindException {
 		if (bindingResult.hasErrors()) {
 			throw new BindException(bindingResult);
