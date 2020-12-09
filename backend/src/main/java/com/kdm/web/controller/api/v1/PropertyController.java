@@ -37,6 +37,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.kdm.web.data.repository.PropertyRepository;
 import com.kdm.web.model.Property;
+import com.kdm.web.service.PropertyService;
 import com.kdm.web.util.error.ErrorResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -59,6 +60,9 @@ public class PropertyController {
 	
 	@Autowired
 	private PropertyRepository propertyRepository;
+	
+	@Autowired
+	private PropertyService propertyService;
 	
 	@Operation(
 		summary = "Get list of proeprties according to search criteria and pagination options", 
@@ -141,7 +145,7 @@ public class PropertyController {
 			throw new BindException(bindingResult);
 		}
 
-		Property newProperty = propertyRepository.saveAndFlush(property);
+		Property newProperty = propertyService.createProperty(property);
 		
 		return new ResponseEntity<Property>(newProperty, OK);
 	}
@@ -171,7 +175,7 @@ public class PropertyController {
 					messageSource.getMessage("controller.entity_no_exists", Arrays.array(propertyId), Locale.US));
 		}
 		
-		Property updatedProperty = entityManager.merge(property);
+		Property updatedProperty = propertyService.updateProperty(property);
 		
 		return new ResponseEntity<Property>(updatedProperty, OK);
 	}

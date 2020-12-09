@@ -1,7 +1,5 @@
 package com.kdm.web.model;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 public enum PropertyType {
 	
 	MULTI_FAMILY("Multi-Family"),
@@ -18,7 +16,7 @@ public enum PropertyType {
 		this.label = label;
 	}
 	
-	@JsonValue
+	//@JsonValue
 	public String getLabel() {
 		return this.label;
 	}

@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.Valid;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -38,6 +39,7 @@ public class Property {
 	@JsonProperty
 	@OneToOne
     @JoinColumn(name = "addressID", referencedColumnName = "addressID", nullable = true)
+	@Valid
 	private Address address;
 	
 	@JsonIgnore
