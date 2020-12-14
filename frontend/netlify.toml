@@ -3,3 +3,8 @@
 
 [context.deploy-preview]
     environment = { REACT_APP_REACT_APP_KDM_API_ENDPOINT = "https://kdm-staging.codingscape.com/api/v1", CI = "false" }
+
+[[redirects]]
+  from = "/*"
+  to = "/"
+  status = 200
