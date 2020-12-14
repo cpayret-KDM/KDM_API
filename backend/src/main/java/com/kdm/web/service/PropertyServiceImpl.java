@@ -1,21 +1,29 @@
 package com.kdm.web.service;
 
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import com.kdm.web.data.repository.AddressRepository;
+import com.kdm.web.data.repository.LoanRepository;
 import com.kdm.web.data.repository.PropertyRepository;
 import com.kdm.web.model.Address;
+import com.kdm.web.model.Loan;
 import com.kdm.web.model.Property;
 
 @Service
 public class PropertyServiceImpl implements PropertyService {
+	
+	@Autowired
+	private MessageSource messageSource;
 	
 	@Autowired
 	EntityManager entityManager;
@@ -25,12 +33,15 @@ public class PropertyServiceImpl implements PropertyService {
 	
 	@Autowired
 	AddressRepository addressRepository; 
+	
+	@Autowired
+	LoanRepository loanRepository;
 
 	@Override
 	@Transactional
 	public Property createProperty(Property property) {
 		if (property == null) {
-			return null;
+			throw new IllegalArgumentException(messageSource.getMessage("common.invalid_parameter", Arrays.array("property object is null"), Locale.US));
 		}
 	
 		// lets figure if the address already exists
@@ -40,8 +51,18 @@ public class PropertyServiceImpl implements PropertyService {
 		}
 		
 		property.setAddressID(address.get().getId());
-		return propertyRepository.saveAndFlush(property);
-
+		Property savedProperty = propertyRepository.save(property); 
+			
+		// link the property to a loan
+		if (property.getLoanId() != null) {
+			Optional<Loan> loan = loanRepository.getLoanById(property.getLoanId());
+			if (loan.isPresent()) {
+				property.setLoan(loan.get());
+				propertyRepository.save(property);
+			}
+		}
+		
+		return savedProperty; 
 	}
 
 	/**
@@ -94,6 +115,16 @@ public class PropertyServiceImpl implements PropertyService {
 		}
 		
 		property.setAddressID(address.get().getId());
+		
+		// link the property to a loan
+		if (property.getLoanId() != null) {
+			Optional<Loan> loan = loanRepository.getLoanById(property.getLoanId());
+			if (loan.isPresent()) {
+				property.setLoan(loan.get());
+				//propertyRepository.save(property);
+			}
+		}
+				
 		return entityManager.merge(property);
 
 	}
