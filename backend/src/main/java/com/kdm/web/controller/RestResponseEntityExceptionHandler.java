@@ -65,6 +65,15 @@ public class RestResponseEntityExceptionHandler  {
 		return new ResponseEntity<>(response, ex.getStatus());
 	}
 	
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request) {
+		logger.debug(String.format("Exception: %s", ex.getMessage()), ex);
+		
+		ErrorResponse response = buildResponse(HttpStatus.BAD_REQUEST, request.getDescription(false), ex.getMessage());
+		
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
+	
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<ErrorResponse> handleMessageNotReadableException(HttpMessageNotReadableException ex, WebRequest request) {
 		logger.debug(String.format("Exception: %s", ex.getMessage()), ex);
