@@ -4,27 +4,42 @@ import { Row, Col} from 'reactstrap';
 
 import PageTitle from '../../components/PageTitle';
 import LoansTable from './LoansTable';
-import { getLoans } from '../../redux/actions';
+import { getLoans, get60DayLoans } from '../../redux/actions';
 
 const LoanDashboard = (props) => {
 
   useEffect(() => {
-    props.getLoans();
-  }, []);
+    if (report === 'list') {
+      props.getLoans();
+    }
+    else if (report === '60-day') {
+      props.get60DayLoans();
+    }
+    
+  }, [report]);
 
-  const { loans } = props;
+  const breadcrumb = ((report) => {
+    switch (report) {
+      case 'list':
+        return { label: 'Loans', path: '/loans/list' };
+      case '60-day':
+        return { label: '60 Day Loan Report', path: '/loans/60-day' };
+    }
+  })(props.report);
+
+  const { loans, report } = props;
   return (
     <>
       <PageTitle
         breadCrumbItems={[
-          { label: 'Loans', path: '/loans/list' },
+          {...breadcrumb},
         ]}
-        title={'Loans'}
+        title="Dashboard"
       />
 
       <Row>
         <Col sm={12}>
-          <LoansTable loans={loans?.content} />
+          <LoansTable loans={loans?.content} report={report} />
         </Col>
       </Row>
     </>
@@ -38,6 +53,6 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { getLoans }
+  { getLoans, get60DayLoans }
 )(LoanDashboard);
 

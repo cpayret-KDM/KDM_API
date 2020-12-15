@@ -1,6 +1,3 @@
-
-
-
 .topnav {
   background: $darkBlue;
 }
@@ -47,6 +44,21 @@ a {
   background-color: $darkBlue !important;
 }
 
+.form-control.disabled {
+  border-color: #dee2e6;
+  background-color: #e9ecef;
+}
+
+// .input-group-prepend {
+//   .input-group-text {
+//     padding: 0 .4rem;
+//   }
+// }
+.react-datepicker-wrapper {
+  // width: 95.5%;
+  width: 100%;
+}
+
 .page-title-box .page-title {
   font-size: 20px;
 }
@@ -60,9 +72,7 @@ a {
   color: $darkBlue !important;
 }
 
-.react-datepicker-wrapper {
-  width: 95.5%;
-}
+
 
 @media (min-width: 992px) {
   body[data-layout="topnav"] .container-fluid, body[data-layout="topnav"] .container-sm, body[data-layout="topnav"] .container-md, body[data-layout="topnav"] .container-lg, body[data-layout="topnav"] .container-xl {

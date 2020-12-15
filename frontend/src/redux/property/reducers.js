@@ -18,56 +18,57 @@ const property = (state: State = {}, action: Action) => {
     case CREATE_PROPERTY:
       return {
         ...state,
-        property: null,
-        createPropertySuccess: false,
+        property: undefined,
+        added: false,
       };
     case CREATE_PROPERTY_SUCCESS:
       return { 
         ...state, 
         property: action.payload,
-        createPropertySuccess: true,
+        added: true,
       };
     case CREATE_PROPERTY_FAILURE:
       return { 
         ...state,
         property: action.payload,
-        createPropertySuccess: false,
+        added: false,
       };
 
     case EDIT_PROPERTY:
       return {
         ...state,
-        editPropertySuccess: false,
+        property: undefined,
+        edited: false,
       };
     case EDIT_PROPERTY_SUCCESS:
       return { 
         ...state, 
         property: action.payload,
-        editPropertySuccess: true,
+        edited: true,
       };
     case EDIT_PROPERTY_FAILURE:
       return { 
         ...state,
-        editPropertySuccess: false,
+        edited: false,
       };
 
     case DELETE_PROPERTY:
       return {
         ...state,
-        property: null,
-        deletePropertySuccess: false,
+        property: undefined,
+        deleted: false,
       };
     case DELETE_PROPERTY_SUCCESS:
       return { 
         ...state, 
         property: action.payload,
-        deletePropertySuccess: true,
+        deleted: true,
       };
     case DELETE_PROPERTY_FAILURE:
       return { 
         ...state,
         property: action.payload,
-        deletePropertySuccess: false,
+        deleted: false,
       };
 
     default:

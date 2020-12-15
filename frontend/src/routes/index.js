@@ -60,8 +60,16 @@ const loanRoutes = {
   children: [
     {
       path: '/loans/list',
-      name: 'Loans',
-      component: LoanDashboard,
+      name: 'Dashboard',
+      component: (props) => <LoanDashboard {...props} report="list" />,
+      route: PrivateRoute,
+      roles: ['user','admin'],
+      exact: true,
+    },
+    {
+      path: '/loans/60-day',
+      name: '60 Day Report',
+      component: (props) => <LoanDashboard {...props} report="60-day" />,
       route: PrivateRoute,
       roles: ['user','admin'],
       exact: true,

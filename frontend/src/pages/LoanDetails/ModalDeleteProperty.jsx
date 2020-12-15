@@ -9,11 +9,11 @@ const ModalDeleteProperty = (props) => {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (props.deletePropertySuccess) {
+    if (props.deleted) {
       setIsSaving(false);
       toggle();
     }
-  }, [props.deletePropertySuccess]);
+  }, [props.deleted]);
 
   const handleDeleteProperty = () => {
     setIsSaving(true);
@@ -40,8 +40,7 @@ const ModalDeleteProperty = (props) => {
 }
 
 const mapStateToProps = state => {
-  const { deletePropertySuccess } = state.Property;
-  return { deletePropertySuccess };
+  return state.Property;
 };
 
 export default connect(

@@ -9,6 +9,10 @@ const fetchJSON = (url, options = {}) => {
             if (!response.status === 200) {
                 throw response.json();
             }
+
+            const contentLength = response.headers.get('content-length');
+            if (contentLength && contentLength === "0") return Promise.resolve('');
+
             return response.json();
         })
         .then(json => {

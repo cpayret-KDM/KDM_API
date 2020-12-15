@@ -3,6 +3,7 @@ import { fetchJSON } from '../../helpers/api';
 
 import {
   GET_LOANS,
+  GET_60_DAY_LOANS,
   GET_LOAN,
   CREATE_LOAN,
   EDIT_LOAN,
@@ -12,6 +13,9 @@ import {
 import {
   getLoansSuccess,
   getLoansFailure,
+  get60DayLoansSuccess,
+  get60DayLoansFailure,
+  
   getLoanSuccess,
   getLoanFailure,
   createLoanSuccess,
@@ -54,6 +58,39 @@ function* getLoans({ payload: { loanNumber, size, page, sort } }) {
         message = error;
       }
       yield put(getLoansFailure(message));
+  }
+}
+
+// Get 60 Day Loans
+function* get60DayLoans({ payload: { loanNumber, size, page, sort } }) {
+  const options = {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  };
+  const params =  {
+    days: 60,
+    // loanNumber,
+    // size,
+    // page,
+    // sort,
+  };
+
+  try {
+    const response = yield call(fetchJSON, `${SERVER_URL}/loan/anniversary?days=60`, options);
+    yield put(get60DayLoansSuccess(response));
+  } catch (error) {
+    let message;
+    switch (error.status) {
+      case 500:
+        message = 'Internal Server Error';
+        break;
+      case 401:
+        message = 'Invalid credentials';
+        break;
+      default:
+        message = error;
+      }
+      yield put(get60DayLoansFailure(message));
   }
 }
 
@@ -140,14 +177,14 @@ function* editLoan({ payload: { loan } }) {
 }
 
 // Delete Loan
-function* deleteLoan({ payload: { loanId } }) {
+function* deleteLoan({ payload: { propertyId, loanId } }) {
   const options = {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
   };
 
   try {
-    const response = yield call(fetchJSON, `${SERVER_URL}/loan/${loanId}`, options);
+    const response = yield call(fetchJSON, `${SERVER_URL}/loan/${propertyId}`, options);
     yield put(deleteLoanSuccess(response));
   } catch (error) {
     let message;
@@ -173,6 +210,10 @@ export function* watchGetLoans(): any {
   yield takeEvery(GET_LOANS, getLoans);
 }
 
+export function* watchGet60DayLoans(): any {
+  yield takeEvery(GET_60_DAY_LOANS, get60DayLoans);
+}
+
 export function* watchGetLoan(): any {
   yield takeEvery(GET_LOAN, getLoan);
 }
@@ -192,6 +233,7 @@ export function* watchDeleteLoan(): any {
 function* LoanSaga(): any {
   yield all([
     fork(watchGetLoans),
+    fork(watchGet60DayLoans),
     fork(watchGetLoan),
     fork(watchCreateLoan),
     fork(watchEditLoan),
