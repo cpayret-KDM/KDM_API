@@ -37,7 +37,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.kdm.web.data.repository.PropertyRepository;
 import com.kdm.web.model.Property;
-import com.kdm.web.service.PropertyService;
+import com.kdm.web.service.LoanService;
 import com.kdm.web.util.error.ErrorResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -62,7 +62,7 @@ public class PropertyController {
 	private PropertyRepository propertyRepository;
 	
 	@Autowired
-	private PropertyService propertyService;
+	private LoanService loanService;
 	
 	@Operation(
 		summary = "Get list of proeprties according to search criteria and pagination options", 
@@ -145,7 +145,7 @@ public class PropertyController {
 			throw new BindException(bindingResult);
 		}
 
-		Property newProperty = propertyService.createProperty(property);
+		Property newProperty = loanService.createProperty(property);
 		
 		return new ResponseEntity<Property>(newProperty, OK);
 	}
@@ -175,7 +175,7 @@ public class PropertyController {
 					messageSource.getMessage("controller.entity_no_exists", Arrays.array(propertyId), Locale.US));
 		}
 		
-		Property updatedProperty = propertyService.updateProperty(property);
+		Property updatedProperty = loanService.updateProperty(property);
 		
 		return new ResponseEntity<Property>(updatedProperty, OK);
 	}

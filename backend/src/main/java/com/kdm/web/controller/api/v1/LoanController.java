@@ -40,8 +40,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.kdm.web.data.repository.LoanRepository;
 import com.kdm.web.data.repository.PropertyRepository;
 import com.kdm.web.model.Loan;
-import com.kdm.web.model.Property;
 import com.kdm.web.model.Sponsor;
+import com.kdm.web.service.LoanService;
 import com.kdm.web.util.error.ErrorResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -74,6 +74,9 @@ public class LoanController {
 	
 	@Autowired
 	private PropertyRepository propertyRepository;
+	
+	@Autowired
+	private LoanService loanService;
 	
 	@Operation(
 		summary = "Get list of loans according to search criteria and pagination options", 
@@ -203,29 +206,27 @@ public class LoanController {
 		return new ResponseEntity<Loan>(updatedLoan, OK);
 	}
 	
-	@Operation(summary = "assign a sponsor to a loan", tags = "loan", responses = {
+	@Operation(summary = "assign a sponsor to a loan, the sponsor is added to the database", tags = "loan", responses = {
 			@ApiResponse(responseCode = "200", description = "sponsor assigned"),
 			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
 			@ApiResponse(responseCode = "404", description = "loan or sponsor not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
 	)
 	@ResponseBody
-	@PutMapping(path = "/{loanId}/sponsor/{sponsorId}")
+	@PutMapping(path = "/{loanId}/sponsor/")
 	@Transactional
-	public ResponseEntity<Void> assignSponsor(@PathVariable("loanId") Long loanId, @PathVariable("sponsorId") Long sponsorId) {
+	public ResponseEntity<Sponsor> assignSponsor(@PathVariable("loanId") Long loanId, @RequestBody @Valid Sponsor sponsor, BindingResult bindingResult) throws BindException {
 		Loan loan = tryGetEntity(Loan.class, loanId);
 		
-		Sponsor sponsor = tryGetEntity(Sponsor.class, sponsorId);
-		
-		if ((loan.getSponsor() != null) && (loan.getSponsor().getId().equals(sponsor.getId()))) {
-			// nothing changed
-			return new ResponseEntity<Void>(OK);
+		if (bindingResult.hasErrors()) {
+			throw new BindException(bindingResult);
 		}
-		loan.setSponsor(sponsor);
-		loanRepository.saveAndFlush(loan);
 		
-		return new ResponseEntity<Void>(OK);
+		Sponsor newSponsor = loanService.createSponsor(loan, sponsor);
+		
+		return new ResponseEntity<Sponsor>(newSponsor, OK);
 	}
 	
+	/*
 	@Operation(summary = "add a property to a loan", tags = "loan", responses = {
 			@ApiResponse(responseCode = "200", description = "property added"),
 			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
@@ -248,7 +249,7 @@ public class LoanController {
 		propertyRepository.saveAndFlush(property);
 		
 		return new ResponseEntity<Void>(OK);
-	}
+	}*/
 	
 	@Operation(summary = "delete a loan", tags = "loan", responses = {
 			@ApiResponse(responseCode = "200", description = "loan deleted"),
