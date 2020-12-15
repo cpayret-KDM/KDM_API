@@ -1,22 +1,19 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
-import { Row, Col, Label, Button, InputGroupAddon, Card, CardBody, Spinner } from 'reactstrap';
+import { Row, Col, Label, Button, InputGroupAddon, InputGroupText, Card, CardBody, Spinner } from 'reactstrap';
 import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 
 import PageTitle from '../../components/PageTitle';
-import PropertyMap from './PropertyMap';
 import ModalProperty from './ModalProperty';
 import ModalDeleteProperty from './ModalDeleteProperty';
 import HyperDatepicker from '../../components/Datepicker';
-import { 
-  getLoan, createLoan, editLoan, deleteLoan,
-  createProperty, editProperty, deleteProperty,
-} from '../../redux/actions';
+import { getLoan, createLoan, editLoan, deleteLoan, clearLoan } from '../../redux/actions';
 
+import { LOAN_STATUS_MAP, PIPELINE_STATUS_MAP, PROPERTY_TYPE_MAP } from '../../helpers/utils';
 
 const LoanDetails = (props) => {
-  const { loan = {} } = props;
+  const { loan = {}, loaded } = props;
   const creating = (props.mode === 'create');
   const editing = (props.mode === 'edit');
   const viewing = !editing && !creating;
@@ -25,8 +22,10 @@ const LoanDetails = (props) => {
   useEffect(() => {
     if (!creating) {      
       props.getLoan(id);
+    } else {
+      props.clearLoan();
     }
-  }, [props.mode]);
+  }, [creating, id]);
 
   const [property, setProperty] = useState({});
   const [propertyMode, setPropertyMode] = useState('create');
@@ -36,11 +35,22 @@ const LoanDetails = (props) => {
   const breadcrumb = ((mode) => {
     switch (mode) {
       case 'create':
-        return { label: 'Create Loan', path: '/loans/create' };
+        return { label: 'Create New Loan', path: '/loans/create' };
       case 'edit':
         return { label: 'Edit Loan', path: `/loans/${id}/edit` };
       default:
         return { label: 'Loan Details', path: `/loans/${id}` };
+    }
+  })(props.mode);
+
+  const title = ((mode) => {
+    switch (mode) {
+      case 'create':
+        return 'Create New Loan';
+      case 'edit':
+        return 'Edit Loan';
+      default:
+        return 'Loan Details';
     }
   })(props.mode);
 
@@ -54,7 +64,6 @@ const LoanDetails = (props) => {
     };
 
     if (editing) {
-      console.log('loan',newLoan)
       props.editLoan(newLoan);
     }
     if (creating) {
@@ -80,15 +89,12 @@ const LoanDetails = (props) => {
   }
 
   const toggleDeletePropertyModal = () => {
-    console.log('asdf')
     setShowDeletePropertyModal(!showDeletePropertyModal);
   }
 
   const toggleShowPropertyModal = () => {
     setShowPropertyModal(!showPropertyModal);
   }
-
-  console.log(loan)
 
   return (
     <>
@@ -97,12 +103,12 @@ const LoanDetails = (props) => {
           { label: 'Loans', path: '/loans/list' },
           {...breadcrumb},
         ]}
-        title={'Loan Details'}
+        title={title}
       />
 
       <Row>
         <Col sm={12}>
-          {!loan ? (
+          {!loaded && !creating ? (
             <div className="text-center"><Spinner size="lg" color="primary" /></div>
           ) : (
             <AvForm onSubmit={submitLoan}>
@@ -142,10 +148,13 @@ const LoanDetails = (props) => {
                     </Col>
 
                     <Col sm={6}>
-                      <AvGroup className="position-relative">
-                        <Label for="KDMRating">KDM Rating *</Label>
-                        <AvInput name="KDMRating" id="KDMRating" value={loan.KDMRating} required disabled={viewing} />
-                        <AvFeedback tooltip>KDM Rating is required</AvFeedback>
+                    <AvGroup className="position-relative">
+                        <Label for="principalAmount">Principal Amount *</Label>
+                          <div className="input-group">
+                            <InputGroupAddon addonType="prepend">$</InputGroupAddon>
+                            <AvInput name="principalAmount" id="principalAmount" value={loan.principalAmount} disabled={viewing} />
+                            <AvFeedback tooltip>Principal Amount is required</AvFeedback>
+                          </div>
                       </AvGroup>
                     </Col>
                   </Row>
@@ -155,9 +164,11 @@ const LoanDetails = (props) => {
                       <AvGroup className="position-relative">
                         <Label for="originationDate">Origination Date *</Label>
                         <div className="input-group">
-                          <InputGroupAddon addonType="prepend">
-                            a
-                          </InputGroupAddon>
+                          {/* <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="mdi mdi-calendar-weekend" aria-hidden="true"></i>
+                            </InputGroupText>
+                          </InputGroupAddon> */}
                           <HyperDatepicker 
                             name="originationDate" 
                             id="originationDate" 
@@ -169,6 +180,14 @@ const LoanDetails = (props) => {
                           />
                           <AvFeedback tooltip>Origination Date is required</AvFeedback>
                         </div>
+                      </AvGroup>
+                    </Col>
+
+                    <Col sm={6}>
+                      <AvGroup className="position-relative">
+                        <Label for="KDMRating">KDM Rating *</Label>
+                        <AvInput name="KDMRating" id="KDMRating" value={loan.KDMRating} required disabled={viewing} />
+                        <AvFeedback tooltip>KDM Rating is required</AvFeedback>
                       </AvGroup>
                     </Col>
                   </Row>
@@ -195,15 +214,12 @@ const LoanDetails = (props) => {
                           type="select"
                           required
                           disabled={viewing}
-                          value={loan.loanStatus}
+                          value={loan.loanStatus || 'PERFORMING'}
                           className="custom-select"
                         >
-                          <option value="Performing">Performing</option>
-                          <option value="30 Days Late">30 Days Late</option>
-                          <option value="60 Days Late">60 Days Late</option>
-                          <option value="90 Days Late">90 Days Late</option>
-                          <option value="Default">Default</option>
-                          <option value="Foreclosure">Foreclosure</option>
+                          {Object.entries(LOAN_STATUS_MAP).map((status, i) => 
+                            (<option value={status[0]} key={i}>{status[1]}</option>)
+                          )}
                         </AvField>
                         <AvFeedback tooltip>Loan Status is required</AvFeedback>
                       </AvGroup>
@@ -219,13 +235,12 @@ const LoanDetails = (props) => {
                           type="select"
                           required
                           disabled={viewing}
-                          value={loan.pipelineStatus}
+                          value={loan.pipelineStatus || 'NEW'}
                           className="custom-select"
                         >
-                          <option value="New">New</option>
-                          <option value="In Progress">In Progress</option>
-                          <option value="Funded">Funded</option>
-                          <option value="Closed">Closed</option>
+                          {Object.entries(PIPELINE_STATUS_MAP).map((status, i) => 
+                            (<option value={status[0]} key={i}>{status[1]}</option>)
+                          )}
                         </AvField>
                         <AvFeedback tooltip>Pipeline Status is required</AvFeedback>
                       </AvGroup>
@@ -245,8 +260,8 @@ const LoanDetails = (props) => {
                   </div>
 
                   <Row>
-                    {loan?.properties?.map((property) => (
-                      <Col sm={4}>
+                    {loan?.properties?.map((property, i) => (
+                      <Col sm={4} key={i}>
                         <Card>
                           <CardBody>
                             <p>
@@ -254,11 +269,11 @@ const LoanDetails = (props) => {
                               <strong>{property.address.street1}</strong><br />
                               {property.address.street2 && (<>{property.address.street2}<br /></>)}
                               {property.address.city}, <span className="text-uppercase">{property.address.state}</span> {property.address.zip}<br />
-                              <i>{property.type}</i>
+                              <i>{PROPERTY_TYPE_MAP[property.type]}</i>
                             </p>
                             <p className="mb-0">
                               <Button className="btn btn-secondary mr-2" onClick={() => handleEditProperty(property)}>Edit</Button>
-                              <Button className="btn btn-danger" onClick={() => handleDeleteProperty(property.id)}>Delete</Button>
+                              <Button className="btn btn-danger" onClick={() => handleDeleteProperty(property)}>Delete</Button>
                             </p>
                           </CardBody>
                         </Card>
@@ -300,16 +315,30 @@ const LoanDetails = (props) => {
 };
 
 const LoanActionButtons = ({ creating, editing, viewing, loanId }) => {
-  const handleEditLoan = () => {
-    window.location = `/loans/${loanId}/edit`;
-  }
-  const handleCancel = () => {
-    window.location = `/loans/${loanId}`;
-  }
-
   return (
     <div className="d-flex justify-content-end mb-3">
-      {!viewing ? (
+      {creating && (
+        <>
+          <Link to="/loans/list" className="btn btn-secondary mr-2">Cancel</Link>
+          <Button type="submit" className="btn btn-primary">Save New Loan</Button>
+        </>
+      )}
+
+      {editing && (
+        <>
+          <Link to={`/loans/${loanId}`} className="btn btn-secondary mr-2">Cancel</Link>
+          <Button type="submit" className="btn btn-primary">Save Changes</Button>
+        </>
+      )}
+
+      {viewing && (
+        <>
+          <Link to={`/loans/${loanId}/edit`} className="btn btn-primary">Edit Loan</Link>
+        </>
+      )}
+
+
+      {/* {!viewing ? (
         <>
           <Button color="secondary" className="mr-2" onClick={(e) => handleCancel(loanId)}>Cancel</Button>
           <Button color="primary" type="submit">
@@ -325,17 +354,16 @@ const LoanActionButtons = ({ creating, editing, viewing, loanId }) => {
         <>
           <Button color="primary" onClick={() => handleEditLoan(loanId)}>Edit Loan</Button>
         </>
-      )}
+      )} */}
     </div>
   );
 }
 
 const mapStateToProps = state => {
-  const { loan } = state.Loan;
-  return { loan };
+  return state.Loan;
 };
 
 export default connect(
   mapStateToProps,
-  { getLoan, createLoan, editLoan, deleteLoan }
+  { getLoan, createLoan, editLoan, deleteLoan, clearLoan }
 )(LoanDetails);

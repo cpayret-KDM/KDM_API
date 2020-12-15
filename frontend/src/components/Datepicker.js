@@ -23,7 +23,7 @@ class DatepickerInput extends Component<DatepickerInputProps> {
         return (
             <input
                 type="text"
-                className="form-control date"
+                className={`form-control date ${this.props.disabled? 'disabled' : ''}`}
                 id="dash-daterange"
                 onClick={this.props.onClick}
                 value={this.props.value}

@@ -14,7 +14,6 @@ type PropertyAction = { type: string, payload: {} | string };
 
 // Create Property
 export const createProperty = (property: object = {}): PropertyAction => {
-  console.log('in action')
   return ({
   type: CREATE_PROPERTY,
   payload: { property },
@@ -47,15 +46,16 @@ export const editPropertyFailure = (err: object): PropertyAction => ({
 });
 
 // Delete Property
-export const deleteProperty = (loanId: string = ''): PropertyAction => ({
+export const deleteProperty = (propertyId: string = '', loanId: string = ''): PropertyAction => ({
   type: DELETE_PROPERTY,
-  payload: { loanId },
+  payload: { propertyId, loanId },
 });
 
-export const deletePropertySuccess = (): PropertyAction => ({
+export const deletePropertySuccess = (): PropertyAction => {
+  return({
   type: DELETE_PROPERTY_SUCCESS,
   payload: {},
-});
+})};
 
 export const deletePropertyFailure = (err: object): PropertyAction => ({
   type: DELETE_PROPERTY_FAILURE,

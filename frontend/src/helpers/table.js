@@ -7,7 +7,8 @@ const customTotal = (from, to, size) => (
 );
 
 const paginationOptions = {
-  paginationSize: 5,
+  paginationSize: 20,
+  sizePerPage: 20,
   pageStartIndex: 1,
   firstPageText: 'First',
   prePageText: 'Back',

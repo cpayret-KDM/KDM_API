@@ -2,6 +2,9 @@ import {
   GET_LOANS,
   GET_LOANS_SUCCESS,
   GET_LOANS_FAILURE,
+  GET_60_DAY_LOANS,
+  GET_60_DAY_LOANS_SUCCESS,
+  GET_60_DAY_LOANS_FAILURE,
 
   GET_LOAN,
   GET_LOAN_SUCCESS,
@@ -15,6 +18,7 @@ import {
   DELETE_LOAN,
   DELETE_LOAN_SUCCESS,
   DELETE_LOAN_FAILURE,
+  CLEAR_LOAN,
 } from './constants';
 
 type LoanAction = { type: string, payload: {} | string };
@@ -32,6 +36,22 @@ export const getLoansSuccess = (loan: object): LoanAction => ({
 
 export const getLoansFailure = (err: object): LoanAction => ({
   type: GET_LOANS_FAILURE,
+  payload: err,
+});
+
+// Get 60-Day Loans
+export const get60DayLoans = (): LoanAction => ({
+  type: GET_60_DAY_LOANS,
+  payload: { },
+});
+
+export const get60DayLoansSuccess = (loan: object): LoanAction => ({
+  type: GET_60_DAY_LOANS_SUCCESS,
+  payload: loan,
+});
+
+export const get60DayLoansFailure = (err: object): LoanAction => ({
+  type: GET_60_DAY_LOANS_FAILURE,
   payload: err,
 });
 
@@ -97,4 +117,10 @@ export const deleteLoanSuccess = (): LoanAction => ({
 export const deleteLoanFailure = (err: object): LoanAction => ({
   type: DELETE_LOAN_FAILURE,
   payload: err,
+});
+
+// Delete Loan
+export const clearLoan = (): LoanAction => ({
+  type: CLEAR_LOAN,
+  payload: {  },
 });

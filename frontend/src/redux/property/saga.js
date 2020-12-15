@@ -22,7 +22,6 @@ const SERVER_URL = process.env.REACT_APP_KDM_API_ENDPOINT;
 
 // Create Property
 function* createProperty({ payload: { property } }) {
-  console.log('in saga')
   const options = {
     method: 'POST',
     body: JSON.stringify( property ),
@@ -31,10 +30,8 @@ function* createProperty({ payload: { property } }) {
 
   try {
     const response = yield call(fetchJSON, `${SERVER_URL}/property`, options);
-    yield all([
-      createPropertySuccess(response),
-      getLoan(property.loanId)
-    ]);
+    yield put(createPropertySuccess(response));
+    yield put(getLoan(property.loanId));
   } catch (error) {
     let message;
     switch (error.status) {
@@ -59,11 +56,10 @@ function* editProperty({ payload: { property } }) {
     headers: { 'Content-Type': 'application/json' },
   };
 
-  console.log('saga property',property)
-
   try {
-    const response = yield call(fetchJSON, `${SERVER_URL}/property${property.id}`, options);
+    const response = yield call(fetchJSON, `${SERVER_URL}/property/${property.id}`, options);
     yield put(editPropertySuccess(response));
+    yield put(getLoan(property.loanId));
   } catch (error) {
     let message;
     switch (error.status) {
@@ -81,15 +77,16 @@ function* editProperty({ payload: { property } }) {
 }
 
 // Delete Property
-function* deleteProperty({ payload: { propertyId } }) {
+function* deleteProperty({ payload: { propertyId, loanId } }) {
   const options = {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
   };
 
   try {
-    const response = yield call(fetchJSON, `${SERVER_URL}/property${propertyId}`, options);
+    const response = yield call(fetchJSON, `${SERVER_URL}/property/${propertyId}`, options);
     yield put(deletePropertySuccess(response));
+    yield put(getLoan(loanId));
   } catch (error) {
     let message;
     switch (error.status) {
@@ -111,7 +108,6 @@ function* deleteProperty({ payload: { propertyId } }) {
  * Watchers
  */
 export function* watchCreateProperty(): any {
-  console.log('in watcher')
   yield takeEvery(CREATE_PROPERTY, createProperty);
 }
 
