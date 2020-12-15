@@ -112,8 +112,9 @@ public class Loan {
 	private String memoUrl;
 	
 	@JsonProperty(value = "KDMRating")
-	@Column(name="KDMRating", precision = 5, scale = 2)
-	private BigDecimal kdmRating;
+	@Column(name="KDMRating")
+	@Size(max = 256)
+	private String kdmRating;
 	
 	public void addProperty(Property property) {
 		if (this.properties == null) {
