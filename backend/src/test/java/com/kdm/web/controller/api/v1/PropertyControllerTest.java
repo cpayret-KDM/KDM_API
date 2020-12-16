@@ -1,45 +1,84 @@
 package com.kdm.web.controller.api.v1;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.Ignore;
+import javax.persistence.EntityManager;
+
 import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-@RunWith(SpringRunner.class)
-@ExtendWith(SpringExtension.class)
+import com.kdm.web.data.repository.AppraisalRepository;
+import com.kdm.web.data.repository.PropertyRepository;
+import com.kdm.web.model.Address;
+import com.kdm.web.model.Property;
+import com.kdm.web.service.LoanService;
+import com.kdm.web.service.config.SimpleContextConfiguration;
+
 @WebMvcTest(controllers = PropertyController.class)
-public class PropertyControllerTest {
+@Import({SimpleContextConfiguration.class})
+public class PropertyControllerTest extends BaseControllerTest {
 
 	@Autowired
 	private MockMvc mvc;
-
-	@Ignore
+	
+	@MockBean
+	private LoanService loanService;
+	
+	@MockBean
+	private EntityManager entityManager;
+	
+	@MockBean
+	private PropertyRepository propertyRepository;
+	
+	@MockBean
+	private AppraisalRepository appraisalRepository;
+	
 	@Test
-	public void getCustomerTest() throws Exception {
+	public void getPropertyTest() throws Exception {
+		Address address = Address.builder()
+				.name("address name")
+				.build();
+		
+		Property property = Property.builder()
+				.address(address)
+				.build();
+		
+		when(entityManager.find(any(), any()))
+			.thenReturn(property);
+		
 		mvc.perform(
 				get(ApiConstants.PROPERTY_MAPPING + "/1").contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.name", containsString("Dummy")));
+			.andExpect(jsonPath("$.address.name", containsString("address name")));
 
 	}
 	
-	@Ignore
 	@Test 
-	public void getCustomerTestNotFound() throws Exception {
+	public void getPropertyNotFoundTest() throws Exception {
+		
+		when(entityManager.find(any(), any()))
+			.thenReturn(null);
+		
 		mvc.perform(
 				get(ApiConstants.PROPERTY_MAPPING + "/0").contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isNotFound());
 	}
 
+	@Test
+	public void savePropertyInvalidDataTest() throws Exception {
+		mvc.perform(
+				post(ApiConstants.PROPERTY_MAPPING + "/").contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().is4xxClientError());
+	}
 }

@@ -1,17 +1,14 @@
 package com.kdm.web.controller.api.v1;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 
 import java.util.Locale;
-import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.assertj.core.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,8 +32,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.kdm.web.data.repository.AppraisalRepository;
 import com.kdm.web.data.repository.PropertyRepository;
+import com.kdm.web.model.Appraisal;
 import com.kdm.web.model.Property;
+import com.kdm.web.model.view.LatestAppraisalView;
+import com.kdm.web.service.EntityUtil;
 import com.kdm.web.service.LoanService;
 import com.kdm.web.util.error.ErrorResponse;
 
@@ -56,6 +57,9 @@ public class PropertyController {
 	private MessageSource messageSource;
 	
 	@Autowired
+	private EntityUtil entityUtil;
+	
+	@Autowired
 	private EntityManager entityManager;
 	
 	@Autowired
@@ -63,6 +67,9 @@ public class PropertyController {
 	
 	@Autowired
 	private LoanService loanService;
+	
+	@Autowired
+	private AppraisalRepository appraisalRepository;
 	
 	@Operation(
 		summary = "Get list of proeprties according to search criteria and pagination options", 
@@ -121,18 +128,9 @@ public class PropertyController {
 	@GetMapping(path = "/{propertyId}")
 	public ResponseEntity<Property> getProperty(@PathVariable("propertyId") Long propertyId) throws Exception {
 
-		if (ObjectUtils.isEmpty(propertyId)) {
-			throw new ResponseStatusException(BAD_REQUEST,
-					messageSource.getMessage("controller.invalid_id", Arrays.array(propertyId), Locale.US));
-		}
+		Property property = entityUtil.tryGetEntity(Property.class, propertyId);
 		
-		Optional<Property> property = propertyRepository.findById(propertyId);
-		if (property.isPresent()) {
-			return new ResponseEntity<Property>(property.get(), OK);
-		} else {
-			throw new ResponseStatusException(NOT_FOUND,
-					messageSource.getMessage("controller.entity_no_exists", Arrays.array(propertyId), Locale.US));
-		}
+		return new ResponseEntity<Property>(property, OK);
 	}
 	
 	@Operation(summary = "Create a property", tags = "property", responses = {
@@ -169,11 +167,7 @@ public class PropertyController {
 			throw new BindException(bindingResult);
 		}
 		
-		Optional<Property> prevProperty = propertyRepository.findById(propertyId);
-		if (!prevProperty.isPresent()) {
-			throw new ResponseStatusException(NOT_FOUND,
-					messageSource.getMessage("controller.entity_no_exists", Arrays.array(propertyId), Locale.US));
-		}
+		Property prevProperty = entityUtil.tryGetEntity(Property.class, propertyId);
 		
 		Property updatedProperty = loanService.updateProperty(property);
 		
@@ -188,20 +182,41 @@ public class PropertyController {
 	@ResponseBody
 	@DeleteMapping(path = "/{propertyId}")
 	public ResponseEntity<Void> deleteProperty(@PathVariable("propertyId") Long propertyId) {
-		if (ObjectUtils.isEmpty(propertyId)) {
-			throw new ResponseStatusException(BAD_REQUEST,
-					messageSource.getMessage("controller.bad_request", Arrays.array("propertyId is invalid"), Locale.US));
-		}
+		Property property = entityUtil.tryGetEntity(Property.class, propertyId); 
 		
-		Optional<Property> property = propertyRepository.findById(propertyId);
-		if (!property.isPresent()) {
-			throw new ResponseStatusException(NOT_FOUND,
-					messageSource.getMessage("controller.entity_no_exists", Arrays.array(propertyId), Locale.US));
-		} 
-		
-		propertyRepository.delete(property.get());
+		propertyRepository.delete(property);
 		
 		return new ResponseEntity<Void>(OK);
+	}
+	
+	@Operation(summary = "assign a appraisal to a property", tags = "property", responses = {
+			@ApiResponse(responseCode = "200", description = "appraisal assigned"),
+			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+			@ApiResponse(responseCode = "404", description = "property not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
+	)
+	@ResponseBody
+	@PutMapping(path = "/{propertyId}/appraisal")
+	@Transactional
+	public ResponseEntity<Property> changeAppraisal(@PathVariable("propertyId") Long propertyId, @RequestBody @Valid LatestAppraisalView appraisalParam, BindingResult bindingResult) throws BindException {
+		Property property = entityUtil.tryGetEntity(Property.class, propertyId);
+		
+		if (bindingResult.hasErrors()) {
+			throw new BindException(bindingResult);
+		}
+		
+		Appraisal newAppraisal = Appraisal.builder()
+				.note(appraisalParam.getNote())
+				.value(appraisalParam.getValue())
+				.property(property)
+				.build();
+		
+		appraisalRepository.saveAndFlush(newAppraisal);
+		
+		entityManager.detach(property);
+		
+		Property updatedProperty = entityUtil.tryGetEntity(Property.class, propertyId);
+		
+		return new ResponseEntity<Property>(updatedProperty, OK);
 	}
 
 }

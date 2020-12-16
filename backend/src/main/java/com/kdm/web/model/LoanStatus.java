@@ -6,7 +6,8 @@ public enum LoanStatus {
 	LATE_60_DAYS("60 Days Late"),
 	LATE_90_DAYS("90 Days Late"),
 	DEFAULT("Default"),
-	FORECLOSURE("Foreclosure");
+	FORECLOSURE("Foreclosure"),
+	PAID_OFF("Paid Off");
 	
 	private final String label;
 	

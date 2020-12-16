@@ -1,7 +1,6 @@
 package com.kdm.web.controller.api.v1;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 
 import java.util.Locale;
@@ -10,7 +9,6 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.assertj.core.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +39,7 @@ import com.kdm.web.data.repository.LoanRepository;
 import com.kdm.web.data.repository.PropertyRepository;
 import com.kdm.web.model.Loan;
 import com.kdm.web.model.Sponsor;
+import com.kdm.web.service.EntityUtil;
 import com.kdm.web.service.LoanService;
 import com.kdm.web.util.error.ErrorResponse;
 
@@ -67,7 +66,10 @@ public class LoanController {
 	private MessageSource messageSource;
 	
 	@Autowired
-	private EntityManager entityManager; 
+	private EntityUtil entityUtil; 
+	 
+	@Autowired
+	private EntityManager entityManager;
 	
 	@Autowired
 	private LoanRepository loanRepository;
@@ -159,7 +161,7 @@ public class LoanController {
 	public ResponseEntity<Loan> getLoan(
 			@PathVariable("loanId") Long loanId) throws Exception {
 
-		Loan loan = tryGetEntity(Loan.class, loanId);
+		Loan loan = entityUtil.tryGetEntity(Loan.class, loanId);
 		
 		return new ResponseEntity<Loan>(loan, OK);
 	}
@@ -198,7 +200,7 @@ public class LoanController {
 		}
 		
 		// do this just to make sure it exist
-		Loan prevloan = tryGetEntity(Loan.class, loanId);
+		Loan prevloan = entityUtil.tryGetEntity(Loan.class, loanId);
 		
 		// merge will update the entity give by its id
 		Loan updatedLoan = entityManager.merge(loan);
@@ -215,7 +217,7 @@ public class LoanController {
 	@PutMapping(path = "/{loanId}/sponsor/")
 	@Transactional
 	public ResponseEntity<Sponsor> assignSponsor(@PathVariable("loanId") Long loanId, @RequestBody @Valid Sponsor sponsor, BindingResult bindingResult) throws BindException {
-		Loan loan = tryGetEntity(Loan.class, loanId);
+		Loan loan = entityUtil.tryGetEntity(Loan.class, loanId);
 		
 		if (bindingResult.hasErrors()) {
 			throw new BindException(bindingResult);
@@ -259,26 +261,11 @@ public class LoanController {
 	@ResponseBody
 	@DeleteMapping(path = "/{loanId}")
 	public ResponseEntity<Void> deleteLoan(@PathVariable("loanId") Long loanId) {
-		Loan loan = tryGetEntity(Loan.class, loanId);
+		Loan loan = entityUtil.tryGetEntity(Loan.class, loanId);
 		
 		loanRepository.delete(loan);
 		
 		return new ResponseEntity<Void>(OK);
-	}
-	
-	private <T> T tryGetEntity(Class<T> clazz, Object primaryKey) {
-		if (ObjectUtils.isEmpty(primaryKey)) {
-			throw new ResponseStatusException(BAD_REQUEST,
-					messageSource.getMessage("controller.bad_request", Arrays.array("id is invalid"), Locale.US));
-		}
-		
-		T entity = entityManager.find(clazz, primaryKey);
-		if (entity == null) {
-			throw new ResponseStatusException(NOT_FOUND,
-					messageSource.getMessage("controller.entity_no_exists", Arrays.array(primaryKey.toString()), Locale.US));
-		}
-		
-		return entity;
 	}
 
 }

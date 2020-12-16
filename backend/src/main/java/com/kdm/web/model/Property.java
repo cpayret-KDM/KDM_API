@@ -1,5 +1,6 @@
 package com.kdm.web.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -17,6 +18,7 @@ import javax.validation.Valid;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.kdm.web.model.view.LatestAppraisalView;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -63,6 +65,15 @@ public class Property {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "type")
 	private PropertyType type;
+	
+	@OneToOne(mappedBy="property", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
+	private LatestAppraisalView appraisal;
+		
+	/*  use this one for historical, maybe ?
+	@JsonProperty
+	@OneToMany(mappedBy="property", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
+	private List<LatestAppraisalView> appraisals;
+	*/
 
 	@Override
 	public int hashCode() {
