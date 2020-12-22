@@ -1,5 +1,4 @@
 package com.kdm.web.service;
-
 import java.util.Locale;
 import java.util.Optional;
 
@@ -15,12 +14,14 @@ import org.springframework.stereotype.Service;
 import com.kdm.web.data.repository.AddressRepository;
 import com.kdm.web.data.repository.LoanRepository;
 import com.kdm.web.data.repository.PropertyRepository;
+import com.kdm.web.data.repository.SponsorRepository;
 import com.kdm.web.model.Address;
 import com.kdm.web.model.Loan;
 import com.kdm.web.model.Property;
+import com.kdm.web.model.Sponsor;
 
 @Service
-public class PropertyServiceImpl implements PropertyService {
+public class LoanServiceImpl implements LoanService {
 	
 	@Autowired
 	private MessageSource messageSource;
@@ -30,6 +31,9 @@ public class PropertyServiceImpl implements PropertyService {
 	
 	@Autowired
 	PropertyRepository propertyRepository;
+	
+	@Autowired
+	SponsorRepository sponsorRepository;
 	
 	@Autowired
 	AddressRepository addressRepository; 
@@ -128,6 +132,32 @@ public class PropertyServiceImpl implements PropertyService {
 		return entityManager.merge(property);
 
 	}
-
+	
+	@Override
+	@Transactional
+	public Sponsor createSponsor(Loan loan, Sponsor sponsor) {
+		
+		if (loan == null) {
+			throw new IllegalArgumentException(messageSource.getMessage("common.invalid_parameter", Arrays.array("loan object is null"), Locale.US));
+		}
+		
+		if (sponsor == null) {
+			throw new IllegalArgumentException(messageSource.getMessage("common.invalid_parameter", Arrays.array("loan object is null"), Locale.US));
+		}
+	
+		// lets figure if the address already exists
+		Optional<Address> address = getOrPersistAddress(sponsor.getAddressId(), sponsor.getAddress());
+		if (!address.isPresent()) {
+			throw new IllegalArgumentException(messageSource.getMessage("common.invalid_parameter", Arrays.array("address object is null"), Locale.US));
+		}
+		
+		sponsor.setAddressId(address.get().getId());
+		Sponsor savedSponsor = sponsorRepository.save(sponsor); 
+			
+		loan.setSponsor(savedSponsor);
+		loanRepository.saveAndFlush(loan);
+		
+		return savedSponsor;
+	}
 	
 }

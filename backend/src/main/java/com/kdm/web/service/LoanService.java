@@ -1,8 +1,10 @@
 package com.kdm.web.service;
 
+import com.kdm.web.model.Loan;
 import com.kdm.web.model.Property;
+import com.kdm.web.model.Sponsor;
 
-public interface PropertyService {
+public interface LoanService {
 
 	/**
 	 * persist a property entity into the data source,
@@ -19,4 +21,12 @@ public interface PropertyService {
 	 * @return the persisted object
 	 */
 	Property updateProperty(Property property);
+	
+	/**
+	 * assign the given sponsor to the loan
+	 * @param loan
+	 * @param sponsor
+	 * @return
+	 */
+	Sponsor createSponsor(Loan loan, Sponsor sponsor);
 }

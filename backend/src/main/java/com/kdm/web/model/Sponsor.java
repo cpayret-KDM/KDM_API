@@ -2,10 +2,12 @@ package com.kdm.web.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -25,18 +27,19 @@ import lombok.Setter;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Sponsor {
 
-	@JsonProperty
+	@JsonProperty(value="id")
 	@Id
 	@Column(name = "sponsorID")
+	@SequenceGenerator(name="Sponsor_sponsorID_seq", sequenceName="Sponsor_sponsorID_seq", allocationSize=1)
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "Sponsor_sponsorID_seq")
 	private Long id;
 	
-	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonProperty
+	@OneToOne
     @JoinColumn(name = "addressId", referencedColumnName = "addressID", nullable = true)
 	private Address address;
 	
-	
-	@JsonProperty
+	@JsonIgnore
 	@Column(name = "addressId", insertable = false, updatable = false)
 	private Long addressId;
 	

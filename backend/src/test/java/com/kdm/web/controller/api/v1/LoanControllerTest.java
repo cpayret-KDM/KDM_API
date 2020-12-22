@@ -16,22 +16,33 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.kdm.web.data.repository.LoanRepository;
 import com.kdm.web.data.repository.PropertyRepository;
 import com.kdm.web.data.repository.SponsorRepository;
+import com.kdm.web.model.Address;
 import com.kdm.web.model.Loan;
 import com.kdm.web.model.Property;
 import com.kdm.web.model.PropertyType;
 import com.kdm.web.model.Sponsor;
+import com.kdm.web.service.LoanService;
+import com.kdm.web.service.config.SimpleContextConfiguration;
 
 @WebMvcTest(controllers = LoanController.class)
+@Import({SimpleContextConfiguration.class})
 public class LoanControllerTest extends BaseControllerTest {
 
 	@MockBean
 	private LoanRepository loanRepository;
+	
+	@MockBean
+	private LoanService loanService;
 	
 	@MockBean
 	private SponsorRepository sponsorRepository;
@@ -84,30 +95,31 @@ public class LoanControllerTest extends BaseControllerTest {
 		when(entityManager.find(any(), any())).thenReturn(null);
 		
 		mvc.perform(
-				put(ApiConstants.LOAN_MAPPING + "/1/sponsor/2").contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().is4xxClientError());
-	}
-	
-	@Test
-	public void assignSponsorNoLoanTest() throws Exception {
-
-		when(entityManager.find(any(), any()))
-			.thenReturn(new Loan())
-			.thenReturn(null);
-		
-		mvc.perform(
-				put(ApiConstants.LOAN_MAPPING + "/1/sponsor/2").contentType(MediaType.APPLICATION_JSON))
+				put(ApiConstants.LOAN_MAPPING + "/1/sponsor/").contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().is4xxClientError());
 	}
 	
 	@Test
 	public void assignSponsorTest() throws Exception {
+		Address address = Address.builder().street1("some stree line 1").build();
+		Sponsor sponsor = Sponsor.builder()
+				.address(address)
+				.company("Some Comany")
+				.build();
+		
+		ObjectMapper mapper = new ObjectMapper();
+	    mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+	    ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+	    String requestJson=ow.writeValueAsString(sponsor);
+	    
+	    
 		when(entityManager.find(any(), any()))
-			.thenReturn(new Loan())
-			.thenReturn(new Sponsor());
+			.thenReturn(new Loan());
 		
 		mvc.perform(
-				put(ApiConstants.LOAN_MAPPING + "/1/sponsor/2").contentType(MediaType.APPLICATION_JSON))
+				put(ApiConstants.LOAN_MAPPING + "/1/sponsor/")
+				.content(requestJson)
+				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
 	}
 

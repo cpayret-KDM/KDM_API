@@ -4,6 +4,7 @@ public enum PipelineStatus {
 	
 	NEW("New"),
 	IN_PROGRESS("In Progress"),
+	UNDERWRITING("Underwriting"),
 	FUNDED("Funded"),
 	CLOSED("Closed");
 	

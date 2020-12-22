@@ -21,14 +21,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -163,6 +161,7 @@ public class SponsorController {
 		}
 	}
 	
+	/*
 	@Operation(summary = "Create a sponsor", tags = "sponsor", responses = {
 			@ApiResponse(responseCode = "200", description = "sponsor created"),
 			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
@@ -176,7 +175,7 @@ public class SponsorController {
 		Sponsor newSponsor = sponsorRepository.saveAndFlush(sponsor);
 		
 		return new ResponseEntity<Sponsor>(newSponsor, OK);
-	}
+	}*/
 	
 	@Operation(summary = "updates a sponsor", tags = "sponsor", responses = {
 			@ApiResponse(responseCode = "200", description = "sponsor updated"),
