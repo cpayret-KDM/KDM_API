@@ -360,7 +360,14 @@ const LoanActionButtons = ({ creating, editing, viewing, loanId }) => {
 }
 
 const mapStateToProps = state => {
-  return state.Loan;
+  const { 
+    loan, 
+    loaded
+  } = state.Loan;
+  return {
+    loan,
+    loaded
+  };
 };
 
 export default connect(

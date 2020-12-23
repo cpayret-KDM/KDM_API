@@ -41,7 +41,7 @@ const getLoggedInUserRole = () => {
     }
 
     const decoded = jwtDecode(user.id_token);
-    if (!decoded[ROLE_CLAIM] && !decoded[ROLE_CLAIM].lenght){
+    if (!decoded[ROLE_CLAIM] && !decoded[ROLE_CLAIM].length){
         return null
     }
     

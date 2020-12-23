@@ -142,7 +142,7 @@ public class LoanServiceImpl implements LoanService {
 		}
 		
 		if (sponsor == null) {
-			throw new IllegalArgumentException(messageSource.getMessage("common.invalid_parameter", Arrays.array("loan object is null"), Locale.US));
+			throw new IllegalArgumentException(messageSource.getMessage("common.invalid_parameter", Arrays.array("sponsor object is null"), Locale.US));
 		}
 	
 		// lets figure if the address already exists
