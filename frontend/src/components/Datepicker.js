@@ -17,13 +17,13 @@ class DatepickerInput extends Component<DatepickerInputProps> {
     }
 
     onDateValueChange = () => {
-        console.log('date value changed');
+
     };
     render() {
         return (
             <input
                 type="text"
-                className={`form-control date ${this.props.disabled? 'disabled' : ''}`}
+                className="form-control date"
                 id="dash-daterange"
                 onClick={this.props.onClick}
                 value={this.props.value}

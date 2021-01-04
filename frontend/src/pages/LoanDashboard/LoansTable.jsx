@@ -1,65 +1,99 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-import { Card, CardBody, Spinner, Label } from 'reactstrap';
+import { Card, CardBody, Spinner } from 'reactstrap';
 import { AvForm, AvField, AvGroup } from 'availity-reactstrap-validation';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
+import filterFactory, { Comparator, textFilter, dateFilter, selectFilter } from 'react-bootstrap-table2-filter';
 
-import { formatCurrency, DATE_FORMAT, LOAN_STATUS_MAP, PROPERTY_TYPE_MAP } from '../../helpers/utils';
-import { paginationOptions, defaultSorted } from '../../helpers/table';
+import { formatCurrency, formatPercentage, DATE_FORMAT, LOAN_STATUS_MAP, PROPERTY_TYPE_MAP } from '../../helpers/utils';
+import { paginationOptions, defaultSorted, percentageFilter, currencyFilter } from '../../helpers/table';
 
-const ActionButtons = (cell, row) => {
-  return (
-    <div>
-      <a
-        href={`/loans/${row.id}`}
-        type="button"
-        className="btn btn-primary mr-2"
-        size="sm"
-      >
-        View
-      </a>
-      <a
-        href={`/loans/${row.id}/edit`}
-        type="button"
-        className="btn btn-secondary"
-        size="sm"
-      >
-        Edit
-      </a>
-    </div>
-  );
-};
+import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 
 const LoansTable = (props) => {
   const { loans } = props;
+
+  let propertyTypeOptions = [];
+  Object.entries(PROPERTY_TYPE_MAP).map((property) => {
+    propertyTypeOptions.push({ value: property[0], label: property[1]});
+  });
+
+  let loanStatusOptions = [];
+  Object.entries(LOAN_STATUS_MAP).map((status) => {
+    loanStatusOptions.push({ value: status[0], label: status[1]});
+  });
+
+  let formatRatingString = (loan) => {
+    let rating = '';
+    if (loan.KDMRating) rating += loan.KDMRating 
+    else rating += '--';
+    
+    if (loan.EJRating) rating += ` / ${loan.EJRating}`;
+    else rating += ` / --`;
+    
+    return rating;
+  }
+  
   const columns = [
     {
       dataField: 'id',
       text: '#',
       sort: true,
+      style: { width: '40px', textAlign: 'center' },
+      filter: textFilter({
+        placeholder: ' ',
+      }),
+      formatter: (cell, row) => {
+        return (<a href={`/loans/${cell}`} className="btn btn-sm btn-primary">{cell}</a>);
+      },
     },
     {
       dataField: 'loanNumber',
       text: 'Ticker',
       sort: true,
+      style: { width: '140px' },
+      filter: textFilter({
+        placeholder: ' ',
+      }),
     },
     {
       dataField: 'property',
       text: 'Property',
       sort: false,
+      style: { minWidth: '350px' },
+      filter: textFilter({
+        placeholder: ' ',
+        onFilter: (filterValue, data) => {
+          if (!filterValue) return data;
+
+          return data.filter(loan => {
+            if (!loan.properties || !loan.properties.length) return false;
+            const addresses = [];
+
+            loan.properties.forEach((property) => {
+              const address = property.address;
+              const addressStr = `${address.name} ${address.street1} ${address.street2} ${address.city}, ${address.state} ${address.zip}`;
+              addresses.push(addressStr.toLowerCase());
+            });
+
+            return addresses.some(address => address.includes(filterValue.toLowerCase()));
+          })
+        }
+      }),
       formatter: (cell, row) => {
         if (row.properties.length === 0) return '';
         return (
           <>
             {row.properties.map((property, i) => {
               return (
-                <span key={i}>
+                <p key={i}>
+                  {property.address.name && (<>{property.address.name}<br /></>)}
                   {property.address.street1}
                   {property.address.street2 && (<>{property.address.street2}</>)}, {property.address.city} {property.address.state}, {property.address.zip}
                   {(i+1) === row.properties.length ? ('') : (<br />)}
-                </span>
+                </p>
               );
             })}
           </>
@@ -70,6 +104,20 @@ const LoansTable = (props) => {
       dataField: 'propertyType',
       text: 'Property Type',
       sort: true,
+      style: { width: '130px' },
+      filter: selectFilter({
+        options: propertyTypeOptions,
+        placeholder: 'All',
+        onFilter: (filterValue, data) => {
+          if (!filterValue) return data;
+          
+          return data.filter(loan => {
+            if (!loan.properties || !loan.properties.length) return false;
+            
+            return loan.properties.some(property => property.type === filterValue);
+          })
+        }
+      }),
       formatter: (cell, row) => {
         if (row.properties.length === 0) return '';
         return (
@@ -79,6 +127,7 @@ const LoansTable = (props) => {
                 <span key={i}>
                   {PROPERTY_TYPE_MAP[property.type]}
                   {(i+1) === row.properties.length ? ('') : (<br />)}
+                  {' '}<br />
                 </span>
               );
             })}
@@ -88,27 +137,66 @@ const LoansTable = (props) => {
     },
     {
       dataField: 'KDMRating',
-      text: 'KDM Rating',
+      text: 'KDM / EJ Rating',
       sort: false,
+      style: { width: '70px' },
+      formatter: (cell, row) => formatRatingString(row),
+      filter: textFilter({
+        placeholder: ' ',
+        onFilter: (filterValue, data) => {
+          if (!filterValue) return data;
+
+          return data.filter(loan => {
+            const ratingStr = formatRatingString(loan).toLowerCase();
+            return ratingStr.includes(filterValue.toLowerCase());
+          });
+        }
+      }),
     },
     {
       dataField: 'maturityDate',
       text: 'Maturity Date',
-      sort: false,
+      sort: true,
+      style: { width: '130px' },
+      filter: dateFilter({
+        placeholder: ' ',
+        withoutEmptyComparatorOption: true,  // dont render empty option for comparator
+        comparators: [Comparator.EQ],
+      }),
       formatter: (cell) => (cell)
-        ? (<>${moment(cell).format(DATE_FORMAT)}</>)
+        ? (<>{moment(cell).format(DATE_FORMAT)}</>)
         : (<></>)
     },
     {
       dataField: 'loanStatus',
       text: 'Loan Status',
       sort: true,
+      style: { width: '120px' },
+      filter: selectFilter({
+        options: loanStatusOptions,
+        placeholder: 'All',
+        onFilter: (filterValue, data) => {
+          if (!filterValue) return data;
+          
+          // return data.filter(loan => {
+          //   if (!loan.properties || !loan.properties.length) return false;
+            
+          //   return loan.properties.some(property => property.type === filterValue);
+          // })
+        }
+      }),
       formatter: (cell) => (<>{LOAN_STATUS_MAP[cell]}</>),
     },
     {
       dataField: 'initialAmount',
       text: 'Loan Amount',
-      sort: true,
+      sort: false,
+      style: { width: '110px', textAlign: 'right' },
+      headerStyle: { textAlign: 'right' },
+      filter: textFilter({
+        placeholder: ' ',
+        onFilter: (filterValue, data) =>  currencyFilter(filterValue, data, 'initialAmount'),
+      }),
       formatter: (cell) => (cell)
         ? (<>${formatCurrency(cell)}</>)
         : (<></>)
@@ -132,16 +220,28 @@ const LoansTable = (props) => {
       dataField: 'ltv',
       text: 'LTV',
       sort: false,
+      style: { width: '85px', textAlign: 'right' },
+      headerStyle: { textAlign: 'right' },
+      filter: textFilter({
+        placeholder: ' ',
+        onFilter: (filterValue, data) =>  percentageFilter(filterValue, data, 'ltv'),
+      }),
       formatter: (cell, row) => (cell)
-        ? (<>{cell}%</>)
+        ? (<>{formatPercentage(cell)}%</>)
         : (<></>)
     },
     {
       dataField: 'loanRate',
       text: 'Loan Rate',
       sort: false,
+      style: { width: '85px', textAlign: 'right' },
+      headerStyle: { textAlign: 'right' },
+      filter: textFilter({
+        placeholder: ' ',
+        onFilter: (filterValue, data) =>  percentageFilter(filterValue, data, 'loanRate'),
+      }),
       formatter: (cell, row) => (cell)
-        ? (<>{cell}%</>)
+        ? (<>{formatPercentage(cell)}%</>)
         : (<></>)
     },
     // {
@@ -169,12 +269,6 @@ const LoansTable = (props) => {
     //   text: 'Monthly Spread',
     //   sort: false,
     // },
-    {
-      dataField: "buttons",
-      text: "",
-      isDummyField: true,
-      formatter: ActionButtons,
-    }
   ];
 
   const title = ((report) => {
@@ -191,8 +285,6 @@ const LoansTable = (props) => {
     else if (value === '60-day') window.location.href = "/loans/60-day";
     else window.location.href = "/loans/list";
   }
-
-  console.log('loans',loans)
 
   return (
     <Card>
@@ -211,7 +303,6 @@ const LoansTable = (props) => {
             ) : (
               <>
                 <AvForm className="">
-
                   <AvGroup className="position-relative">
                     <AvField
                       name="report"
@@ -225,7 +316,6 @@ const LoansTable = (props) => {
                       <option value="60-day">60 Day Report</option>
                     </AvField>
                   </AvGroup>
-
                 </AvForm>
                 <BootstrapTable
                   bootstrap4
@@ -233,6 +323,7 @@ const LoansTable = (props) => {
                   data={loans}
                   columns={columns}
                   defaultSorted={defaultSorted}
+                  filter={filterFactory()}
                   pagination={paginationFactory(paginationOptions)}
                   wrapperClasses="table-responsive"
                 />
