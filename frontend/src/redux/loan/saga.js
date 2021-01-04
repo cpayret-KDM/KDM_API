@@ -124,7 +124,7 @@ function* getLoan({ payload: { loanId } }) {
 function* createLoan({ payload: { loan } }) {
   const options = {
     method: 'POST',
-    body: JSON.stringify({ loan }),
+    body: JSON.stringify(loan),
     headers: { 'Content-Type': 'application/json' },
   };
 
@@ -155,8 +155,6 @@ function* editLoan({ payload: { loan } }) {
     headers: { 'Content-Type': 'application/json' },
   };
 
-  console.log('saga loan',loan)
-
   try {
     const response = yield call(fetchJSON, `${SERVER_URL}/loan/${loan.id}`, options);
     yield put(editLoanSuccess(response));
@@ -177,14 +175,14 @@ function* editLoan({ payload: { loan } }) {
 }
 
 // Delete Loan
-function* deleteLoan({ payload: { propertyId, loanId } }) {
+function* deleteLoan({ payload: { loanId } }) {
   const options = {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
   };
 
   try {
-    const response = yield call(fetchJSON, `${SERVER_URL}/loan/${propertyId}`, options);
+    const response = yield call(fetchJSON, `${SERVER_URL}/loan/${loanId}`, options);
     yield put(deleteLoanSuccess(response));
   } catch (error) {
     let message;

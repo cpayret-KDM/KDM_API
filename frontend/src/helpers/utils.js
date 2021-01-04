@@ -2,6 +2,10 @@ const formatCurrency = (currency) => {
   return Number(currency).toLocaleString();
 };
 
+const formatPercentage = (percentage) => {
+  return percentage.toFixed(2);
+};
+
 export const DATE_FORMAT = 'MM/DD/YYYY';
 
 export const LOAN_STATUS_MAP = {
@@ -12,11 +16,13 @@ export const LOAN_STATUS_MAP = {
   'LOCKBOX_TRIGGERED' : 'Lockbox Triggered',
   'DEFAULT' : 'Default',
   'FORECLOSURE' : 'Foreclosure',
+  'PAID_OFF' : 'Paid Off',
 };
 
 export const PIPELINE_STATUS_MAP = {
   'NEW' : 'New',
   'IN_PROGRESS' : 'In Progress',
+  'UNDERWRITING' : 'Underwriting',
   'FUNDED' : 'Funded',
   'CLOSED' : 'Closed',
 };
@@ -28,7 +34,7 @@ export const PROPERTY_TYPE_MAP = {
   'INDUSTRIAL' : 'Industrial',
   'RETAIL' : 'Retail',
   'HOTEL' : 'Hotel',
-  'SPECIAL_PURPOSE' : 'Special-Purpose'
+  'SPECIAL_PURPOSE' : 'Special-Purpose',
 };
 
 export const US_STATES_MAP = {
@@ -85,6 +91,4 @@ export const US_STATES_MAP = {
   'WY' : 'Wyoming'
 };
 
-
-
-export { formatCurrency };
+export { formatCurrency, formatPercentage };

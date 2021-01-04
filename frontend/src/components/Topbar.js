@@ -208,7 +208,7 @@ class Topbar extends Component<TopbarProps> {
                             <i className="mdi mdi-menu"></i>
                         </button>
 
-                        <TopbarSearch items={SearchResults} />
+                        
                     </div>
                 </div>
             </React.Fragment>
