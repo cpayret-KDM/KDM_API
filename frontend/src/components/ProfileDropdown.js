@@ -58,9 +58,6 @@ class ProfileDropdown extends Component<ProfileDropdownProps, ProfileDropdownSta
                 </DropdownToggle>
                 <DropdownMenu right className="dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
                     <div onClick={this.toggleDropdown}>
-                        <div className="dropdown-header noti-title">
-                            <h6 className="text-overflow m-0">Welcome !</h6>
-                        </div>
                         {this.props.menuItems.map((item, i) => {
                             return (
                                 <Link

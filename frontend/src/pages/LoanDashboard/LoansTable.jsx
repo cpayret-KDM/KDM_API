@@ -212,7 +212,7 @@ const LoansTable = (props) => {
     //   sort: false,
     // },
     // {
-    //   dataField: 'balance',
+    //   dataField: '',
     //   text: 'Principal Balance',
     //   sort: false,
     // },
@@ -249,11 +249,12 @@ const LoansTable = (props) => {
     //   text: 'Note Rate',
     //   sort: false,
     // },
-    // {
-    //   dataField: 'spread',
-    //   text: 'Spread',
-    //   sort: false,
-    // },
+    {
+      dataField: 'spread',
+      text: 'Spread',
+      sort: false,
+      // value is loanRate - noteRate, Diego will provide this
+    },
     // {
     //   dataField: 'cusip',
     //   text: 'CUSIP',

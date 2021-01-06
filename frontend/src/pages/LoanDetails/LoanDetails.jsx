@@ -40,6 +40,13 @@ const LoanDetails = (props) => {
   const [showPropertyModal, setShowPropertyModal] = useState(false);
   const [showDeletePropertyModal, setShowDeletePropertyModal] = useState(false);
   const [showDeleteLoanModal, setShowDeleteLoanModal] = useState(false);
+  
+  const [isSaving, setIsSaving] = useState(false);
+  useEffect(() => {
+    if (props.added || props.edited) {
+      setIsSaving(false);
+    }
+  }, [props.added, props.edited]);
 
   const breadcrumb = ((mode) => {
     switch (mode) {
@@ -133,7 +140,7 @@ const LoanDetails = (props) => {
             <div className="text-center"><Spinner size="lg" color="primary" /></div>
           ) : (
             <AvForm onSubmit={submitLoan}>
-              <LoanActionButtons creating={creating} editing={editing} viewing={viewing} loanId={loan.id} handleDeleteLoan={handleDeleteLoan} />
+              <LoanActionButtons creating={creating} editing={editing} viewing={viewing} loanId={loan.id} handleDeleteLoan={handleDeleteLoan} isSaving={isSaving} />
               <Card>
                 <CardBody>
                   <h4>Details</h4>
@@ -352,7 +359,7 @@ const LoanDetails = (props) => {
                   </CardBody>
                 </Card>
               </>)}
-              <LoanActionButtons creating={creating} editing={editing} viewing={viewing} loanId={loan.id} handleDeleteLoan={handleDeleteLoan} />
+              <LoanActionButtons creating={creating} editing={editing} viewing={viewing} loanId={loan.id} handleDeleteLoan={handleDeleteLoan} isSaving={isSaving} />
             </AvForm>
           )}
         </Col>
@@ -380,13 +387,18 @@ const LoanDetails = (props) => {
   );
 };
 
-const LoanActionButtons = ({ creating, editing, viewing, loanId, handleDeleteLoan }) => {
+const LoanActionButtons = ({ creating, editing, viewing, loanId, handleDeleteLoan, isSaving }) => {
   return (
     <div className="d-flex justify-content-end mb-3">
       {creating && (
         <>
           <Link to="/loans/list" className="btn btn-secondary mr-2">Cancel</Link>
-          <Button type="submit" className="btn btn-primary">Save New Loan</Button>
+          <Button type="submit" className="btn btn-primary">
+            {isSaving 
+              ? (<Spinner size="sm" color="primary" />) 
+              : (<>Save New Loan</>)
+            }
+          </Button>
         </>
       )}
 
@@ -403,25 +415,6 @@ const LoanActionButtons = ({ creating, editing, viewing, loanId, handleDeleteLoa
           <Link to={`/loans/${loanId}/edit`} className="btn btn-primary">Edit Loan</Link>
         </>
       )}
-
-
-      {/* {!viewing ? (
-        <>
-          <Button color="secondary" className="mr-2" onClick={(e) => handleCancel(loanId)}>Cancel</Button>
-          <Button color="primary" type="submit">
-            {editing && (
-              <>Save Changes</>
-            )}
-            {creating && (
-              <>Create New Loan</>
-            )}
-          </Button>
-        </>
-      ) : (
-        <>
-          <Button color="primary" onClick={() => handleEditLoan(loanId)}>Edit Loan</Button>
-        </>
-      )} */}
     </div>
   );
 }
