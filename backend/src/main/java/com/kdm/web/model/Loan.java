@@ -116,6 +116,17 @@ public class Loan {
 	@Size(max = 256)
 	private String kdmRating;
 	
+	@JsonProperty(value = "prepayMonths")
+	@Column(name = "prepayMonths")
+	private Long prepayMonths;
+	
+	@Column(name = "loanTermMonths")
+	private Long loanTermMonths;
+	
+	@JsonProperty(value = "principalBalance")
+	@Column(precision = 12, scale = 2)
+	private BigDecimal principalBalance;
+	
 	public void addProperty(Property property) {
 		if (this.properties == null) {
 			this.properties = new ArrayList<>();
