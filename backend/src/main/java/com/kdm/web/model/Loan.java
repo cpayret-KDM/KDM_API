@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -23,6 +24,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.kdm.web.model.view.LoanRatingLatestByLoanView;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -126,6 +128,10 @@ public class Loan {
 	@JsonProperty(value = "principalBalance")
 	@Column(precision = 12, scale = 2)
 	private BigDecimal principalBalance;
+	
+	@JsonProperty
+	@OneToMany(mappedBy="loan", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
+	private Set<LoanRatingLatestByLoanView> ratings;
 	
 	public void addProperty(Property property) {
 		if (this.properties == null) {

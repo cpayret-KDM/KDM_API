@@ -2,15 +2,20 @@ package com.kdm.web.model;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.kdm.web.model.view.MSNRatingLatestByMSNView;
 
 @JsonRootName("msn")
 @Entity
@@ -49,6 +54,10 @@ public class MSN {
 	@JsonProperty
 	@Column(precision = 5, scale = 2)
 	private BigDecimal noteRate;
+	
+	@JsonProperty
+	@OneToMany(mappedBy="msn", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
+	private Set<MSNRatingLatestByMSNView> ratings;
 	
 	public MSN() {
 		
