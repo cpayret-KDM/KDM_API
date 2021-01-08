@@ -230,7 +230,8 @@ public class SponsorController {
 					messageSource.getMessage("controller.entity_no_exists", Arrays.array(sponsorId), Locale.US));
 		} 
 		
-		sponsorRepository.delete(sponsor.get());
+		
+		loanService.deleteSponsor(sponsor.get());
 		
 		return new ResponseEntity<Void>(OK);
 	}

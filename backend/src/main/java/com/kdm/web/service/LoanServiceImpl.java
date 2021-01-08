@@ -179,4 +179,23 @@ public class LoanServiceImpl implements LoanService {
 		return savedSponsor;
 	}
 	
+	@Override
+	@Transactional
+	public void deleteSponsor(Sponsor sponsor) {
+		if (sponsor == null || sponsor.getId() == null) {
+			throw new IllegalArgumentException(messageSource.getMessage("common.invalid_parameter", Arrays.array("loan object is null"), Locale.US));
+		}
+		
+		//check for a loan related to this sponsor
+		Optional<Loan> loanOp = loanRepository.findBySponsorID(sponsor.getId());
+		
+		if (loanOp.isPresent()) {
+			Loan loan = loanOp.get();
+			loan.setSponsor(null);
+			loanRepository.save(loan);
+		}
+		
+		sponsorRepository.delete(sponsor);	
+	}
+	
 }
