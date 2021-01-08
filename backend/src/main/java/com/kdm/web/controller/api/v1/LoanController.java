@@ -54,7 +54,7 @@ import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 
 @RestController
 @RequestMapping(ApiConstants.LOAN_MAPPING)
-@PreAuthorize(LoanController.CREATE_LOAN_PERMISSION)
+//@PreAuthorize(LoanController.CREATE_LOAN_PERMISSION)
 public class LoanController {
 	
 	Logger logger = LoggerFactory.getLogger(LoanController.class);
