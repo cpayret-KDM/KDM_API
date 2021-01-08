@@ -2,18 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import DatePicker from 'react-datepicker';
-import { Row, Col, Label, Button, InputGroupAddon, InputGroupText, Card, CardBody, Spinner } from 'reactstrap';
+import { Row, Col, Label, Button, InputGroupAddon, Card, CardBody, Spinner } from 'reactstrap';
 import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
-import moment from 'moment';
 
 import PageTitle from '../../components/PageTitle';
 import ModalProperty from './ModalProperty';
 import ModalDeleteProperty from './ModalDeleteProperty';
 import ModalDeleteLoan from './ModalDeleteLoan';
+import ModalSponsor from './ModalSponsor';
+import ModalDeleteSponsor from './ModalDeleteSponsor';
+import HyperDatepicker from '../../components/Datepicker';
 
 import { getLoan, createLoan, editLoan, deleteLoan, clearLoan } from '../../redux/actions';
 
-import { DATE_FORMAT, LOAN_STATUS_MAP, PIPELINE_STATUS_MAP, PROPERTY_TYPE_MAP } from '../../helpers/utils';
+import { LOAN_STATUS_MAP, PIPELINE_STATUS_MAP, PROPERTY_TYPE_MAP } from '../../helpers/utils';
 
 const LoanDetails = (props) => {
   const { loan = {}, loaded } = props;
@@ -29,17 +31,27 @@ const LoanDetails = (props) => {
       props.clearLoan();
     }
   }, [creating, id]);
-  
+
   const [property, setProperty] = useState({});
   const [propertyMode, setPropertyMode] = useState('create');
+  const [sponsorMode, setSponsorMode] = useState('create');
   const [showPropertyModal, setShowPropertyModal] = useState(false);
   const [showDeletePropertyModal, setShowDeletePropertyModal] = useState(false);
   const [showDeleteLoanModal, setShowDeleteLoanModal] = useState(false);
-  
+
   const [originationDate, setOriginationDate] = useState(new Date());
   useEffect(() => {
     if (!loan.originationDate) return;
     setOriginationDate(moment(loan.originationDate).toDate());
+  }, [loan]);
+
+  const [showSponsorModal, setShowSponsorModal] = useState(false);
+  const [showDeleteSponsorModal, setShowDeleteSponsorModal] = useState(false);
+  const [sponsor, setSponsor] = useState({});
+  useEffect(() => {
+    if (loan?.sponsor?.id) {
+      setSponsor(loan.sponsor);
+    }
   }, [loan]);
 
   const [isSaving, setIsSaving] = useState(false);
@@ -92,7 +104,8 @@ const LoanDetails = (props) => {
     setShowDeleteLoanModal(true);
   }
 
-  const handleAddNewProperty = () => {
+  const handleAddNewProperty = (e) => {
+    if (e) e.preventDefault();
     setProperty({});
     setPropertyMode('create');
     setShowPropertyModal(true);
@@ -119,6 +132,32 @@ const LoanDetails = (props) => {
 
   const toggleDeleteLoanModal = () => {
     setShowDeleteLoanModal(!showDeleteLoanModal);
+  }
+
+  const toggleSponsorModal = () => {
+    setShowSponsorModal(!showSponsorModal);
+  }
+
+  const handleAddSponsor = (e) => {
+    if (e) e.preventDefault();
+    setSponsor({});
+    setSponsorMode('create');
+    setShowSponsorModal(true);
+  }
+
+  const handleEditSponsor = (sponsor) => {
+    setSponsor({...sponsor});
+    setSponsorMode('edit');
+    setShowSponsorModal(true);
+  }
+
+  const handleDeleteSponsor = (sponsor) => {
+    setSponsor({...sponsor});
+    setShowDeleteSponsorModal(true);
+  }
+
+  const toggleDeleteSponsorModal = () => {
+    setShowDeleteSponsorModal(!showDeleteSponsorModal);
   }
 
   return (
@@ -324,27 +363,31 @@ const LoanDetails = (props) => {
                       </div>
                     </div>
 
-                    <Row>
-                      {loan?.properties?.map((property, i) => (
-                        <Col sm={4} key={i}>
-                          <Card>
-                            <CardBody>
-                              <p>
-                                {property.name && (<h5>{property.name}</h5>)}
-                                <strong>{property.address.street1}</strong><br />
-                                {property.address.street2 && (<>{property.address.street2}<br /></>)}
-                                {property.address.city}, <span className="text-uppercase">{property.address.state}</span> {property.address.zip}<br />
-                                <i>{PROPERTY_TYPE_MAP[property.type]}</i>
-                              </p>
-                              <p className="mb-0">
-                                <Button className="btn btn-secondary mr-2" onClick={() => handleEditProperty(property)}>Edit</Button>
-                                <Button className="btn btn-danger" onClick={() => handleDeleteProperty(property)}>Delete</Button>
-                              </p>
-                            </CardBody>
-                          </Card>
-                        </Col>
-                      ))}
-                    </Row>
+                    {loan?.properties?.length === 0 ? (
+                      <p>No properties exists for this loan. <strong><a href="#"  onClick={(e) => handleAddNewProperty(e)}>Add one &raquo;</a></strong></p>
+                    ) : (
+                      <Row>
+                        {loan?.properties?.map((property, i) => (
+                          <Col sm={4} key={i}>
+                            <Card>
+                              <CardBody>
+                                <p>
+                                  {property.name && (<h5>{property.name}</h5>)}
+                                  <strong>{property.address.street1}</strong><br />
+                                  {property.address.street2 && (<>{property.address.street2}<br /></>)}
+                                  {property.address.city}, <span className="text-uppercase">{property.address.state}</span> {property.address.zip}<br />
+                                  <i>{PROPERTY_TYPE_MAP[property.type]}</i>
+                                </p>
+                                <p className="mb-0">
+                                  <Button className="btn btn-secondary mr-2" onClick={() => handleEditProperty(property)}>Edit</Button>
+                                  <Button className="btn btn-danger" onClick={() => handleDeleteProperty(property)}>Delete</Button>
+                                </p>
+                              </CardBody>
+                            </Card>
+                          </Col>
+                        ))}
+                      </Row>
+                    )}
                     
                     {/* <PropertyMap /> */}
                   </CardBody>
@@ -352,7 +395,48 @@ const LoanDetails = (props) => {
 
                 <Card>
                   <CardBody>
+                  <div className="d-flex justify-content-between">
                     <h4>Sponsor</h4>
+                    {!sponsor.id && (
+                      <div>
+                        <Button className="btn btn-secondary" onClick={() => handleAddSponsor()}>Add Sponsor</Button>
+                      </div>
+                    )}
+                  </div>
+
+                    {!loan?.sponsor?.id ? (
+                      <p>No sponsor exists for this loan. <strong><a href="#"  onClick={(e) => handleAddSponsor(e)}>Add one &raquo;</a></strong></p>
+                    ) : (
+                      <Row>
+                        <Col sm={4}>
+                          <Card>
+                            <CardBody>
+                              <Row>
+                                <Col sm={6}>
+                                  <strong>{sponsor?.company}</strong><br />
+                                  {sponsor?.firstName} {sponsor?.lastName}<br />
+                                  {sponsor?.phone}<br />
+                                  {sponsor?.email}<br />
+                                  
+                                </Col>
+                                <Col sm={6}>
+                                  {sponsor?.address?.street1}<br />
+                                  {sponsor?.address?.street2 && (<>{sponsor?.address?.street2}<br /></>)}
+                                  {sponsor?.address?.city}, <span className="text-uppercase">{sponsor?.address?.state}</span> {sponsor?.address?.zip}<br />
+                                  <i>Registered in {sponsor?.registrationState}</i>
+                                </Col>
+                              </Row>
+                              
+                              <p className="mb-0 mt-3">
+                                <Button className="btn btn-secondary mr-2" onClick={() => handleEditSponsor(sponsor)}>Edit</Button>
+                                <Button className="btn btn-danger" onClick={() => handleDeleteSponsor(sponsor)}>Delete</Button>
+                              </p>
+                            </CardBody>
+                          </Card>
+                        </Col>
+                      </Row>
+                    )}
+                    
                   </CardBody>
                 </Card>
               </>)}
@@ -378,6 +462,19 @@ const LoanDetails = (props) => {
       <ModalDeleteLoan
         isOpen={showDeleteLoanModal} 
         toggle={toggleDeleteLoanModal}
+        loanId={loan?.id}
+      />
+      <ModalSponsor
+        isOpen={showSponsorModal} 
+        toggle={toggleSponsorModal}
+        mode={sponsorMode}
+        sponsor={sponsor}
+        loanId={loan?.id}
+      />
+      <ModalDeleteSponsor
+        isOpen={showDeleteSponsorModal} 
+        toggle={toggleDeleteSponsorModal}
+        sponsorId={sponsor.id}
         loanId={loan?.id}
       />
     </>

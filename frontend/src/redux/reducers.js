@@ -7,6 +7,7 @@ import AppMenu from './appMenu/reducers';
 
 import Loan from './loan/reducers';
 import Property from './property/reducers';
+import Sponsor from './sponsor/reducers';
 import Security from './security/reducers';
 
 export default combineReducers({
@@ -16,5 +17,6 @@ export default combineReducers({
 
     Loan,
     Property,
+    Sponsor,
     Security,
 });
