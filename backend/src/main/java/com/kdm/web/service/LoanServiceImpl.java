@@ -160,4 +160,23 @@ public class LoanServiceImpl implements LoanService {
 		return savedSponsor;
 	}
 	
+	@Override
+	@Transactional
+	public Sponsor updateSponsor(Sponsor sponsor) {
+		if (sponsor == null) {
+			throw new IllegalArgumentException(messageSource.getMessage("common.invalid_parameter", Arrays.array("loan object is null"), Locale.US));
+		}
+	
+		// lets figure if the address already exists
+		Optional<Address> address = getOrPersistAddress(sponsor.getAddressId(), sponsor.getAddress());
+		if (!address.isPresent()) {
+			throw new IllegalArgumentException(messageSource.getMessage("common.invalid_parameter", Arrays.array("address object is null"), Locale.US));
+		}
+		
+		sponsor.setAddressId(address.get().getId());
+		Sponsor savedSponsor = sponsorRepository.saveAndFlush(sponsor);
+		
+		return savedSponsor;
+	}
+	
 }
