@@ -78,22 +78,7 @@ const ProfileMenus = [
     {
         label: 'My Account',
         icon: 'uil uil-user',
-        redirectTo: '/',
-    },
-    {
-        label: 'Settings',
-        icon: 'uil uil-cog',
-        redirectTo: '/',
-    },
-    {
-        label: 'Support',
-        icon: 'uil uil-life-ring',
-        redirectTo: '/',
-    },
-    {
-        label: 'Lock Screen',
-        icon: 'uil uil-lock-alt',
-        redirectTo: '/',
+        redirectTo: '/account/profile',
     },
     {
         label: 'Logout',
@@ -179,7 +164,7 @@ class Topbar extends Component<TopbarProps> {
                             <li className="notification-list topbar-dropdown d-lg-none">
                                 <SearchDropdown />
                             </li>
-                            <li className="notification-list topbar-dropdown">
+                            {/* <li className="notification-list topbar-dropdown">
                                 <button
                                     className="nav-link dropdown-toggle arrow-none btn btn-link"
                                     onClick={this.handleRightSideBar}>
@@ -191,7 +176,7 @@ class Topbar extends Component<TopbarProps> {
                             </li>
                             <li className="dropdown notification-list d-none d-sm-inline-block">
                                 <AppsDropdown />
-                            </li>
+                            </li> */}
                             <li className="notification-list">
                                 <ProfileDropdown
                                     profilePic={profilePic}
@@ -208,7 +193,7 @@ class Topbar extends Component<TopbarProps> {
                             <i className="mdi mdi-menu"></i>
                         </button>
 
-                        
+                        <TopbarSearch items={SearchResults} />
                     </div>
                 </div>
             </React.Fragment>
