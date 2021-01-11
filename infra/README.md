@@ -23,6 +23,14 @@ Set the following with `pulumi config set <name> <value>`
 Secrets are set with `pulumi config --secret set <name> <value>
 - dbpassword
 
+## Note on SSL Certs
+This program provisions a ssl cert on the zone specified by the `infra:dns_zoneId` configuration variable of name `infra:dns_dnsName`.  There is a manual verification step still needed with Route 53 that involves clicking a button in
+the ACM dashboard in order to verify the domain.
+
+## Github Actions
+Github actions are configured via `../.github` to run the pulumi app in preview mode on branch creation, and 
+in deploy mode on merge to the `main` branch.
+
 ## References
 RDS https://www.pulumi.com/docs/reference/pkg/aws/rds/instance/
 
