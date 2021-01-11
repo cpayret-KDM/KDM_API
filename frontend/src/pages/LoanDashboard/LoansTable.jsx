@@ -48,6 +48,7 @@ const LoansTable = (props) => {
       formatter: (cell, row) => {
         return (<a href={`/loans/${cell}`} className="btn btn-sm btn-primary">{cell}</a>);
       },
+      footer: '',
     },
     {
       dataField: 'loanNumber',
@@ -57,6 +58,7 @@ const LoansTable = (props) => {
       filter: textFilter({
         placeholder: ' ',
       }),
+      footer: '',
     },
     {
       dataField: 'property',
@@ -80,7 +82,7 @@ const LoansTable = (props) => {
 
             return addresses.some(address => address.includes(filterValue.toLowerCase()));
           })
-        }
+        },
       }),
       formatter: (cell, row) => {
         if (row.properties.length === 0) return '';
@@ -99,6 +101,7 @@ const LoansTable = (props) => {
           </>
         );
       },
+      footer: '',
     },
     {
       dataField: 'propertyType',
@@ -134,6 +137,7 @@ const LoansTable = (props) => {
           </>
         );
       },
+      footer: '',
     },
     {
       dataField: 'KDMRating',
@@ -152,6 +156,7 @@ const LoansTable = (props) => {
           });
         }
       }),
+      footer: '',
     },
     {
       dataField: 'maturityDate',
@@ -165,7 +170,8 @@ const LoansTable = (props) => {
       }),
       formatter: (cell) => (cell)
         ? (<>{moment(cell).format(DATE_FORMAT)}</>)
-        : (<></>)
+        : (<></>),
+      footer: '',
     },
     {
       dataField: 'loanStatus',
@@ -186,6 +192,7 @@ const LoansTable = (props) => {
         }
       }),
       formatter: (cell) => (<>{LOAN_STATUS_MAP[cell]}</>),
+      footer: '',
     },
     {
       dataField: 'initialAmount',
@@ -193,13 +200,15 @@ const LoansTable = (props) => {
       sort: false,
       style: { width: '110px', textAlign: 'right' },
       headerStyle: { textAlign: 'right' },
+      footerStyle: { textAlign: 'right' },
       filter: textFilter({
         placeholder: ' ',
         onFilter: (filterValue, data) =>  currencyFilter(filterValue, data, 'initialAmount'),
       }),
       formatter: (cell) => (cell)
         ? (<>${formatCurrency(cell)}</>)
-        : (<></>)
+        : (<></>),
+      footer: (columnData, column, columnIndex) => `$${formatCurrency(columnData.reduce((acc, item) => acc + item, 0))}`,
     },
     // {
     //   dataField: 'appraisedValue',
@@ -222,13 +231,15 @@ const LoansTable = (props) => {
       sort: false,
       style: { width: '85px', textAlign: 'right' },
       headerStyle: { textAlign: 'right' },
+      footerStyle: { textAlign: 'right' },
       filter: textFilter({
         placeholder: ' ',
         onFilter: (filterValue, data) =>  percentageFilter(filterValue, data, 'ltv'),
       }),
       formatter: (cell, row) => (cell)
         ? (<>{formatPercentage(cell)}%</>)
-        : (<></>)
+        : (<></>),
+      footer: (columnData, column, columnIndex) => `${formatPercentage(columnData.reduce((acc, item) => acc + item, 0) / columnData.length)}%`,
     },
     {
       dataField: 'loanRate',
@@ -236,13 +247,15 @@ const LoansTable = (props) => {
       sort: false,
       style: { width: '85px', textAlign: 'right' },
       headerStyle: { textAlign: 'right' },
+      footerStyle: { textAlign: 'right' },
       filter: textFilter({
         placeholder: ' ',
         onFilter: (filterValue, data) =>  percentageFilter(filterValue, data, 'loanRate'),
       }),
       formatter: (cell, row) => (cell)
         ? (<>{formatPercentage(cell)}%</>)
-        : (<></>)
+        : (<></>),
+      footer: (columnData, column, columnIndex) => `${formatPercentage(columnData.reduce((acc, item) => acc + item, 0) / columnData.length)}%`,
     },
     // {
     //   dataField: 'noteRate',
@@ -326,7 +339,7 @@ const LoansTable = (props) => {
                   defaultSorted={defaultSorted}
                   filter={filterFactory()}
                   pagination={paginationFactory(paginationOptions)}
-                  wrapperClasses="table-responsive"
+                  wrapperClasses="table-responsive loan-list-table"
                 />
               </>
             )}
