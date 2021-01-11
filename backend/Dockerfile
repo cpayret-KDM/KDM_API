@@ -1,4 +1,8 @@
-FROM maven:3.6.3-openjdk-8 as maven_build
+# FOR M1 Macs
+# FROM maven:3.6.3-adoptopenjdk-8  as maven_build
+
+# For everyone else
+FROM maven:3.6.3-adoptopenjdk-8  as maven_build
 
 COPY pom.xml /build/
 COPY src /build/src/

@@ -1,18 +1,25 @@
 # docker-compose.yml
 version: '3'
 services:
+  webapp:
+    environment:
+      - spring.datasource.url=jdbc:postgresql://database:5432/kdm
+      - spring.datasource.username=dbusername
+      - spring.datasource.password=dbpassword
+      - spring.flyway.enabled=true
+    build:
+        context: ./
+        dockerfile: "Dockerfile"
+    ports:
+      - "8080:8080"
   database:
     image: "postgres" # use latest official postgres version
     env_file:
       - database.env # configure postgres
     volumes:
-      - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
+      - kdm-database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
     ports:
       - "5432:5432"
-  webapp:
-    build:
-        context: ./
-        dockerfile: "Dockerfile"
-
 volumes:
-  database-data: # named volumes can be managed easier using docker-compose
+  kdm-database-data:
+    external: true
