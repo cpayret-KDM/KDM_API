@@ -7,6 +7,7 @@ import AppMenu from './appMenu/reducers';
 
 import Loan from './loan/reducers';
 import Property from './property/reducers';
+import Security from './security/reducers';
 
 export default combineReducers({
     Auth,
@@ -15,4 +16,5 @@ export default combineReducers({
 
     Loan,
     Property,
+    Security,
 });
