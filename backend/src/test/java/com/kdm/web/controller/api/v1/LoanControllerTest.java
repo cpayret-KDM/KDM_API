@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.kdm.web.data.repository.LoanRatingRepository;
 import com.kdm.web.data.repository.LoanRepository;
 import com.kdm.web.data.repository.PropertyRepository;
 import com.kdm.web.data.repository.SponsorRepository;
@@ -49,6 +50,9 @@ public class LoanControllerTest extends BaseControllerTest {
 	
 	@MockBean
 	private PropertyRepository propertyRepository;
+	
+	@MockBean
+	private LoanRatingRepository loanRatingRepository;
 	
 	@MockBean
 	private EntityManager entityManager;
