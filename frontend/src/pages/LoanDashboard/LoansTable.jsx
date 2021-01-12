@@ -17,25 +17,25 @@ const LoansTable = (props) => {
 
   let propertyTypeOptions = [];
   Object.entries(PROPERTY_TYPE_MAP).map((property) => {
-    propertyTypeOptions.push({ value: property[0], label: property[1]});
+    propertyTypeOptions.push({ value: property[0], label: property[1] });
   });
 
   let loanStatusOptions = [];
   Object.entries(LOAN_STATUS_MAP).map((status) => {
-    loanStatusOptions.push({ value: status[0], label: status[1]});
+    loanStatusOptions.push({ value: status[0], label: status[1] });
   });
 
   let formatRatingString = (loan) => {
     let rating = '';
-    if (loan.KDMRating) rating += loan.KDMRating 
+    if (loan.KDMRating) rating += loan.KDMRating
     else rating += '--';
-    
+
     if (loan.EJRating) rating += ` / ${loan.EJRating}`;
     else rating += ` / --`;
-    
+
     return rating;
   }
-  
+
   const columns = [
     {
       dataField: 'id',
@@ -94,7 +94,7 @@ const LoansTable = (props) => {
                   {property.address.name && (<>{property.address.name}<br /></>)}
                   {property.address.street1}
                   {property.address.street2 && (<>{property.address.street2}</>)}, {property.address.city} {property.address.state}, {property.address.zip}
-                  {(i+1) === row.properties.length ? ('') : (<br />)}
+                  {(i + 1) === row.properties.length ? ('') : (<br />)}
                 </p>
               );
             })}
@@ -113,10 +113,10 @@ const LoansTable = (props) => {
         placeholder: 'All',
         onFilter: (filterValue, data) => {
           if (!filterValue) return data;
-          
+
           return data.filter(loan => {
             if (!loan.properties || !loan.properties.length) return false;
-            
+
             return loan.properties.some(property => property.type === filterValue);
           })
         }
@@ -129,7 +129,7 @@ const LoansTable = (props) => {
               return (
                 <span key={i}>
                   {PROPERTY_TYPE_MAP[property.type]}
-                  {(i+1) === row.properties.length ? ('') : (<br />)}
+                  {(i + 1) === row.properties.length ? ('') : (<br />)}
                   {' '}<br />
                 </span>
               );
@@ -183,10 +183,10 @@ const LoansTable = (props) => {
         placeholder: 'All',
         onFilter: (filterValue, data) => {
           if (!filterValue) return data;
-          
+
           // return data.filter(loan => {
           //   if (!loan.properties || !loan.properties.length) return false;
-            
+
           //   return loan.properties.some(property => property.type === filterValue);
           // })
         }
@@ -203,7 +203,7 @@ const LoansTable = (props) => {
       footerStyle: { textAlign: 'right' },
       filter: textFilter({
         placeholder: ' ',
-        onFilter: (filterValue, data) =>  currencyFilter(filterValue, data, 'initialAmount'),
+        onFilter: (filterValue, data) => currencyFilter(filterValue, data, 'initialAmount'),
       }),
       formatter: (cell) => (cell)
         ? (<>${formatCurrency(cell)}</>)
@@ -234,12 +234,12 @@ const LoansTable = (props) => {
       footerStyle: { textAlign: 'right' },
       filter: textFilter({
         placeholder: ' ',
-        onFilter: (filterValue, data) =>  percentageFilter(filterValue, data, 'ltv'),
+        onFilter: (filterValue, data) => percentageFilter(filterValue, data, 'ltv'),
       }),
       formatter: (cell, row) => (cell)
         ? (<>{formatPercentage(cell)}%</>)
         : (<></>),
-      footer: (columnData, column, columnIndex) => `${formatPercentage(columnData.reduce((acc, item) => acc + item, 0) / columnData.length)}%`,
+      footer: (columnData, column, columnIndex) => `${formatPercentage(columnData.reduce((acc, item) => acc + item, 0) / (!!columnData.length ? columnData.length : 1))}%`,
     },
     {
       dataField: 'loanRate',
@@ -250,12 +250,12 @@ const LoansTable = (props) => {
       footerStyle: { textAlign: 'right' },
       filter: textFilter({
         placeholder: ' ',
-        onFilter: (filterValue, data) =>  percentageFilter(filterValue, data, 'loanRate'),
+        onFilter: (filterValue, data) => percentageFilter(filterValue, data, 'loanRate'),
       }),
       formatter: (cell, row) => (cell)
         ? (<>{formatPercentage(cell)}%</>)
         : (<></>),
-      footer: (columnData, column, columnIndex) => `${formatPercentage(columnData.reduce((acc, item) => acc + item, 0) / columnData.length)}%`,
+      footer: (columnData, column, columnIndex) => `${formatPercentage(columnData.reduce((acc, item) => acc + item, 0) / (!!columnData.length ? columnData.length : 1))}%`,
     },
     // {
     //   dataField: 'noteRate',
@@ -311,40 +311,40 @@ const LoansTable = (props) => {
         {!loans ? (
           <div className="text-center"><Spinner size="lg" color="primary" /></div>
         ) : (
-          <>
-            {loans.length === 0 ? (
-              <>No loans to show</>
-            ) : (
-              <>
-                <AvForm className="">
-                  <AvGroup className="position-relative">
-                    <AvField
-                      name="report"
-                      type="select"
-                      required
-                      value={props.report}
-                      className="custom-select report-type"
-                      onChange={handleReportChange}
-                    >
-                      <option value="list">All Loans</option>
-                      <option value="60-day">60 Day Report</option>
-                    </AvField>
-                  </AvGroup>
-                </AvForm>
-                <BootstrapTable
-                  bootstrap4
-                  keyField="id"
-                  data={loans}
-                  columns={columns}
-                  defaultSorted={defaultSorted}
-                  filter={filterFactory()}
-                  pagination={paginationFactory(paginationOptions)}
-                  wrapperClasses="table-responsive loan-list-table"
-                />
-              </>
-            )}
-          </>
-        )}
+            <>
+              {loans.length === 0 ? (
+                <>No loans to show</>
+              ) : (
+                  <>
+                    <AvForm className="">
+                      <AvGroup className="position-relative">
+                        <AvField
+                          name="report"
+                          type="select"
+                          required
+                          value={props.report}
+                          className="custom-select report-type"
+                          onChange={handleReportChange}
+                        >
+                          <option value="list">All Loans</option>
+                          <option value="60-day">60 Day Report</option>
+                        </AvField>
+                      </AvGroup>
+                    </AvForm>
+                    <BootstrapTable
+                      bootstrap4
+                      keyField="id"
+                      data={loans}
+                      columns={columns}
+                      defaultSorted={defaultSorted}
+                      filter={filterFactory()}
+                      pagination={paginationFactory(paginationOptions)}
+                      wrapperClasses="table-responsive loan-list-table"
+                    />
+                  </>
+                )}
+            </>
+          )}
       </CardBody>
     </Card>
   );
