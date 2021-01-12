@@ -143,6 +143,16 @@ public class Loan {
 		}
 		
 	}
+	
+	@JsonProperty(value = "spread")
+	public BigDecimal getSpread() {
+		if ((this.msn == null) || (this.msn.getNoteRate() == null) || (this.loanRate == null) ){
+			return null;	
+		}
+		
+		BigDecimal spread = this.loanRate.subtract(this.msn.getNoteRate()); 
+		return spread;
+	}
 
 	@Override
 	public int hashCode() {
