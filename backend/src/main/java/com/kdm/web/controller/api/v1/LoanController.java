@@ -3,6 +3,7 @@ package com.kdm.web.controller.api.v1;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
+import java.time.ZonedDateTime;
 import java.util.Locale;
 
 import javax.persistence.EntityManager;
@@ -35,10 +36,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.kdm.web.data.repository.LoanRatingRepository;
 import com.kdm.web.data.repository.LoanRepository;
-import com.kdm.web.data.repository.PropertyRepository;
 import com.kdm.web.model.Loan;
+import com.kdm.web.model.LoanRating;
+import com.kdm.web.model.Rating;
 import com.kdm.web.model.Sponsor;
+import com.kdm.web.model.util.Note;
 import com.kdm.web.service.EntityUtil;
 import com.kdm.web.service.LoanService;
 import com.kdm.web.util.error.ErrorResponse;
@@ -75,7 +79,7 @@ public class LoanController {
 	private LoanRepository loanRepository;
 	
 	@Autowired
-	private PropertyRepository propertyRepository;
+	private LoanRatingRepository loanRatingRepository;
 	
 	@Autowired
 	private LoanService loanService;
@@ -228,30 +232,33 @@ public class LoanController {
 		return new ResponseEntity<Sponsor>(newSponsor, OK);
 	}
 	
-	/*
-	@Operation(summary = "add a property to a loan", tags = "loan", responses = {
-			@ApiResponse(responseCode = "200", description = "property added"),
+	@Operation(summary = "assign a rating to a loan", tags = "loan", responses = {
+			@ApiResponse(responseCode = "200", description = "rating assigned"),
 			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
-			@ApiResponse(responseCode = "404", description = "loan or property not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
+			@ApiResponse(responseCode = "404", description = "loan or rating not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
 	)
 	@ResponseBody
-	@PutMapping(path = "/{loanId}/property/{propertyId}")
-	@Transactional
-	public ResponseEntity<Void> addProperty(@PathVariable("loanId") Long loanId, @PathVariable("propertyId") Long propertyId) {
-		Loan loan = tryGetEntity(Loan.class, loanId);
+	@PutMapping(path = "/{loanId}/rating/{ratingId}")
+	public ResponseEntity<Loan> assignRating(@PathVariable("loanId") Long loanId, @PathVariable("ratingId") Long ratingId, @RequestBody @Valid Note note, BindingResult bindingResult) throws Exception {
+		Loan loan = entityUtil.tryGetEntity(Loan.class, loanId);
+		entityManager.detach(loan);
 		
-		Property property = tryGetEntity(Property.class, propertyId);
+		Rating rating = entityUtil.tryGetEntity(Rating.class, ratingId);
 		
-		if ((property.getLoan() != null) && (property.getLoan().equals(loan))) {
-			// nothing changed
-			return new ResponseEntity<Void>(OK);
-		}
-				
-		property.setLoan(loan);
-		propertyRepository.saveAndFlush(property);
+		LoanRating lnRtng = LoanRating.builder()
+				.loan(loan)
+				.loanId(loanId)
+				.rating(rating)
+				.ratingId(ratingId)
+				.note(note.toString())
+				.date(ZonedDateTime.now())
+				.build();
 		
-		return new ResponseEntity<Void>(OK);
-	}*/
+		
+		lnRtng = loanRatingRepository.saveAndFlush(lnRtng);
+
+		return this.getLoan(loanId);
+	}
 	
 	@Operation(summary = "delete a loan", tags = "loan", responses = {
 			@ApiResponse(responseCode = "200", description = "loan deleted"),
