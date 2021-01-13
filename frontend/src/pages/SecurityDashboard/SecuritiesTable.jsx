@@ -287,8 +287,8 @@ const SecuritiesTable = (props) => {
 
   const title = ((report) => {
     switch (report) {
-      case '60-day':
-        return '60 Day Security Report';
+      // case '60-day':
+      //   return '60 Day Security Report';
       default:
         return 'All Securities';
     }
@@ -296,7 +296,7 @@ const SecuritiesTable = (props) => {
 
   const handleReportChange = (e, value) => {
     if (props.report === value) return;
-    else if (value === '60-day') window.location.href = "/securities/60-day";
+    // else if (value === '60-day') window.location.href = "/securities/60-day";
     else window.location.href = "/securities/list";
   }
 
@@ -327,7 +327,7 @@ const SecuritiesTable = (props) => {
                           onChange={handleReportChange}
                         >
                           <option value="list">All Securities</option>
-                          <option value="60-day">60 Day Report</option>
+                          {/* <option value="60-day">60 Day Report</option> */}
                         </AvField>
                       </AvGroup>
                     </AvForm>

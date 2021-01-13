@@ -2,9 +2,9 @@ import {
   GET_SECURITIES,
   GET_SECURITIES_SUCCESS,
   GET_SECURITIES_FAILURE,
-  GET_60_DAY_SECURITIES,
-  GET_60_DAY_SECURITIES_SUCCESS,
-  GET_60_DAY_SECURITIES_FAILURE,
+  // GET_60_DAY_SECURITIES,
+  // GET_60_DAY_SECURITIES_SUCCESS,
+  // GET_60_DAY_SECURITIES_FAILURE,
 
   GET_SECURITY,
   GET_SECURITY_SUCCESS,
@@ -43,21 +43,21 @@ const Security = (state: State = {}, action: Action) => {
         securities: action.payload,
       };
 
-    case GET_60_DAY_SECURITIES:
-      return {
-        ...state,
-        securities: null,
-      };
-    case GET_60_DAY_SECURITIES_SUCCESS:
-      return {
-        ...state,
-        securities: action.payload,
-      };
-    case GET_60_DAY_SECURITIES_FAILURE:
-      return {
-        ...state,
-        securities: action.payload,
-      };
+    // case GET_60_DAY_SECURITIES:
+    //   return {
+    //     ...state,
+    //     securities: null,
+    //   };
+    // case GET_60_DAY_SECURITIES_SUCCESS:
+    //   return {
+    //     ...state,
+    //     securities: action.payload,
+    //   };
+    // case GET_60_DAY_SECURITIES_FAILURE:
+    //   return {
+    //     ...state,
+    //     securities: action.payload,
+    //   };
 
     /* Security */
     case GET_SECURITY:

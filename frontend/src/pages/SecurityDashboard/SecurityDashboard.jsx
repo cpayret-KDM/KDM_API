@@ -4,7 +4,8 @@ import { Row, Col } from 'reactstrap';
 
 import PageTitle from '../../components/PageTitle';
 import SecuritiesTable from './SecuritiesTable';
-import { getSecurities, get60DaySecurities } from '../../redux/actions';
+import { getSecurities } from '../../redux/actions';
+// import { getSecurities, get60DaySecurities } from '../../redux/actions';
 
 const SecurityDashboard = (props) => {
 
@@ -12,9 +13,9 @@ const SecurityDashboard = (props) => {
     if (report === 'list') {
       props.getSecurities();
     }
-    else if (report === '60-day') {
-      props.get60DaySecurities();
-    }
+    // else if (report === '60-day') {
+    //   props.get60DaySecurities();
+    // }
 
   }, [report]);
 
@@ -22,8 +23,8 @@ const SecurityDashboard = (props) => {
     switch (report) {
       case 'list':
         return { label: 'Securities', path: '/securities/list' };
-      case '60-day':
-        return { label: '60 Day Security Report', path: '/securities/60-day' };
+      // case '60-day':
+      //   return { label: '60 Day Security Report', path: '/securities/60-day' };
     }
   })(props.report);
 
@@ -53,6 +54,7 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { getSecurities, get60DaySecurities }
+  { getSecurities }
+  // { getSecurities, get60DaySecurities }
 )(SecurityDashboard);
 

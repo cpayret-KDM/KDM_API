@@ -3,7 +3,7 @@ import { fetchJSON } from '../../helpers/api';
 
 import {
   GET_SECURITIES,
-  GET_60_DAY_SECURITIES,
+  // GET_60_DAY_SECURITIES,
   GET_SECURITY,
   CREATE_SECURITY,
   EDIT_SECURITY,
@@ -13,8 +13,8 @@ import {
 import {
   getSecuritiesSuccess,
   getSecuritiesFailure,
-  get60DaySecuritiesSuccess,
-  get60DaySecuritiesFailure,
+  // get60DaySecuritiesSuccess,
+  // get60DaySecuritiesFailure,
 
   getSecuritySuccess,
   getSecurityFailure,
@@ -61,38 +61,38 @@ function* getSecurities({ payload: { securityNumber, size, page, sort } }) {
   }
 }
 
-// Get 60 Day Securities
-function* get60DaySecurities({ payload: { securityNumber, size, page, sort } }) {
-  const options = {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
-  };
-  const params = {
-    days: 60,
-    // securityNumber,
-    // size,
-    // page,
-    // sort,
-  };
+// // Get 60 Day Securities
+// function* get60DaySecurities({ payload: { securityNumber, size, page, sort } }) {
+//   const options = {
+//     method: 'GET',
+//     headers: { 'Content-Type': 'application/json' },
+//   };
+//   const params = {
+//     days: 60,
+//     // securityNumber,
+//     // size,
+//     // page,
+//     // sort,
+//   };
 
-  try {
-    const response = yield call(fetchJSON, `${SERVER_URL}/security/anniversary?days=60`, options);
-    yield put(get60DaySecuritiesSuccess(response));
-  } catch (error) {
-    let message;
-    switch (error.status) {
-      case 500:
-        message = 'Internal Server Error';
-        break;
-      case 401:
-        message = 'Invalid credentials';
-        break;
-      default:
-        message = error;
-    }
-    yield put(get60DaySecuritiesFailure(message));
-  }
-}
+//   try {
+//     const response = yield call(fetchJSON, `${SERVER_URL}/security/anniversary?days=60`, options);
+//     yield put(get60DaySecuritiesSuccess(response));
+//   } catch (error) {
+//     let message;
+//     switch (error.status) {
+//       case 500:
+//         message = 'Internal Server Error';
+//         break;
+//       case 401:
+//         message = 'Invalid credentials';
+//         break;
+//       default:
+//         message = error;
+//     }
+//     yield put(get60DaySecuritiesFailure(message));
+//   }
+// }
 
 // Get Security
 function* getSecurity({ payload: { securityId } }) {
@@ -208,9 +208,9 @@ export function* watchGetSecurities(): any {
   yield takeEvery(GET_SECURITIES, getSecurities);
 }
 
-export function* watchGet60DaySecurities(): any {
-  yield takeEvery(GET_60_DAY_SECURITIES, get60DaySecurities);
-}
+// export function* watchGet60DaySecurities(): any {
+//   yield takeEvery(GET_60_DAY_SECURITIES, get60DaySecurities);
+// }
 
 export function* watchGetSecurity(): any {
   yield takeEvery(GET_SECURITY, getSecurity);
@@ -231,7 +231,7 @@ export function* watchDeleteSecurity(): any {
 function* SecuritySaga(): any {
   yield all([
     fork(watchGetSecurities),
-    fork(watchGet60DaySecurities),
+    // fork(watchGet60DaySecurities),
     fork(watchGetSecurity),
     fork(watchCreateSecurity),
     fork(watchEditSecurity),

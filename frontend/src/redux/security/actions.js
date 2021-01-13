@@ -2,9 +2,9 @@ import {
   GET_SECURITIES,
   GET_SECURITIES_SUCCESS,
   GET_SECURITIES_FAILURE,
-  GET_60_DAY_SECURITIES,
-  GET_60_DAY_SECURITIES_SUCCESS,
-  GET_60_DAY_SECURITIES_FAILURE,
+  // GET_60_DAY_SECURITIES,
+  // GET_60_DAY_SECURITIES_SUCCESS,
+  // GET_60_DAY_SECURITIES_FAILURE,
 
   GET_SECURITY,
   GET_SECURITY_SUCCESS,
@@ -39,21 +39,21 @@ export const getSecuritiesFailure = (err: object): SecurityAction => ({
   payload: err,
 });
 
-// Get 60-Day Securities
-export const get60DaySecurities = (): SecurityAction => ({
-  type: GET_60_DAY_SECURITIES,
-  payload: {},
-});
+// // Get 60-Day Securities
+// export const get60DaySecurities = (): SecurityAction => ({
+//   type: GET_60_DAY_SECURITIES,
+//   payload: {},
+// });
 
-export const get60DaySecuritiesSuccess = (security: object): SecurityAction => ({
-  type: GET_60_DAY_SECURITIES_SUCCESS,
-  payload: security,
-});
+// export const get60DaySecuritiesSuccess = (security: object): SecurityAction => ({
+//   type: GET_60_DAY_SECURITIES_SUCCESS,
+//   payload: security,
+// });
 
-export const get60DaySecuritiesFailure = (err: object): SecurityAction => ({
-  type: GET_60_DAY_SECURITIES_FAILURE,
-  payload: err,
-});
+// export const get60DaySecuritiesFailure = (err: object): SecurityAction => ({
+//   type: GET_60_DAY_SECURITIES_FAILURE,
+//   payload: err,
+// });
 
 // Get Security
 export const getSecurity = (securityId: string): SecurityAction => ({

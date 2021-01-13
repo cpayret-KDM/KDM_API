@@ -116,14 +116,14 @@ const securityRoutes = {
       roles: ['user', 'admin'],
       exact: true,
     },
-    {
-      path: '/securities/60-day',
-      name: '60 Day Report',
-      component: (props) => <SecurityDashboard {...props} report="60-day" />,
-      route: PrivateRoute,
-      roles: ['user', 'admin'],
-      exact: true,
-    },
+    // {
+    //   path: '/securities/60-day',
+    //   name: '60 Day Report',
+    //   component: (props) => <SecurityDashboard {...props} report="60-day" />,
+    //   route: PrivateRoute,
+    //   roles: ['user', 'admin'],
+    //   exact: true,
+    // },
     {
       path: '/securities/create',
       name: 'Create Security',
