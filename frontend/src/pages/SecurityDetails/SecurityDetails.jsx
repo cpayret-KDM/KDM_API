@@ -15,7 +15,7 @@ import { getSecurity, createSecurity, editSecurity, deleteSecurity, clearSecurit
 import { DATE_FORMAT, SECURITY_STATUS_MAP, PIPELINE_STATUS_MAP, PROPERTY_TYPE_MAP } from '../../helpers/utils';
 
 const SecurityDetails = (props) => {
-  const { loan = {}, loaded } = props;
+  const { security = {}, loaded } = props;
   const creating = (props.mode === 'create');
   const editing = (props.mode === 'edit');
   const viewing = !editing && !creating;
@@ -30,8 +30,8 @@ const SecurityDetails = (props) => {
   }, [creating, id]);
 
   // useEffect(() => {
-  //   setOriginationDate(loan.originationDate);
-  // }, [loan]);
+  //   setOriginationDate(security.originationDate);
+  // }, [security]);
 
   const today = new Date();
   const [originationDate, setOriginationDate] = useState(today);
@@ -51,11 +51,11 @@ const SecurityDetails = (props) => {
   const breadcrumb = ((mode) => {
     switch (mode) {
       case 'create':
-        return { label: 'Create New Security', path: '/loans/create' };
+        return { label: 'Create New Security', path: '/securities/create' };
       case 'edit':
-        return { label: 'Edit Security', path: `/loans/${id}/edit` };
+        return { label: 'Edit Security', path: `/securities/${id}/edit` };
       default:
-        return { label: 'Security Details', path: `/loans/${id}` };
+        return { label: 'Security Details', path: `/securities/${id}` };
     }
   })(props.mode);
 
@@ -74,7 +74,7 @@ const SecurityDetails = (props) => {
     if (errors.length !== 0) return;
 
     const newSecurity = {
-      ...loan,
+      ...security,
       ...values,
       originationDate: originationDate,
     };
@@ -87,7 +87,7 @@ const SecurityDetails = (props) => {
     }
   }
 
-  const handleDeleteSecurity = (loanId) => {
+  const handleDeleteSecurity = (securityId) => {
     setShowDeleteSecurityModal(true);
   }
 
@@ -128,7 +128,7 @@ const SecurityDetails = (props) => {
     <>
       <PageTitle
         breadCrumbItems={[
-          { label: 'Securities', path: '/loans/list' },
+          { label: 'Securities', path: '/securities/list' },
           { ...breadcrumb },
         ]}
         title={title}
@@ -140,7 +140,7 @@ const SecurityDetails = (props) => {
             <div className="text-center"><Spinner size="lg" color="primary" /></div>
           ) : (
               <AvForm onSubmit={submitSecurity}>
-                <SecurityActionButtons creating={creating} editing={editing} viewing={viewing} loanId={loan.id} handleDeleteSecurity={handleDeleteSecurity} isSaving={isSaving} />
+                <SecurityActionButtons creating={creating} editing={editing} viewing={viewing} securityId={security.id} handleDeleteSecurity={handleDeleteSecurity} isSaving={isSaving} />
                 <Card>
                   <CardBody>
                     <h4>Details</h4>
@@ -148,17 +148,17 @@ const SecurityDetails = (props) => {
                     <Row>
                       <Col sm={6}>
                         <AvGroup className="position-relative">
-                          <Label for="loanNumber">Note Number *</Label>
-                          <AvInput name="loanNumber" id="loanNumber" value={loan.loanNumber} required disabled={viewing} />
+                          <Label for="securityNumber">Note Number *</Label>
+                          <AvInput name="securityNumber" id="securityNumber" value={security.securityNumber} required disabled={viewing} />
                           <AvFeedback tooltip>Note Number is required</AvFeedback>
                         </AvGroup>
                       </Col>
 
                       <Col sm={6}>
                         <AvGroup className="position-relative">
-                          <Label for="loanRate">Note Rate *</Label>
+                          <Label for="securityRate">Note Rate *</Label>
                           <div className="input-group">
-                            <AvInput name="loanRate" id="loanRate" defaultValue={loan.loanRate} required disabled={viewing} />
+                            <AvInput name="securityRate" id="securityRate" defaultValue={security.securityRate} required disabled={viewing} />
                             <AvFeedback tooltip>Note Rate is required</AvFeedback>
                             <InputGroupAddon addonType="append">%</InputGroupAddon>
                           </div>
@@ -199,7 +199,7 @@ const SecurityDetails = (props) => {
                   </CardBody>
                 </Card>
 
-                {loan && loan.id && (<>
+                {security && security.id && (<>
                   <Card>
                     <CardBody>
                       <div className="d-flex justify-content-between">
@@ -210,7 +210,7 @@ const SecurityDetails = (props) => {
                       </div>
 
                       <Row>
-                        {loan?.properties?.map((property, i) => (
+                        {security?.properties?.map((property, i) => (
                           <Col sm={4} key={i}>
                             <Card>
                               <CardBody>
@@ -241,7 +241,7 @@ const SecurityDetails = (props) => {
                     </CardBody>
                   </Card>
                 </>)}
-                <SecurityActionButtons creating={creating} editing={editing} viewing={viewing} loanId={loan.id} handleDeleteSecurity={handleDeleteSecurity} isSaving={isSaving} />
+                <SecurityActionButtons creating={creating} editing={editing} viewing={viewing} securityId={security.id} handleDeleteSecurity={handleDeleteSecurity} isSaving={isSaving} />
               </AvForm>
             )}
         </Col>
@@ -252,29 +252,29 @@ const SecurityDetails = (props) => {
         toggle={toggleShowPropertyModal}
         mode={propertyMode}
         property={property}
-        loanId={loan?.id}
+        securityId={security?.id}
       />
       <ModalDeleteProperty
         isOpen={showDeletePropertyModal}
         toggle={toggleDeletePropertyModal}
         propertyId={property.id}
-        loanId={loan?.id}
+        securityId={security?.id}
       />
       <ModalDeleteSecurity
         isOpen={showDeleteSecurityModal}
         toggle={toggleDeleteSecurityModal}
-        loanId={loan?.id}
+        securityId={security?.id}
       />
     </>
   );
 };
 
-const SecurityActionButtons = ({ creating, editing, viewing, loanId, handleDeleteSecurity, isSaving }) => {
+const SecurityActionButtons = ({ creating, editing, viewing, securityId, handleDeleteSecurity, isSaving }) => {
   return (
     <div className="d-flex justify-content-end mb-3">
       {creating && (
         <>
-          <Link to="/loans/list" className="btn btn-secondary mr-2">Cancel</Link>
+          <Link to="/securities/list" className="btn btn-secondary mr-2">Cancel</Link>
           <Button type="submit" className="btn btn-primary">
             {isSaving
               ? (<Spinner size="sm" color="primary" />)
@@ -286,15 +286,15 @@ const SecurityActionButtons = ({ creating, editing, viewing, loanId, handleDelet
 
       {editing && (
         <>
-          <Link to={`/loans/${loanId}`} className="btn btn-secondary mr-2">Cancel</Link>
+          <Link to={`/securities/${securityId}`} className="btn btn-secondary mr-2">Cancel</Link>
           <Button type="submit" className="btn btn-primary">Save Changes</Button>
         </>
       )}
 
       {viewing && (
         <>
-          <Button className="btn btn-danger mr-2" onClick={(e) => handleDeleteSecurity(loanId)}>Delete Security</Button>
-          <Link to={`/loans/${loanId}/edit`} className="btn btn-primary">Edit Security</Link>
+          <Button className="btn btn-danger mr-2" onClick={(e) => handleDeleteSecurity(securityId)}>Delete Security</Button>
+          <Link to={`/securities/${securityId}/edit`} className="btn btn-primary">Edit Security</Link>
         </>
       )}
     </div>
