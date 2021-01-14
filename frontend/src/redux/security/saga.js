@@ -43,7 +43,7 @@ function* getSecurities({ payload: { securityNumber, size, page, sort } }) {
   // };
 
   try {
-    const response = yield call(fetchJSON, `${SERVER_URL}/security${params}`, options);
+    const response = yield call(fetchJSON, `${SERVER_URL}/msn${params}`, options);
     yield put(getSecuritiesSuccess(response));
   } catch (error) {
     let message;
@@ -102,7 +102,7 @@ function* getSecurity({ payload: { securityId } }) {
   };
 
   try {
-    const response = yield call(fetchJSON, `${SERVER_URL}/security/${securityId}`, options);
+    const response = yield call(fetchJSON, `${SERVER_URL}/msn/${securityId}`, options);
     yield put(getSecuritySuccess(response));
   } catch (error) {
     let message;
@@ -129,7 +129,7 @@ function* createSecurity({ payload: { security } }) {
   };
 
   try {
-    const response = yield call(fetchJSON, `${SERVER_URL}/security`, options);
+    const response = yield call(fetchJSON, `${SERVER_URL}/msn`, options);
     yield put(createSecuritySuccess(response));
   } catch (error) {
     let message;
@@ -156,7 +156,7 @@ function* editSecurity({ payload: { security } }) {
   };
 
   try {
-    const response = yield call(fetchJSON, `${SERVER_URL}/security/${security.id}`, options);
+    const response = yield call(fetchJSON, `${SERVER_URL}/msn/${security.id}`, options);
     yield put(editSecuritySuccess(response));
   } catch (error) {
     let message;
@@ -182,7 +182,7 @@ function* deleteSecurity({ payload: { securityId } }) {
   };
 
   try {
-    const response = yield call(fetchJSON, `${SERVER_URL}/security/${securityId}`, options);
+    const response = yield call(fetchJSON, `${SERVER_URL}/msn/${securityId}`, options);
     yield put(deleteSecuritySuccess(response));
   } catch (error) {
     let message;
