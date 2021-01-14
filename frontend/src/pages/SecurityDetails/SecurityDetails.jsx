@@ -148,19 +148,19 @@ const SecurityDetails = (props) => {
                     <Row>
                       <Col sm={6}>
                         <AvGroup className="position-relative">
-                          <Label for="loanNumber">Security Number *</Label>
+                          <Label for="loanNumber">Note Number *</Label>
                           <AvInput name="loanNumber" id="loanNumber" value={loan.loanNumber} required disabled={viewing} />
-                          <AvFeedback tooltip>Security Number is required</AvFeedback>
+                          <AvFeedback tooltip>Note Number is required</AvFeedback>
                         </AvGroup>
                       </Col>
 
                       <Col sm={6}>
                         <AvGroup className="position-relative">
-                          <Label for="initialAmount">Initial Amount *</Label>
+                          <Label for="loanRate">Note Rate *</Label>
                           <div className="input-group">
-                            <InputGroupAddon addonType="prepend">$</InputGroupAddon>
-                            <AvInput name="initialAmount" id="initialAmount" value={loan.initialAmount} required disabled={viewing} />
-                            <AvFeedback tooltip>Initial Amount is required</AvFeedback>
+                            <AvInput name="loanRate" id="loanRate" defaultValue={loan.loanRate} required disabled={viewing} />
+                            <AvFeedback tooltip>Note Rate is required</AvFeedback>
+                            <InputGroupAddon addonType="append">%</InputGroupAddon>
                           </div>
                         </AvGroup>
                       </Col>
@@ -169,28 +169,7 @@ const SecurityDetails = (props) => {
                     <Row>
                       <Col sm={6}>
                         <AvGroup className="position-relative">
-                          <Label for="dealName">Deal Name *</Label>
-                          <AvInput name="dealName" id="dealName" value={loan.dealName} required disabled={viewing} />
-                          <AvFeedback tooltip>Deal Name is required</AvFeedback>
-                        </AvGroup>
-                      </Col>
-
-                      <Col sm={6}>
-                        <AvGroup className="position-relative">
-                          <Label for="principalAmount">Principal Amount *</Label>
-                          <div className="input-group">
-                            <InputGroupAddon addonType="prepend">$</InputGroupAddon>
-                            <AvInput name="principalAmount" id="principalAmount" value={loan.principalAmount} required disabled={viewing} />
-                            <AvFeedback tooltip>Principal Amount is required</AvFeedback>
-                          </div>
-                        </AvGroup>
-                      </Col>
-                    </Row>
-
-                    <Row>
-                      <Col sm={6}>
-                        <AvGroup className="position-relative">
-                          <Label for="originationDate">Origination Date *</Label>
+                          <Label for="originationDate">Trade Date *</Label>
                           <div className="input-group">
                             <HyperDatepicker
                               hideAddon={true}
@@ -204,112 +183,15 @@ const SecurityDetails = (props) => {
 
                       <Col sm={6}>
                         <AvGroup className="position-relative">
-                          <Label for="EJRating">EJ Rating *</Label>
-                          <AvInput name="EJRating" id="EJRating" defaultValue={loan.EJRating} required disabled={viewing} />
-                          <AvFeedback tooltip>EJ Rating is required</AvFeedback>
-                        </AvGroup>
-                      </Col>
-                    </Row>
-
-                    <Row>
-                      <Col sm={6}>
-                        <AvGroup className="position-relative">
-                          <Label for="loanRate">Security Rate *</Label>
+                          <Label for="originationDate">Maturity Date *</Label>
                           <div className="input-group">
-                            <AvInput name="loanRate" id="loanRate" defaultValue={loan.loanRate} required disabled={viewing} />
-                            <AvFeedback tooltip>Security Rate is required</AvFeedback>
-                            <InputGroupAddon addonType="append">%</InputGroupAddon>
+                            <HyperDatepicker
+                              hideAddon={true}
+                              dateFormat="MM/dd/yyyy"
+                              selected={originationDate}
+                              onChange={handleDateChange}
+                            />
                           </div>
-                        </AvGroup>
-                      </Col>
-
-                      <Col sm={6}>
-                        <AvGroup className="position-relative">
-                          <Label for="KDMRating">KDM Rating *</Label>
-                          <AvInput name="KDMRating" id="KDMRating" value={loan.KDMRating} required disabled={viewing} />
-                          <AvFeedback tooltip>KDM Rating is required</AvFeedback>
-                        </AvGroup>
-                      </Col>
-                    </Row>
-
-                    <Row>
-                      <Col sm={6}>
-                        <AvGroup className="position-relative">
-                          <Label for="loanStatus">Security Status *</Label>
-                          <AvField
-                            name="loanStatus"
-                            type="select"
-                            required
-                            disabled={viewing}
-                            value={loan.loanStatus || 'PERFORMING'}
-                            className="custom-select"
-                          >
-                            {Object.entries(SECURITY_STATUS_MAP).map((status, i) =>
-                              (<option value={status[0]} key={i}>{status[1]}</option>)
-                            )}
-                          </AvField>
-                          <AvFeedback tooltip>Security Status is required</AvFeedback>
-                        </AvGroup>
-                      </Col>
-
-                      <Col sm={6}>
-                        <AvGroup className="position-relative">
-                          <Label for="pipelineStatus">Pipeline Status *</Label>
-                          <AvField
-                            name="pipelineStatus"
-                            type="select"
-                            required
-                            disabled={viewing}
-                            value={loan.pipelineStatus || 'NEW'}
-                            className="custom-select"
-                          >
-                            {Object.entries(PIPELINE_STATUS_MAP).map((status, i) =>
-                              (<option value={status[0]} key={i}>{status[1]}</option>)
-                            )}
-                          </AvField>
-                          <AvFeedback tooltip>Pipeline Status is required</AvFeedback>
-                        </AvGroup>
-                      </Col>
-                    </Row>
-
-                    <Row>
-                      <Col sm={6}>
-                        <AvGroup className="position-relative">
-                          <Label for="=">Security Term (months) *</Label>
-                          <AvInput name="loanTerm" id="loanTerm" value={0} required disabled={viewing} />
-                          {/* <AvField
-                          name="pipelineStatus"
-                          type="select"
-                          required
-                          disabled={viewing}
-                          value={loan.pipelineStatus || 'NEW'}
-                          className="custom-select"
-                        >
-                          {Object.entries(PIPELINE_STATUS_MAP).map((status, i) => 
-                            (<option value={status[0]} key={i}>{status[1]}</option>)
-                          )}
-                        </AvField> */}
-                          <AvFeedback tooltip>Pipeline Status is required</AvFeedback>
-                        </AvGroup>
-                      </Col>
-
-                      <Col sm={6}>
-                        <AvGroup className="position-relative">
-                          <Label for="=">Prepay (months) *</Label>
-                          <AvInput name="prepay" id="prepay" value={0} required disabled={viewing} />
-                          {/* <AvField
-                          name="pipelineStatus"
-                          type="select"
-                          required
-                          disabled={viewing}
-                          value={loan.pipelineStatus || 'NEW'}
-                          className="custom-select"
-                        >
-                          {Object.entries(PIPELINE_STATUS_MAP).map((status, i) => 
-                            (<option value={status[0]} key={i}>{status[1]}</option>)
-                          )}
-                        </AvField> */}
-                          <AvFeedback tooltip>Pipeline Status is required</AvFeedback>
                         </AvGroup>
                       </Col>
                     </Row>
