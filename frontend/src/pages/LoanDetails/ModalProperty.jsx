@@ -60,7 +60,7 @@ const ModalProperty = (props) => {
             <Col sm={6}>
               <AvGroup className="position-relative">
                 <Label for="name">Name</Label>
-                <AvInput name="name" id="name" value={property?.name} />
+                <AvInput name="name" id="name" value={property?.address?.name} />
               </AvGroup>
             </Col>
             <Col sm={6}>

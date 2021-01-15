@@ -18,6 +18,9 @@ public interface LoanRepository extends JpaRepository<Loan, Long>, JpaSpecificat
 	@Query("SELECT l FROM Loan l LEFT JOIN FETCH Property p ON l.id = p.loanId WHERE l.id = :id")
 	Optional<Loan> getLoanById(@Param("id") Long id);
 	
+	// query method
+	Optional<Loan> findBySponsorID(Long sponsorID);
+	
 	// query is defined in jpa-named-queries.properties
 	@Query(nativeQuery=true)
 	Page<Loan> findAniversaryNextDays(int days, Pageable page);

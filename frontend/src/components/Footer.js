@@ -16,9 +16,7 @@ const Footer = () => {
 
                         <Col md={6}>
                             <div className="text-md-right footer-links d-none d-md-block">
-                                <a href="/">Privacy Policy</a>
-                                <a href="/">Code of Ethics</a>
-                                <a href="/">Contact Us</a>
+                                <a href="/contact">Contact Us</a>
                             </div>
                         </Col>
                     </Row>

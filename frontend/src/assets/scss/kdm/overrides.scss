@@ -72,6 +72,19 @@ a {
   color: $darkBlue !important;
 }
 
+.react-bootstrap-table {
+  .table th, .table td {
+    padding: .25rem;
+  }
+
+  p {
+     margin-bottom:.25rem;
+  }
+
+  #date-filter-column-maturityDate {
+    width: 160px;
+  }
+}
 
 
 @media (min-width: 992px) {

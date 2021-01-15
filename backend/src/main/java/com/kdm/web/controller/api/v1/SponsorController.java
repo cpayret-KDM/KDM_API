@@ -36,6 +36,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.kdm.web.data.repository.SponsorRepository;
 import com.kdm.web.model.Sponsor;
+import com.kdm.web.service.LoanService;
 import com.kdm.web.util.error.ErrorResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -61,6 +62,9 @@ public class SponsorController {
 	
 	@Autowired
 	private SponsorRepository sponsorRepository;
+	
+	@Autowired
+	private LoanService loanService;
 	
 	@Operation(
 		summary = "Get list of sponsors according to search criteria and pagination options", 
@@ -183,7 +187,7 @@ public class SponsorController {
 			@ApiResponse(responseCode = "404", description = "sponsor not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
 	)
 	@ResponseBody
-	@PutMapping(path = "/{sposorId}")
+	@PutMapping(path = "/{sponsorId}")
 	@Transactional
 	public ResponseEntity<Sponsor> updateSponsor(@PathVariable("sponsorId") Long sponsorId, @RequestBody @Valid Sponsor sponsor, BindingResult bindingResult) throws BindException {
 		
@@ -202,7 +206,7 @@ public class SponsorController {
 					messageSource.getMessage("controller.entity_no_exists", Arrays.array(sponsorId), Locale.US));
 		}
 		
-		Sponsor updatedSponsor = entityManager.merge(sponsor);
+		Sponsor updatedSponsor = loanService.updateSponsor(sponsor);
 		
 		return new ResponseEntity<Sponsor>(updatedSponsor, OK);
 	}
@@ -226,7 +230,8 @@ public class SponsorController {
 					messageSource.getMessage("controller.entity_no_exists", Arrays.array(sponsorId), Locale.US));
 		} 
 		
-		sponsorRepository.delete(sponsor.get());
+		
+		loanService.deleteSponsor(sponsor.get());
 		
 		return new ResponseEntity<Void>(OK);
 	}

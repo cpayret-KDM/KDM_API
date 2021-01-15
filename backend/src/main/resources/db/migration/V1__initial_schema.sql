@@ -24,7 +24,7 @@ CREATE SEQUENCE "public"."Address_addressID_seq"
 INCREMENT 1
 MINVALUE  1
 MAXVALUE 2147483647
-START 1
+start 1000000
 CACHE 1;
 -- ALTER SEQUENCE "public"."Address_addressID_seq" OWNER TO "cs_korth";
 
@@ -36,7 +36,7 @@ CREATE SEQUENCE "public"."Appraisal_appraisalID_seq"
 INCREMENT 1
 MINVALUE  1
 MAXVALUE 2147483647
-START 1
+start 1000000
 CACHE 1;
 -- ALTER SEQUENCE "public"."Appraisal_appraisalID_seq" OWNER TO "cs_korth";
 
@@ -48,7 +48,7 @@ CREATE SEQUENCE "public"."Borrower_borrowerId_seq"
 INCREMENT 1
 MINVALUE  1
 MAXVALUE 2147483647
-START 1
+start 1000000
 CACHE 1;
 -- ALTER SEQUENCE "public"."Borrower_borrowerId_seq" OWNER TO "cs_korth";
 
@@ -60,7 +60,7 @@ CREATE SEQUENCE "public"."CUSIP_cusipID_seq"
 INCREMENT 1
 MINVALUE  1
 MAXVALUE 2147483647
-START 1
+start 1000000
 CACHE 1;
 -- ALTER SEQUENCE "public"."CUSIP_cusipID_seq" OWNER TO "cs_korth";
 
@@ -72,7 +72,7 @@ CREATE SEQUENCE "public"."Loan_loanID_seq"
 INCREMENT 1
 MINVALUE  1
 MAXVALUE 2147483647
-START 1
+start 1000000
 CACHE 1;
 -- ALTER SEQUENCE "public"."Loan_loanID_seq" OWNER TO "cs_korth";
 
@@ -84,7 +84,7 @@ CREATE SEQUENCE "public"."MSN_msnID_seq"
 INCREMENT 1
 MINVALUE  1
 MAXVALUE 2147483647
-START 1
+start 1000000
 CACHE 1;
 -- ALTER SEQUENCE "public"."MSN_msnID_seq" OWNER TO "cs_korth";
 
@@ -96,7 +96,7 @@ CREATE SEQUENCE "public"."Property_propertyID_seq"
 INCREMENT 1
 MINVALUE  1
 MAXVALUE 2147483647
-START 1
+start 1000000
 CACHE 1;
 -- ALTER SEQUENCE "public"."Property_propertyID_seq" OWNER TO "cs_korth";
 
@@ -108,7 +108,7 @@ CREATE SEQUENCE "public"."Rating_ratingID_seq"
 INCREMENT 1
 MINVALUE  1
 MAXVALUE 2147483647
-START 1
+start 1000000
 CACHE 1;
 -- ALTER SEQUENCE "public"."Rating_ratingID_seq" OWNER TO "cs_korth";
 
@@ -120,7 +120,7 @@ CREATE SEQUENCE "public"."Sponsor_sponsorID_seq"
 INCREMENT 1
 MINVALUE  1
 MAXVALUE 2147483647
-START 1
+start 1000000
 CACHE 1;
 -- ALTER SEQUENCE "public"."Sponsor_sponsorID_seq" OWNER TO "cs_korth";
 
@@ -140,15 +140,6 @@ CREATE TABLE "public"."Address" (
 -- ALTER TABLE "public"."Address" OWNER TO "cs_korth";
 
 -- ----------------------------
--- Records of Address
--- ----------------------------
-BEGIN;
-INSERT INTO "public"."Address" VALUES (1, '4771 78th Avenue', NULL, 'Miami', 'fl', '33101');
-INSERT INTO "public"."Address" VALUES (2, '14120 Palm Street', NULL, 'Miami', 'fl', '33101');
-INSERT INTO "public"."Address" VALUES (3, '8440 Grand Canal Dr', NULL, 'Miami', 'fl', '33101');
-COMMIT;
-
--- ----------------------------
 -- Table structure for Appraisal
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."Appraisal";
@@ -160,15 +151,6 @@ CREATE TABLE "public"."Appraisal" (
 )
 ;
 -- ALTER TABLE "public"."Appraisal" OWNER TO "cs_korth";
-
--- ----------------------------
--- Records of Appraisal
--- ----------------------------
-BEGIN;
-INSERT INTO "public"."Appraisal" VALUES (1, 1, 960000.00, '2020-10-27 13:34:30');
-INSERT INTO "public"."Appraisal" VALUES (2, 2, 960000.00, '2020-10-27 13:35:03');
-INSERT INTO "public"."Appraisal" VALUES (3, 3, 1605000.00, '2020-10-27 13:56:37');
-COMMIT;
 
 -- ----------------------------
 -- Table structure for Borrower
@@ -187,15 +169,6 @@ CREATE TABLE "public"."Borrower" (
 -- ALTER TABLE "public"."Borrower" OWNER TO "cs_korth";
 
 -- ----------------------------
--- Records of Borrower
--- ----------------------------
-BEGIN;
-INSERT INTO "public"."Borrower" VALUES (1, NULL, '4771 78th Avenue LLC', NULL, NULL, NULL, NULL);
-INSERT INTO "public"."Borrower" VALUES (2, NULL, '14120 Palm Street LLC', NULL, NULL, NULL, NULL);
-INSERT INTO "public"."Borrower" VALUES (3, NULL, '8400 Grand Canal Dr LLC', NULL, NULL, NULL, NULL);
-COMMIT;
-
--- ----------------------------
 -- Table structure for CUSIP
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."CUSIP";
@@ -208,14 +181,6 @@ CREATE TABLE "public"."CUSIP" (
 )
 ;
 -- ALTER TABLE "public"."CUSIP" OWNER TO "cs_korth";
-
--- ----------------------------
--- Records of CUSIP
--- ----------------------------
-BEGIN;
-INSERT INTO "public"."CUSIP" VALUES (1, NULL, 'AI', NULL, '50067AAC6');
-INSERT INTO "public"."CUSIP" VALUES (2, NULL, 'AI', NULL, '50067AAD4');
-COMMIT;
 
 -- ----------------------------
 -- Table structure for Loan
@@ -241,14 +206,6 @@ CREATE TABLE "public"."Loan" (
 -- ALTER TABLE "public"."Loan" OWNER TO "cs_korth";
 
 -- ----------------------------
--- Records of Loan
--- ----------------------------
-BEGIN;
-INSERT INTO "public"."Loan" VALUES (1, NULL, 1, 'KDM2017-L001', NULL, NULL, '2027-05-01 00:00:01', NULL, 'PERFORMING', 1059000.00, 'CLOSED', 53.70, NULL, 5.25);
-INSERT INTO "public"."Loan" VALUES (2, NULL, NULL, 'KDM2017-L002', NULL, NULL, '2020-12-21 00:00:01', NULL, 'PERFORMING', 950000.00, 'CLOSED', 59.19, NULL, 6.50);
-COMMIT;
-
--- ----------------------------
 -- Table structure for MSN
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."MSN";
@@ -262,14 +219,6 @@ CREATE TABLE "public"."MSN" (
 )
 ;
 -- ALTER TABLE "public"."MSN" OWNER TO "cs_korth";
-
--- ----------------------------
--- Records of MSN
--- ----------------------------
-BEGIN;
-INSERT INTO "public"."MSN" VALUES (1, 1, 'KDM2017-N001', NULL, '2017-05-01 00:00:00', 5.00);
-INSERT INTO "public"."MSN" VALUES (2, 2, 'KDM2017-N002', NULL, '2020-12-21 00:00:01', 6.00);
-COMMIT;
 
 -- ----------------------------
 -- Table structure for Property
@@ -286,15 +235,6 @@ CREATE TABLE "public"."Property" (
 -- ALTER TABLE "public"."Property" OWNER TO "cs_korth";
 
 -- ----------------------------
--- Records of Property
--- ----------------------------
-BEGIN;
-INSERT INTO "public"."Property" VALUES (1, 1, 1, 1, 'multi-family');
-INSERT INTO "public"."Property" VALUES (2, 2, 1, 2, 'multi-family');
-INSERT INTO "public"."Property" VALUES (3, 3, 2, 3, 'multi-family');
-COMMIT;
-
--- ----------------------------
 -- Table structure for Rating
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."Rating";
@@ -307,14 +247,6 @@ CREATE TABLE "public"."Rating" (
 )
 ;
 -- ALTER TABLE "public"."Rating" OWNER TO "cs_korth";
-
--- ----------------------------
--- Records of Rating
--- ----------------------------
-BEGIN;
-INSERT INTO "public"."Rating" VALUES (1, 1, '2020-10-27 13:38:36', 'EJ', 'A+');
-INSERT INTO "public"."Rating" VALUES (2, 2, '2020-10-27 13:55:43', 'EJ', 'A');
-COMMIT;
 
 -- ----------------------------
 -- Table structure for Sponsor
@@ -333,74 +265,6 @@ CREATE TABLE "public"."Sponsor" (
 ;
 -- ALTER TABLE "public"."Sponsor" OWNER TO "cs_korth";
 
--- ----------------------------
--- Records of Sponsor
--- ----------------------------
-BEGIN;
-COMMIT;
-
--- ----------------------------
--- Alter sequences owned by
--- ----------------------------
-ALTER SEQUENCE "public"."Address_addressID_seq"
-OWNED BY "public"."Address"."addressID";
-SELECT setval('"public"."Address_addressID_seq"', 4, true);
-
--- ----------------------------
--- Alter sequences owned by
--- ----------------------------
-ALTER SEQUENCE "public"."Appraisal_appraisalID_seq"
-OWNED BY "public"."Appraisal"."appraisalID";
-SELECT setval('"public"."Appraisal_appraisalID_seq"', 4, true);
-
--- ----------------------------
--- Alter sequences owned by
--- ----------------------------
-ALTER SEQUENCE "public"."Borrower_borrowerId_seq"
-OWNED BY "public"."Borrower"."borrowerId";
-SELECT setval('"public"."Borrower_borrowerId_seq"', 4, true);
-
--- ----------------------------
--- Alter sequences owned by
--- ----------------------------
-ALTER SEQUENCE "public"."CUSIP_cusipID_seq"
-OWNED BY "public"."CUSIP"."cusipID";
-SELECT setval('"public"."CUSIP_cusipID_seq"', 3, true);
-
--- ----------------------------
--- Alter sequences owned by
--- ----------------------------
-ALTER SEQUENCE "public"."Loan_loanID_seq"
-OWNED BY "public"."Loan"."loanID";
-SELECT setval('"public"."Loan_loanID_seq"', 3, true);
-
--- ----------------------------
--- Alter sequences owned by
--- ----------------------------
-ALTER SEQUENCE "public"."MSN_msnID_seq"
-OWNED BY "public"."MSN"."msnID";
-SELECT setval('"public"."MSN_msnID_seq"', 3, true);
-
--- ----------------------------
--- Alter sequences owned by
--- ----------------------------
-ALTER SEQUENCE "public"."Property_propertyID_seq"
-OWNED BY "public"."Property"."propertyID";
-SELECT setval('"public"."Property_propertyID_seq"', 4, true);
-
--- ----------------------------
--- Alter sequences owned by
--- ----------------------------
-ALTER SEQUENCE "public"."Rating_ratingID_seq"
-OWNED BY "public"."Rating"."ratingID";
-SELECT setval('"public"."Rating_ratingID_seq"', 3, true);
-
--- ----------------------------
--- Alter sequences owned by
--- ----------------------------
-ALTER SEQUENCE "public"."Sponsor_sponsorID_seq"
-OWNED BY "public"."Sponsor"."sponsorID";
-SELECT setval('"public"."Sponsor_sponsorID_seq"', 2, false);
 
 -- ----------------------------
 -- Primary Key structure for table Address

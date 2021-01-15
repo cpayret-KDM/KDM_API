@@ -29,4 +29,16 @@ public interface LoanService {
 	 * @return
 	 */
 	Sponsor createSponsor(Loan loan, Sponsor sponsor);
+	
+	/**
+	 * updates the given sponsor
+	 * @param sponsor
+	 * @return
+	 */
+	Sponsor updateSponsor(Sponsor sponsor);
+	
+	/**
+	 * deletes the given sponsor, and take care of relationship with other entities
+	 */
+	void deleteSponsor(Sponsor sponsor);
 }

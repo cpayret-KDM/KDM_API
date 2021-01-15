@@ -4,3 +4,16 @@
 .report-type {
   width: 20%;
 }
+
+.app-search {
+  display: none !important;
+}
+
+.loan-list-table {
+  tfoot {
+    th {
+   
+      background-color: lighten(#efefef, 4%);
+    }
+  }
+}
