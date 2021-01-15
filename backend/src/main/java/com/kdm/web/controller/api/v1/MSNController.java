@@ -3,6 +3,7 @@ package com.kdm.web.controller.api.v1;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
+import java.time.ZonedDateTime;
 import java.util.Locale;
 
 import javax.persistence.EntityManager;
@@ -31,8 +32,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.kdm.web.data.repository.MSNRatingRepository;
 import com.kdm.web.data.repository.MSNRepository;
 import com.kdm.web.model.MSN;
+import com.kdm.web.model.MSNRating;
+import com.kdm.web.model.Rating;
+import com.kdm.web.model.util.Note;
 import com.kdm.web.service.EntityUtil;
 import com.kdm.web.util.error.ErrorResponse;
 
@@ -60,6 +65,9 @@ public class MSNController {
 	
 	@Autowired
 	private EntityUtil entityUtil;
+	
+	@Autowired
+	private MSNRatingRepository msnRatingRepository;
 
 	@Operation(
 		summary = "Get list of security notes according to search criteria and pagination options", 
@@ -171,6 +179,34 @@ public class MSNController {
 		MSN updatedMSN = entityManager.merge(msn);
 		
 		return new ResponseEntity<MSN>(updatedMSN, OK);
+	}
+	
+	@Operation(summary = "assign a rating to a msn", tags = "msn", responses = {
+			@ApiResponse(responseCode = "200", description = "rating assigned"),
+			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+			@ApiResponse(responseCode = "404", description = "msn or rating not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
+	)
+	@ResponseBody
+	@PutMapping(path = "/{msnId}/rating/{ratingId}")
+	public ResponseEntity<MSN> assignRating(@PathVariable("msnId") Long msnId, @PathVariable("ratingId") Long ratingId, @RequestBody @Valid Note note, BindingResult bindingResult) throws Exception {
+		MSN msn = entityUtil.tryGetEntity(MSN.class, msnId);
+		entityManager.detach(msn);
+		
+		Rating rating = entityUtil.tryGetEntity(Rating.class, ratingId);
+		
+		MSNRating msnRtng = MSNRating.builder()
+				.msn(msn)
+				.msnId(msnId)
+				.rating(rating)
+				.ratingId(ratingId)
+				.note(note.toString())
+				.date(ZonedDateTime.now())
+				.build();
+		
+		
+		msnRtng = msnRatingRepository.saveAndFlush(msnRtng);
+
+		return this.getMSN(msnId);
 	}
 	
 	@Operation(summary = "delete a msn", tags = "msn", responses = {

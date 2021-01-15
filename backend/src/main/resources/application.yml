@@ -26,10 +26,10 @@ spring:
     properties:
       hibernate:
         globally_quoted_identifiers: true
-#        format_sql: true
+        format_sql: true
         temp: 
           use_jdbc_metadata_defaults: false
-#    show-sql: true
+    show-sql: true
   main:
     banner-mode: "off"
   output:
@@ -43,7 +43,8 @@ spring:
 logging:
   pattern:
     console: ${CONSOLE_LOG_PATTERN:%clr(%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(---){faint} %clr([%15.15t]){faint} %clr(%-70.70logger{69}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%xEx}}
-#  level:
+  level:
+    com.kdm.web.controller.RestResponseEntityExceptionHandler: TRACE
 #    root: DEBUG
 #    org.hibernate.SQL: DEBUG
 #    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
