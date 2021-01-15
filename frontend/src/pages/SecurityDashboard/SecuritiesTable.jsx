@@ -52,7 +52,7 @@ const SecuritiesTable = (props) => {
     },
     {
       dataField: 'securityNumber',
-      text: 'Ticker',
+      text: 'Ticker (Note Number)',
       sort: true,
       style: { width: '140px' },
       filter: textFilter({
@@ -61,101 +61,34 @@ const SecuritiesTable = (props) => {
       footer: '',
     },
     {
-      dataField: 'property',
-      text: 'Property',
+      dataField: 'securityRate',
+      text: 'Note Rate',
       sort: false,
-      style: { minWidth: '350px' },
+      style: { width: '85px', textAlign: 'right' },
+      headerStyle: { textAlign: 'right' },
+      footerStyle: { textAlign: 'right' },
       filter: textFilter({
         placeholder: ' ',
-        onFilter: (filterValue, data) => {
-          if (!filterValue) return data;
-
-          return data.filter(security => {
-            if (!security.properties || !security.properties.length) return false;
-            const addresses = [];
-
-            security.properties.forEach((property) => {
-              const address = property.address;
-              const addressStr = `${address.name} ${address.street1} ${address.street2} ${address.city}, ${address.state} ${address.zip}`;
-              addresses.push(addressStr.toLowerCase());
-            });
-
-            return addresses.some(address => address.includes(filterValue.toLowerCase()));
-          })
-        },
+        onFilter: (filterValue, data) => percentageFilter(filterValue, data, 'securityRate'),
       }),
-      formatter: (cell, row) => {
-        if (row.properties.length === 0) return '';
-        return (
-          <>
-            {row.properties.map((property, i) => {
-              return (
-                <p key={i}>
-                  {property.address.name && (<>{property.address.name}<br /></>)}
-                  {property.address.street1}
-                  {property.address.street2 && (<>{property.address.street2}</>)}, {property.address.city} {property.address.state}, {property.address.zip}
-                  {(i + 1) === row.properties.length ? ('') : (<br />)}
-                </p>
-              );
-            })}
-          </>
-        );
-      },
-      footer: '',
+      formatter: (cell, row) => (cell)
+        ? (<>{formatPercentage(cell)}%</>)
+        : (<></>),
+      footer: (columnData, column, columnIndex) => `${formatPercentage(columnData.reduce((acc, item) => acc + item, 0) / (!!columnData.length ? columnData.length : 1))}%`,
     },
     {
-      dataField: 'propertyType',
-      text: 'Property Type',
+      dataField: 'tradeDate',
+      text: 'Trade Date',
       sort: true,
       style: { width: '130px' },
-      filter: selectFilter({
-        options: propertyTypeOptions,
-        placeholder: 'All',
-        onFilter: (filterValue, data) => {
-          if (!filterValue) return data;
-
-          return data.filter(security => {
-            if (!security.properties || !security.properties.length) return false;
-
-            return security.properties.some(property => property.type === filterValue);
-          })
-        }
-      }),
-      formatter: (cell, row) => {
-        if (row.properties.length === 0) return '';
-        return (
-          <>
-            {row.properties.map((property, i) => {
-              return (
-                <span key={i}>
-                  {PROPERTY_TYPE_MAP[property.type]}
-                  {(i + 1) === row.properties.length ? ('') : (<br />)}
-                  {' '}<br />
-                </span>
-              );
-            })}
-          </>
-        );
-      },
-      footer: '',
-    },
-    {
-      dataField: 'KDMRating',
-      text: 'KDM / EJ Rating',
-      sort: false,
-      style: { width: '70px' },
-      formatter: (cell, row) => formatRatingString(row),
-      filter: textFilter({
+      filter: dateFilter({
         placeholder: ' ',
-        onFilter: (filterValue, data) => {
-          if (!filterValue) return data;
-
-          return data.filter(security => {
-            const ratingStr = formatRatingString(security).toLowerCase();
-            return ratingStr.includes(filterValue.toLowerCase());
-          });
-        }
+        withoutEmptyComparatorOption: true,  // dont render empty option for comparator
+        comparators: [Comparator.EQ],
       }),
+      formatter: (cell) => (cell)
+        ? (<>{moment(cell).format(DATE_FORMAT)}</>)
+        : (<></>),
       footer: '',
     },
     {
@@ -172,117 +105,7 @@ const SecuritiesTable = (props) => {
         ? (<>{moment(cell).format(DATE_FORMAT)}</>)
         : (<></>),
       footer: '',
-    },
-    {
-      dataField: 'securityStatus',
-      text: 'Security Status',
-      sort: true,
-      style: { width: '120px' },
-      filter: selectFilter({
-        options: securityStatusOptions,
-        placeholder: 'All',
-        onFilter: (filterValue, data) => {
-          if (!filterValue) return data;
-
-          // return data.filter(security => {
-          //   if (!security.properties || !security.properties.length) return false;
-
-          //   return security.properties.some(property => property.type === filterValue);
-          // })
-        }
-      }),
-      formatter: (cell) => (<>{SECURITY_STATUS_MAP[cell]}</>),
-      footer: '',
-    },
-    {
-      dataField: 'initialAmount',
-      text: 'Security Amount',
-      sort: false,
-      style: { width: '110px', textAlign: 'right' },
-      headerStyle: { textAlign: 'right' },
-      footerStyle: { textAlign: 'right' },
-      filter: textFilter({
-        placeholder: ' ',
-        onFilter: (filterValue, data) => currencyFilter(filterValue, data, 'initialAmount'),
-      }),
-      formatter: (cell) => (cell)
-        ? (<>${formatCurrency(cell)}</>)
-        : (<></>),
-      footer: (columnData, column, columnIndex) => `$${formatCurrency(columnData.reduce((acc, item) => acc + item, 0))}`,
-    },
-    // {
-    //   dataField: 'appraisedValue',
-    //   text: 'Appraised Value',
-    //   sort: false,
-    // },
-    // {
-    //   dataField: 'appraisalDate',
-    //   text: 'Appraisal Date',
-    //   sort: false,
-    // },
-    // {
-    //   dataField: '',
-    //   text: 'Principal Balance',
-    //   sort: false,
-    // },
-    {
-      dataField: 'ltv',
-      text: 'LTV',
-      sort: false,
-      style: { width: '85px', textAlign: 'right' },
-      headerStyle: { textAlign: 'right' },
-      footerStyle: { textAlign: 'right' },
-      filter: textFilter({
-        placeholder: ' ',
-        onFilter: (filterValue, data) => percentageFilter(filterValue, data, 'ltv'),
-      }),
-      formatter: (cell, row) => (cell)
-        ? (<>{formatPercentage(cell)}%</>)
-        : (<></>),
-      footer: (columnData, column, columnIndex) => `${formatPercentage(columnData.reduce((acc, item) => acc + item, 0) / (!!columnData.length ? columnData.length : 1))}%`,
-    },
-    {
-      dataField: 'securityRate',
-      text: 'Security Rate',
-      sort: false,
-      style: { width: '85px', textAlign: 'right' },
-      headerStyle: { textAlign: 'right' },
-      footerStyle: { textAlign: 'right' },
-      filter: textFilter({
-        placeholder: ' ',
-        onFilter: (filterValue, data) => percentageFilter(filterValue, data, 'securityRate'),
-      }),
-      formatter: (cell, row) => (cell)
-        ? (<>{formatPercentage(cell)}%</>)
-        : (<></>),
-      footer: (columnData, column, columnIndex) => `${formatPercentage(columnData.reduce((acc, item) => acc + item, 0) / (!!columnData.length ? columnData.length : 1))}%`,
-    },
-    // {
-    //   dataField: 'noteRate',
-    //   text: 'Note Rate',
-    //   sort: false,
-    // },
-    {
-      dataField: 'spread',
-      text: 'Spread',
-      sort: false,
-      // value is securityRate - noteRate, Diego will provide this
-    },
-    // {
-    //   dataField: 'cusip',
-    //   text: 'CUSIP',
-    //   sort: false,
-    // },
-    // {
-    //   dataField: 'annualSpread',
-    //   text: 'Annual Spread',
-    //   sort: false,
-    // },
-    // {
-    //   dataField: 'monthlySpread',
-    //   text: 'Monthly Spread',
-    //   sort: false,
-    // },
+    }
   ];
 
   const title = ((report) => {
