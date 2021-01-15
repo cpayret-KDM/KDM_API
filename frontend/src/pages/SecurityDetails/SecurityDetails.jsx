@@ -148,17 +148,17 @@ const SecurityDetails = (props) => {
                     <Row>
                       <Col sm={6}>
                         <AvGroup className="position-relative">
-                          <Label for="securityNumber">Note Number *</Label>
-                          <AvInput name="securityNumber" id="securityNumber" value={security.securityNumber} required disabled={viewing} />
+                          <Label for="number">Note Number *</Label>
+                          <AvInput name="number" id="number" value={security.number} required disabled={viewing} />
                           <AvFeedback tooltip>Note Number is required</AvFeedback>
                         </AvGroup>
                       </Col>
 
                       <Col sm={6}>
                         <AvGroup className="position-relative">
-                          <Label for="securityRate">Note Rate *</Label>
+                          <Label for="noteRate">Note Rate *</Label>
                           <div className="input-group">
-                            <AvInput name="securityRate" id="securityRate" defaultValue={security.securityRate} required disabled={viewing} />
+                            <AvInput name="noteRate" id="noteRate" defaultValue={security.noteRate} required disabled={viewing} />
                             <AvFeedback tooltip>Note Rate is required</AvFeedback>
                             <InputGroupAddon addonType="append">%</InputGroupAddon>
                           </div>
@@ -169,19 +169,24 @@ const SecurityDetails = (props) => {
                     <Row>
                       <Col sm={6}>
                         <AvGroup className="position-relative">
-                          <Label for="originationDate">Trade Date *</Label>
+                          <Label for="tradeDate">Trade Date *</Label>
                           <div className="input-group">
-                            <HyperDatepicker
-                              hideAddon={true}
-                              dateFormat="MM/dd/yyyy"
-                              selected={originationDate}
-                              onChange={handleDateChange}
-                            />
+                            <AvInput name="tradeDate" id="tradeDate" defaultValue={security.tradeDate} required disabled={viewing} />
+                            <AvFeedback tooltip>Trade Date is required</AvFeedback>
                           </div>
                         </AvGroup>
                       </Col>
-
+                      {/* (Ryan) attempting to fix maturityDate field */}
                       <Col sm={6}>
+                        <AvGroup className="position-relative">
+                          <Label for="maturityDate">Maturity Date *</Label>
+                          <div className="input-group">
+                            <AvInput name="maturityDate" id="maturityDate" defaultValue={security.maturityDate} required disabled={viewing} />
+                            <AvFeedback tooltip>Maturity Date is required</AvFeedback>
+                          </div>
+                        </AvGroup>
+                      </Col>
+                      {/* <Col sm={6}>
                         <AvGroup className="position-relative">
                           <Label for="originationDate">Maturity Date *</Label>
                           <div className="input-group">
@@ -193,54 +198,13 @@ const SecurityDetails = (props) => {
                             />
                           </div>
                         </AvGroup>
-                      </Col>
+                      </Col> */}
                     </Row>
 
                   </CardBody>
                 </Card>
 
-                {security && security.id && (<>
-                  <Card>
-                    <CardBody>
-                      <div className="d-flex justify-content-between">
-                        <h4>Properties</h4>
-                        <div className="">
-                          <Button className="btn btn-secondary" onClick={() => handleAddNewProperty()}>Add New Property</Button>
-                        </div>
-                      </div>
 
-                      <Row>
-                        {security?.properties?.map((property, i) => (
-                          <Col sm={4} key={i}>
-                            <Card>
-                              <CardBody>
-                                <p>
-                                  {property.name && (<h5>{property.name}</h5>)}
-                                  <strong>{property.address.street1}</strong><br />
-                                  {property.address.street2 && (<>{property.address.street2}<br /></>)}
-                                  {property.address.city}, <span className="text-uppercase">{property.address.state}</span> {property.address.zip}<br />
-                                  <i>{PROPERTY_TYPE_MAP[property.type]}</i>
-                                </p>
-                                <p className="mb-0">
-                                  <Button className="btn btn-secondary mr-2" onClick={() => handleEditProperty(property)}>Edit</Button>
-                                  <Button className="btn btn-danger" onClick={() => handleDeleteProperty(property)}>Delete</Button>
-                                </p>
-                              </CardBody>
-                            </Card>
-                          </Col>
-                        ))}
-                      </Row>
-
-                      {/* <PropertyMap /> */}
-                    </CardBody>
-                  </Card>
-
-                  <Card>
-                    <CardBody>
-                      <h4>Sponsor</h4>
-                    </CardBody>
-                  </Card>
-                </>)}
                 <SecurityActionButtons creating={creating} editing={editing} viewing={viewing} securityId={security.id} handleDeleteSecurity={handleDeleteSecurity} isSaving={isSaving} />
               </AvForm>
             )}
