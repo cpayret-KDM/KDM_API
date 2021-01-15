@@ -420,7 +420,14 @@ const LoanActionButtons = ({ creating, editing, viewing, loanId, handleDeleteLoa
 }
 
 const mapStateToProps = state => {
-  return state.Loan;
+  const { 
+    loan, 
+    loaded
+  } = state.Loan;
+  return {
+    loan,
+    loaded
+  };
 };
 
 export default connect(
