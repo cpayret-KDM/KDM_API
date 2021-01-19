@@ -55,3 +55,9 @@ logging:
 kdm:
   api:
     allowedOrigins: http://localhost:8080,http://localhost:3000
+tmo:
+  api:
+    url: https://absws.com
+# The following value should be send from command line or environment variable
+    token:
+    database: Korth Direct Mortgage Servicing
