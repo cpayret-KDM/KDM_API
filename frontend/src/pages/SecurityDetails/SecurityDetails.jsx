@@ -204,7 +204,7 @@ const SecurityDetails = (props) => {
                   </CardBody>
                 </Card>
 
-
+                {/* verified to work in KDM-97-update-delete-new-security*/}
                 <SecurityActionButtons creating={creating} editing={editing} viewing={viewing} securityId={security.id} handleDeleteSecurity={handleDeleteSecurity} isSaving={isSaving} />
               </AvForm>
             )}
@@ -248,6 +248,7 @@ const SecurityActionButtons = ({ creating, editing, viewing, securityId, handleD
         </>
       )}
 
+      {/* verified to work in KDM-97-update-delete-new-security*/}
       {editing && (
         <>
           <Link to={`/securities/${securityId}`} className="btn btn-secondary mr-2">Cancel</Link>
