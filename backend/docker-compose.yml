@@ -7,6 +7,7 @@ services:
       - spring.datasource.username=dbusername
       - spring.datasource.password=dbpassword
       - spring.flyway.enabled=true
+      - spring.profiles.active=no_kdm_security
     build:
         context: ./
         dockerfile: "Dockerfile"
