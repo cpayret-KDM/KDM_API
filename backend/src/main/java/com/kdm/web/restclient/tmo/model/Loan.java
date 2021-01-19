@@ -16,4 +16,10 @@ public class Loan {
 	
 	@JsonProperty("SortName")
 	private String sortName;
+	
+	@JsonProperty("EmailAddress")
+	private String email;
+	
+	@JsonProperty("PrimaryBorrower")
+	private Borrower primaryBorrower;
 }

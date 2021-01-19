@@ -28,8 +28,8 @@ public class Property {
 	@JsonProperty("Description")
 	private String description;
     
-	@JsonProperty("LVT")
-	private BigDecimal lvt;
+	@JsonProperty("LTV")
+	private BigDecimal ltv;
 	
 	@JsonProperty("PropertyType")
 	private String propertyType; 
@@ -42,7 +42,13 @@ public class Property {
     
 	@JsonProperty("ZipCode")
 	private String zipCode;
-
+	
+	@JsonProperty("EmailAddress")
+	private String emailAddress;
+	
+	@JsonProperty("PrimaryBorrower")
+	private Borrower primaryBorrower;
+	
 	//AppraiserFMV
     //County
     //LegalDescription
