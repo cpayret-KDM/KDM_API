@@ -34,7 +34,8 @@ const SecurityDetails = (props) => {
   // }, [security]);
 
   const today = new Date();
-  const [originationDate, setOriginationDate] = useState(today);
+  const [tradeDate, setTradeDate] = useState(today);
+  const [maturityDate, setMaturityDate] = useState(today);
   const [property, setProperty] = useState({});
   const [propertyMode, setPropertyMode] = useState('create');
   const [showPropertyModal, setShowPropertyModal] = useState(false);
@@ -76,7 +77,8 @@ const SecurityDetails = (props) => {
     const newSecurity = {
       ...security,
       ...values,
-      originationDate: originationDate,
+      tradeDate: tradeDate,
+      maturityDate: maturityDate,
     };
 
     if (editing) {
@@ -120,8 +122,12 @@ const SecurityDetails = (props) => {
     setShowDeleteSecurityModal(!showDeleteSecurityModal);
   }
 
-  const handleDateChange = (date) => {
-    setOriginationDate(date);
+  const handleTradeDateChange = (date) => {
+    setTradeDate(date);
+  }
+
+  const handleMaturityDateChange = (date) => {
+    setMaturityDate(date);
   }
 
   return (
@@ -149,7 +155,8 @@ const SecurityDetails = (props) => {
                       <Col sm={6}>
                         <AvGroup className="position-relative">
                           <Label for="number">Note Number *</Label>
-                          <AvInput name="number" id="number" value={security.number} required disabled={viewing} />
+                          <AvInput name="number" id="number" required disabled={viewing} />
+                          {/* <AvInput name="number" id="number" value={security.number} required disabled={viewing} /> */}
                           <AvFeedback tooltip>Note Number is required</AvFeedback>
                         </AvGroup>
                       </Col>
@@ -158,7 +165,8 @@ const SecurityDetails = (props) => {
                         <AvGroup className="position-relative">
                           <Label for="noteRate">Note Rate *</Label>
                           <div className="input-group">
-                            <AvInput name="noteRate" id="noteRate" defaultValue={security.noteRate} required disabled={viewing} />
+                            <AvInput name="noteRate" id="noteRate" required disabled={viewing} />
+                            {/* <AvInput name="noteRate" id="noteRate" defaultValue={security.noteRate} required disabled={viewing} /> */}
                             <AvFeedback tooltip>Note Rate is required</AvFeedback>
                             <InputGroupAddon addonType="append">%</InputGroupAddon>
                           </div>
@@ -171,7 +179,13 @@ const SecurityDetails = (props) => {
                         <AvGroup className="position-relative">
                           <Label for="tradeDate">Trade Date *</Label>
                           <div className="input-group">
-                            <AvInput name="tradeDate" id="tradeDate" defaultValue={security.tradeDate} required disabled={viewing} />
+                            <HyperDatepicker
+                              hideAddon={true}
+                              dateFormat="MM/dd/yyyy"
+                              selected={tradeDate}
+                              onChange={handleTradeDateChange}
+                            />
+                            {/* <AvInput name="tradeDate" id="tradeDate" defaultValue={security.tradeDate} required disabled={viewing} /> */}
                             <AvFeedback tooltip>Trade Date is required</AvFeedback>
                           </div>
                         </AvGroup>
@@ -181,7 +195,13 @@ const SecurityDetails = (props) => {
                         <AvGroup className="position-relative">
                           <Label for="maturityDate">Maturity Date *</Label>
                           <div className="input-group">
-                            <AvInput name="maturityDate" id="maturityDate" defaultValue={security.maturityDate} required disabled={viewing} />
+                            <HyperDatepicker
+                              hideAddon={true}
+                              dateFormat="MM/dd/yyyy"
+                              selected={maturityDate}
+                              onChange={handleMaturityDateChange}
+                            />
+                            {/* <AvInput name="maturityDate" id="maturityDate" defaultValue={security.maturityDate} required disabled={viewing} /> */}
                             <AvFeedback tooltip>Maturity Date is required</AvFeedback>
                           </div>
                         </AvGroup>
