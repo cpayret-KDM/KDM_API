@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.kdm.web.data.repository.MSNRatingRepository;
 import com.kdm.web.data.repository.MSNRepository;
 import com.kdm.web.model.MSN;
@@ -39,6 +40,7 @@ import com.kdm.web.model.MSNRating;
 import com.kdm.web.model.Rating;
 import com.kdm.web.model.util.Note;
 import com.kdm.web.service.EntityUtil;
+import com.kdm.web.util.View;
 import com.kdm.web.util.error.ErrorResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -139,11 +141,13 @@ public class MSNController {
 	}
 	
 	@Operation(summary = "Create a MSN", tags = "msn", responses = {
-			@ApiResponse(responseCode = "200", description = "msn created"),
-			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
+			@ApiResponse(responseCode = "200", description = "msn created", content = @Content(mediaType = "application/json", schema = @Schema(name = "MSN_Basic"))),
+			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))},
+			ignoreJsonView=false)
 	@ResponseBody
+	@JsonView(View.Basic.class)
 	@PostMapping(path = {"/",""}, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<MSN> saveMSN(@RequestBody @Valid MSN msn, BindingResult bindingResult) throws BindException {
+	public ResponseEntity<MSN> saveMSN(@RequestBody @Valid @JsonView(View.Basic.class) MSN msn, BindingResult bindingResult) throws BindException {
 		if (bindingResult.hasErrors()) {
 			throw new BindException(bindingResult);
 		}
