@@ -65,7 +65,7 @@ public class Loan {
 	private Long sponsorID;
 	
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "msnID", referencedColumnName = "msnID", nullable = true)
 	@JsonView(View.All.class)
 	private MSN msn;
