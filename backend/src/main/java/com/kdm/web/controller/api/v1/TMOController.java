@@ -120,7 +120,7 @@ public class TMOController {
 
 	@Transactional
 	private Loan syncLoan(com.kdm.web.restclient.tmo.model.Loan loan) {
-		
+		this.logger.trace(String.format("sync loan %s", loan.getAccount()));
 		BigDecimal ltv = null;
 		if (loan.getProperties() != null && loan.getProperties().size() > 0) {
 			ltv = loan.getProperties().get(0).getLtv();

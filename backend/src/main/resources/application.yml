@@ -26,10 +26,10 @@ spring:
     properties:
       hibernate:
         globally_quoted_identifiers: true
-        format_sql: true
+#        format_sql: true
         temp: 
           use_jdbc_metadata_defaults: false
-    show-sql: true
+#    show-sql: true
   main:
     banner-mode: "off"
   output:
