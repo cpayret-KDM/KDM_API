@@ -20,7 +20,7 @@ const dns = {
     zoneId: config.get("dns_zoneId"),
     dnsName: config.get("dns_dnsName")
 }
-const tmoAPIToken = config.requireSecret("tmo")
+const tmoAPIToken = config.requireSecret("tmoAPIToken")
 /*******************************************************************************
 *   Networking
 *******************************************************************************/
