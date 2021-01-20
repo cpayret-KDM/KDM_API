@@ -134,7 +134,7 @@ let service = new awsx.ecs.FargateService("kdm_api", {
                     {
                         name: "kdm.api.allowedOrigins",
                         value: allowedOrigins
-                    }
+                    },
                     {
                         name: "tmo.api.token",
                         value: tmoAPIToken
