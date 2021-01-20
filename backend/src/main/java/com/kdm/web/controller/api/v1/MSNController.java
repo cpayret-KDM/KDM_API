@@ -141,11 +141,10 @@ public class MSNController {
 	}
 	
 	@Operation(summary = "Create a MSN", tags = "msn", responses = {
-			@ApiResponse(responseCode = "200", description = "msn created", content = @Content(mediaType = "application/json", schema = @Schema(name = "MSN_Basic"))),
+			@ApiResponse(responseCode = "200", description = "msn created"),
 			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))},
 			ignoreJsonView=false)
 	@ResponseBody
-	@JsonView(View.Basic.class)
 	@PostMapping(path = {"/",""}, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<MSN> saveMSN(@RequestBody @Valid @JsonView(View.Basic.class) MSN msn, BindingResult bindingResult) throws BindException {
 		if (bindingResult.hasErrors()) {
@@ -165,7 +164,7 @@ public class MSNController {
 	@ResponseBody
 	@PutMapping(path = "/{msnId}")
 	@Transactional
-	public ResponseEntity<MSN> updateMSN(@PathVariable("msnId") Long msnId, @RequestBody @Valid MSN msn, BindingResult bindingResult) throws BindException {
+	public ResponseEntity<MSN> updateMSN(@PathVariable("msnId") Long msnId, @RequestBody @JsonView(View.ExtendedBasic.class) @Valid MSN msn, BindingResult bindingResult) throws BindException {
 		
 		if (msn.getId() != msnId) {
 			throw new ResponseStatusException(BAD_REQUEST,

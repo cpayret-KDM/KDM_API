@@ -37,7 +37,7 @@ public class MSN {
 	@Column(name = "msnID")
 	@SequenceGenerator(name="MSN_msnID_seq", sequenceName="MSN_msnID_seq", allocationSize=1)
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "MSN_msnID_seq")
-	@JsonView(View.All.class)
+	@JsonView(View.ExtendedBasic.class)
 	private Long id;
 	
 	/*
