@@ -31,6 +31,7 @@ export const PROPERTY_TYPE_MAP = {
   'SINGLE_FAMILY' : 'Single-Family',
   'MULTI_FAMILY' : 'Multi-Family',
   'OFFICE' : 'Office',
+  'COMMERCIAL' : 'Commercial',
   'INDUSTRIAL' : 'Industrial',
   'RETAIL' : 'Retail',
   'HOTEL' : 'Hotel',
