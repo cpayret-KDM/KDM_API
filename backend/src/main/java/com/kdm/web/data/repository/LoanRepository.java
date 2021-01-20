@@ -24,4 +24,7 @@ public interface LoanRepository extends JpaRepository<Loan, Long>, JpaSpecificat
 	// query is defined in jpa-named-queries.properties
 	@Query(nativeQuery=true)
 	Page<Loan> findAniversaryNextDays(int days, Pageable page);
+
+	// query method
+	Optional<Loan> findByLoanNumber(String loanNumber);
 }

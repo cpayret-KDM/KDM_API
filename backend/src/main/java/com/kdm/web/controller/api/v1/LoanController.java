@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.kdm.web.data.repository.LoanRatingRepository;
 import com.kdm.web.data.repository.LoanRepository;
 import com.kdm.web.model.Loan;
@@ -45,6 +46,7 @@ import com.kdm.web.model.Sponsor;
 import com.kdm.web.model.util.Note;
 import com.kdm.web.service.EntityUtil;
 import com.kdm.web.service.LoanService;
+import com.kdm.web.util.View;
 import com.kdm.web.util.error.ErrorResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -58,7 +60,6 @@ import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 
 @RestController
 @RequestMapping(ApiConstants.LOAN_MAPPING)
-//@PreAuthorize(LoanController.CREATE_LOAN_PERMISSION)
 public class LoanController {
 	
 	Logger logger = LoggerFactory.getLogger(LoanController.class);
@@ -79,10 +80,10 @@ public class LoanController {
 	private LoanRepository loanRepository;
 	
 	@Autowired
-	private LoanRatingRepository loanRatingRepository;
+	private LoanService loanService;
 	
 	@Autowired
-	private LoanService loanService;
+	private LoanRatingRepository loanRatingRepository;
 	
 	@Operation(
 		summary = "Get list of loans according to search criteria and pagination options", 
@@ -175,7 +176,7 @@ public class LoanController {
 			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
 	@ResponseBody
 	@PostMapping(path = {"/",""}, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Loan> saveLoan(@RequestBody @Valid Loan loan, BindingResult bindingResult) throws BindException {
+	public ResponseEntity<Loan> saveLoan(@RequestBody @Valid @JsonView(View.Basic.class) Loan loan, BindingResult bindingResult) throws BindException {
 		if (bindingResult.hasErrors()) {
 			throw new BindException(bindingResult);
 		}
@@ -192,7 +193,7 @@ public class LoanController {
 	@ResponseBody
 	@PutMapping(path = "/{loanId}")
 	@Transactional
-	public ResponseEntity<Loan> updateLoan(@PathVariable("loanId") Long loanId, @RequestBody @Valid Loan loan, BindingResult bindingResult) throws BindException {
+	public ResponseEntity<Loan> updateLoan(@PathVariable("loanId") Long loanId, @RequestBody @JsonView(View.ExtendedBasic.class) @Valid Loan loan, BindingResult bindingResult) throws BindException {
 		
 		if (loan.getId() != loanId) {
 			throw new ResponseStatusException(BAD_REQUEST,
@@ -239,6 +240,7 @@ public class LoanController {
 	)
 	@ResponseBody
 	@PutMapping(path = "/{loanId}/rating/{ratingId}")
+	@Transactional
 	public ResponseEntity<Loan> assignRating(@PathVariable("loanId") Long loanId, @PathVariable("ratingId") Long ratingId, @RequestBody @Valid Note note, BindingResult bindingResult) throws Exception {
 		Loan loan = entityUtil.tryGetEntity(Loan.class, loanId);
 		entityManager.detach(loan);
@@ -256,7 +258,9 @@ public class LoanController {
 		
 		
 		lnRtng = loanRatingRepository.saveAndFlush(lnRtng);
-
+		rating.addLoanRating(lnRtng);
+		
+		//loan = entityManager.find(Loan.class, loanId);
 		return this.getLoan(loanId);
 	}
 	
@@ -274,7 +278,6 @@ public class LoanController {
 		
 		return new ResponseEntity<Void>(OK);
 	}
-
 }
 
 

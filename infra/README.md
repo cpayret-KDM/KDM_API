@@ -20,8 +20,9 @@ Set the following with `pulumi config set <name> <value>`
 - isFlyway : boolean
 - springProfile : string
 
-Secrets are set with `pulumi config --secret set <name> <value>
+Secrets are set with `pulumi config set --secret <name> <value>
 - dbpassword
+- tmoAPIToken
 
 ## Note on SSL Certs
 This program provisions a ssl cert on the zone specified by the `infra:dns_zoneId` configuration variable of name `infra:dns_dnsName`.  There is a manual verification step still needed with Route 53 that involves clicking a button in

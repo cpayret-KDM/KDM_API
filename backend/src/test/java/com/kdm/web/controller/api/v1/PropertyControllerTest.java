@@ -14,7 +14,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -23,10 +22,9 @@ import com.kdm.web.data.repository.PropertyRepository;
 import com.kdm.web.model.Address;
 import com.kdm.web.model.Property;
 import com.kdm.web.service.LoanService;
-import com.kdm.web.service.config.SimpleContextConfiguration;
+import com.kdm.web.service.PropertyService;
 
 @WebMvcTest(controllers = PropertyController.class)
-@Import({SimpleContextConfiguration.class})
 public class PropertyControllerTest extends BaseControllerTest {
 
 	@Autowired
@@ -43,6 +41,9 @@ public class PropertyControllerTest extends BaseControllerTest {
 	
 	@MockBean
 	private AppraisalRepository appraisalRepository;
+	
+	@MockBean
+	private PropertyService propertyService;
 	
 	@Test
 	public void getPropertyTest() throws Exception {
