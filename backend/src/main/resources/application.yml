@@ -45,6 +45,7 @@ logging:
     console: ${CONSOLE_LOG_PATTERN:%clr(%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(---){faint} %clr([%15.15t]){faint} %clr(%-70.70logger{69}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%xEx}}
   level:
     com.kdm.web.controller.RestResponseEntityExceptionHandler: TRACE
+    com.kdm.web.controller.api.v1.TMOController: TRACE
 #    root: DEBUG
 #    org.hibernate.SQL: DEBUG
 #    org.hibernate.type.descriptor.sql.BasicBinder: TRACE

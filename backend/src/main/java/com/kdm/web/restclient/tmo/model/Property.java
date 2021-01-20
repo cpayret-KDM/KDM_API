@@ -46,10 +46,6 @@ public class Property {
 	@JsonProperty("EmailAddress")
 	private String emailAddress;
 	
-	@JsonProperty("PrimaryBorrower")
-	private Borrower primaryBorrower;
-	
-	//AppraiserFMV
     //County
     //LegalDescription
     //Occupancy

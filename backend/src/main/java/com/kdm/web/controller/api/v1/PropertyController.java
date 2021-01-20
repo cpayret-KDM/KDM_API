@@ -224,7 +224,7 @@ public class PropertyController {
 		return new ResponseEntity<Property>(updatedProperty, OK);
 	}
 	
-	@Operation(summary = "assign a borrower to a property, the borrower is added to the database", tags = "loan", responses = {
+	@Operation(summary = "assign a borrower to a property, the borrower is added to the database", tags = "property", responses = {
 			@ApiResponse(responseCode = "200", description = "borrower assigned"),
 			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
 			@ApiResponse(responseCode = "404", description = "loan or sponsor not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }

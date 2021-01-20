@@ -3,16 +3,13 @@ package com.kdm.web.controller.api.v1;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.Locale;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.assertj.core.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,19 +36,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.kdm.web.data.repository.AddressRepository;
-import com.kdm.web.data.repository.AppraisalRepository;
-import com.kdm.web.data.repository.BorrowerRepository;
+import com.kdm.web.data.repository.LoanRatingRepository;
 import com.kdm.web.data.repository.LoanRepository;
-import com.kdm.web.data.repository.PropertyRepository;
-import com.kdm.web.model.Address;
-import com.kdm.web.model.Appraisal;
-import com.kdm.web.model.Borrower;
 import com.kdm.web.model.Loan;
-import com.kdm.web.model.Property;
+import com.kdm.web.model.LoanRating;
+import com.kdm.web.model.Rating;
 import com.kdm.web.model.Sponsor;
-import com.kdm.web.restclient.tmo.service.TMOLoanService;
+import com.kdm.web.model.util.Note;
 import com.kdm.web.service.EntityUtil;
 import com.kdm.web.service.LoanService;
 import com.kdm.web.util.error.ErrorResponse;
@@ -67,7 +58,6 @@ import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 
 @RestController
 @RequestMapping(ApiConstants.LOAN_MAPPING)
-//@PreAuthorize(LoanController.CREATE_LOAN_PERMISSION)
 public class LoanController {
 	
 	Logger logger = LoggerFactory.getLogger(LoanController.class);
@@ -88,22 +78,10 @@ public class LoanController {
 	private LoanRepository loanRepository;
 	
 	@Autowired
-	private PropertyRepository propertyRepository;
-	
-	@Autowired
 	private LoanService loanService;
 	
 	@Autowired
-	private TMOLoanService tmoLoanService;
-	
-	@Autowired
-	private AddressRepository addressRepository;
-	
-	@Autowired
-	private AppraisalRepository appraisalRepository;
-	
-	@Autowired
-	private BorrowerRepository borrowerRepository;
+	private LoanRatingRepository loanRatingRepository;
 	
 	@Operation(
 		summary = "Get list of loans according to search criteria and pagination options", 
@@ -253,30 +231,36 @@ public class LoanController {
 		return new ResponseEntity<Sponsor>(newSponsor, OK);
 	}
 	
-	/*
-	@Operation(summary = "add a property to a loan", tags = "loan", responses = {
-			@ApiResponse(responseCode = "200", description = "property added"),
+	@Operation(summary = "assign a rating to a loan", tags = "loan", responses = {
+			@ApiResponse(responseCode = "200", description = "rating assigned"),
 			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
-			@ApiResponse(responseCode = "404", description = "loan or property not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
+			@ApiResponse(responseCode = "404", description = "loan or rating not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
 	)
 	@ResponseBody
-	@PutMapping(path = "/{loanId}/property/{propertyId}")
+	@PutMapping(path = "/{loanId}/rating/{ratingId}")
 	@Transactional
-	public ResponseEntity<Void> addProperty(@PathVariable("loanId") Long loanId, @PathVariable("propertyId") Long propertyId) {
-		Loan loan = tryGetEntity(Loan.class, loanId);
+	public ResponseEntity<Loan> assignRating(@PathVariable("loanId") Long loanId, @PathVariable("ratingId") Long ratingId, @RequestBody @Valid Note note, BindingResult bindingResult) throws Exception {
+		Loan loan = entityUtil.tryGetEntity(Loan.class, loanId);
+		entityManager.detach(loan);
 		
-		Property property = tryGetEntity(Property.class, propertyId);
+		Rating rating = entityUtil.tryGetEntity(Rating.class, ratingId);
 		
-		if ((property.getLoan() != null) && (property.getLoan().equals(loan))) {
-			// nothing changed
-			return new ResponseEntity<Void>(OK);
-		}
-				
-		property.setLoan(loan);
-		propertyRepository.saveAndFlush(property);
+		LoanRating lnRtng = LoanRating.builder()
+				.loan(loan)
+				.loanId(loanId)
+				.rating(rating)
+				.ratingId(ratingId)
+				.note(note.toString())
+				.date(ZonedDateTime.now())
+				.build();
 		
-		return new ResponseEntity<Void>(OK);
-	}*/
+		
+		lnRtng = loanRatingRepository.saveAndFlush(lnRtng);
+		rating.addLoanRating(lnRtng);
+		
+		//loan = entityManager.find(Loan.class, loanId);
+		return this.getLoan(loanId);
+	}
 	
 	@Operation(summary = "delete a loan", tags = "loan", responses = {
 			@ApiResponse(responseCode = "200", description = "loan deleted"),
@@ -292,120 +276,6 @@ public class LoanController {
 		
 		return new ResponseEntity<Void>(OK);
 	}
-	
-	@Operation(summary = "runs a integration call to the TMO API", tags = "tmo")
-	@GetMapping(path = "/tmo")
-	public ResponseEntity<Void> getTmoLoans() throws JsonProcessingException {
-		
-		logger.trace("Starting to process Loans from TMO API");
-		
-		// getting loans
-		logger.trace("GetLoans");
-		List<com.kdm.web.restclient.tmo.model.Loan> loans = tmoLoanService.getLoans();
-		logger.trace(String.format("\tloans lenght=%d",loans.size()));
-		
-		loans.stream().forEach(l -> {
-			
-			Loan newLoan = Loan.builder()
-				.loanNumber(l.getAccount())
-				.dealName(l.getSortName())
-				.build();
-			
-			newLoan = loanRepository.saveAndFlush(newLoan);
-			
-			logger.trace(String.format("GetLoanProperties for loan account %s", l.getAccount()) );
-			
-			try {
-				List<com.kdm.web.restclient.tmo.model.Property> properties = tmoLoanService.getProperties(l.getAccount());
-				logger.trace(String.format("\tProperties lenght=%d",properties.size()));
-				
-				//takes LTV, it seems if multiple properties have it, all of them are equal
-				if (properties.size() >0) {
-					newLoan.setLtv(properties.get(0).getLtv());
-					newLoan = loanRepository.saveAndFlush(newLoan);
-				}
-				
-				final Loan loan = newLoan;
-				
-				properties.stream().forEach(property -> {
-					
-					Address newAddress = Address.builder()
-							.name(property.getDescription())
-							.street1(property.getStreet())
-							.city(property.getCity())
-							.state(property.getState())
-							.zip(property.getZipCode())
-							.build();
-					
-					newAddress = addressRepository.save(newAddress);
-					
-					Property newProperty = Property.builder()
-							.address(newAddress)
-							.loan(loan)
-							.build();
-					
-					newProperty = propertyRepository.saveAndFlush(newProperty);
-					logger.trace(String.format("\tProperty = %s", newProperty.toString()));
-					
-					if (property.getAppraisalDate() != null) {
-						Appraisal newAppraisal = Appraisal.builder()
-								.property(newProperty)
-								.note("appraisal from TMO data")
-								.value(property.getAppraiserFMV())
-								.date(ZonedDateTime.ofInstant(property.getAppraisalDate().toInstant(),
-                                        ZoneId.systemDefault()))
-								.build();
-						
-						newAppraisal = appraisalRepository.saveAndFlush(newAppraisal);
-						logger.trace(String.format("\t\tAppraisal = %.2f", newAppraisal.getValue()));
-					}
-					
-					if (property.getPrimaryBorrower() != null) {
-						//Borrower
-						com.kdm.web.restclient.tmo.model.Borrower primary = property.getPrimaryBorrower();
-						
-						
-						Address borrowerAddress = Address.builder()
-								.street1(primary.getStreet())
-								.city(primary.getCity())
-								.state(primary.getState())
-								.zip(primary.getZipCode())
-								.build();
-						
-						borrowerAddress = addressRepository.save(borrowerAddress);
-						
-						Borrower newBorrower = Borrower.builder()
-								.email(ObjectUtils.firstNonNull(property.getEmailAddress(), property.getPrimaryBorrower().getEmailAddress()))
-								.phone(ObjectUtils.firstNonNull(primary.getPhoneCell(), primary.getPhoneHome(), primary.getPhoneWork()))
-								.firstName(primary.getFirstName())
-								.lastName(primary.getLastName())
-								.address(borrowerAddress)
-								.build();
-						
-						newBorrower = borrowerRepository.saveAndFlush(newBorrower);
-						
-					}
-				});
-			} catch (JsonProcessingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			try {
-				List<com.kdm.web.restclient.tmo.model.Funding> fundings = tmoLoanService.getFunding(l.getAccount());
-				logger.trace(String.format("\tFundings lenght=%d", fundings.size()));
-			} catch (JsonProcessingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		});
-		
-		logger.trace("Ended processing Loans from TMO API");
-		return new ResponseEntity<Void>(OK); 
-
-	}
-	
-
 }
 
 

@@ -35,12 +35,12 @@ public class Borrower {
 
 	@JsonProperty
 	@OneToOne
-    @JoinColumn(name = "addressID", referencedColumnName = "addressID", nullable = true)
+    @JoinColumn(name = "addressId", referencedColumnName = "addressID", nullable = true)
 	@Valid
 	private Address address;
 	
 	@JsonIgnore
-	@Column(name = "addressID", insertable = false, updatable = false)
+	@Column(name = "addressId", insertable = false, updatable = false)
 	private Long addressID;
 	
 	@JsonProperty
