@@ -3,6 +3,7 @@ package com.kdm.web.controller.api.v1;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
+import java.time.ZonedDateTime;
 import java.util.Locale;
 
 import javax.persistence.EntityManager;
@@ -31,9 +32,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.kdm.web.data.repository.MSNRatingRepository;
 import com.kdm.web.data.repository.MSNRepository;
 import com.kdm.web.model.MSN;
+import com.kdm.web.model.MSNRating;
+import com.kdm.web.model.Rating;
+import com.kdm.web.model.util.Note;
 import com.kdm.web.service.EntityUtil;
+import com.kdm.web.util.View;
 import com.kdm.web.util.error.ErrorResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -60,6 +67,9 @@ public class MSNController {
 	
 	@Autowired
 	private EntityUtil entityUtil;
+	
+	@Autowired
+	private MSNRatingRepository msnRatingRepository;
 
 	@Operation(
 		summary = "Get list of security notes according to search criteria and pagination options", 
@@ -132,10 +142,11 @@ public class MSNController {
 	
 	@Operation(summary = "Create a MSN", tags = "msn", responses = {
 			@ApiResponse(responseCode = "200", description = "msn created"),
-			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
+			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))},
+			ignoreJsonView=false)
 	@ResponseBody
 	@PostMapping(path = {"/",""}, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<MSN> saveMSN(@RequestBody @Valid MSN msn, BindingResult bindingResult) throws BindException {
+	public ResponseEntity<MSN> saveMSN(@RequestBody @Valid @JsonView(View.Basic.class) MSN msn, BindingResult bindingResult) throws BindException {
 		if (bindingResult.hasErrors()) {
 			throw new BindException(bindingResult);
 		}
@@ -153,7 +164,7 @@ public class MSNController {
 	@ResponseBody
 	@PutMapping(path = "/{msnId}")
 	@Transactional
-	public ResponseEntity<MSN> updateMSN(@PathVariable("msnId") Long msnId, @RequestBody @Valid MSN msn, BindingResult bindingResult) throws BindException {
+	public ResponseEntity<MSN> updateMSN(@PathVariable("msnId") Long msnId, @RequestBody @JsonView(View.ExtendedBasic.class) @Valid MSN msn, BindingResult bindingResult) throws BindException {
 		
 		if (msn.getId() != msnId) {
 			throw new ResponseStatusException(BAD_REQUEST,
@@ -171,6 +182,34 @@ public class MSNController {
 		MSN updatedMSN = entityManager.merge(msn);
 		
 		return new ResponseEntity<MSN>(updatedMSN, OK);
+	}
+	
+	@Operation(summary = "assign a rating to a msn", tags = "msn", responses = {
+			@ApiResponse(responseCode = "200", description = "rating assigned"),
+			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+			@ApiResponse(responseCode = "404", description = "msn or rating not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
+	)
+	@ResponseBody
+	@PutMapping(path = "/{msnId}/rating/{ratingId}")
+	public ResponseEntity<MSN> assignRating(@PathVariable("msnId") Long msnId, @PathVariable("ratingId") Long ratingId, @RequestBody @Valid Note note, BindingResult bindingResult) throws Exception {
+		MSN msn = entityUtil.tryGetEntity(MSN.class, msnId);
+		entityManager.detach(msn);
+		
+		Rating rating = entityUtil.tryGetEntity(Rating.class, ratingId);
+		
+		MSNRating msnRtng = MSNRating.builder()
+				.msn(msn)
+				.msnId(msnId)
+				.rating(rating)
+				.ratingId(ratingId)
+				.note(note.toString())
+				.date(ZonedDateTime.now())
+				.build();
+		
+		
+		msnRtng = msnRatingRepository.saveAndFlush(msnRtng);
+
+		return this.getMSN(msnId);
 	}
 	
 	@Operation(summary = "delete a msn", tags = "msn", responses = {

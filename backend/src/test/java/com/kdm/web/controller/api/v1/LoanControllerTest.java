@@ -16,13 +16,16 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.kdm.web.data.repository.AddressRepository;
+import com.kdm.web.data.repository.AppraisalRepository;
+import com.kdm.web.data.repository.BorrowerRepository;
+import com.kdm.web.data.repository.LoanRatingRepository;
 import com.kdm.web.data.repository.LoanRepository;
 import com.kdm.web.data.repository.PropertyRepository;
 import com.kdm.web.data.repository.SponsorRepository;
@@ -31,11 +34,11 @@ import com.kdm.web.model.Loan;
 import com.kdm.web.model.Property;
 import com.kdm.web.model.PropertyType;
 import com.kdm.web.model.Sponsor;
+import com.kdm.web.restclient.tmo.service.TMOLoanService;
 import com.kdm.web.service.LoanService;
-import com.kdm.web.service.config.SimpleContextConfiguration;
+import com.kdm.web.service.PropertyService;
 
 @WebMvcTest(controllers = LoanController.class)
-@Import({SimpleContextConfiguration.class})
 public class LoanControllerTest extends BaseControllerTest {
 
 	@MockBean
@@ -51,10 +54,28 @@ public class LoanControllerTest extends BaseControllerTest {
 	private PropertyRepository propertyRepository;
 	
 	@MockBean
+	private LoanRatingRepository loanRatingRepository;
+	
+	@MockBean
+	private AddressRepository addressRepository;
+	
+	@MockBean
+	private AppraisalRepository appraisalRepository;
+	
+	@MockBean
+	private BorrowerRepository borrowerRepository;
+	
+	@MockBean
 	private EntityManager entityManager;
 	
 	@Autowired
 	private MockMvc mvc;
+	
+	@MockBean
+	private TMOLoanService tmoOLoanService;
+	
+	@MockBean
+	private PropertyService propertyService;
 
 	@Test
 	public void getLoanTest() throws Exception {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import DatePicker from 'react-datepicker';
 import { Row, Col, Label, Button, InputGroupAddon, InputGroupText, Card, CardBody, Spinner } from 'reactstrap';
 import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 import moment from 'moment';
@@ -9,7 +10,7 @@ import PageTitle from '../../components/PageTitle';
 import ModalProperty from './ModalProperty';
 import ModalDeleteProperty from './ModalDeleteProperty';
 import ModalDeleteLoan from './ModalDeleteLoan';
-import HyperDatepicker from '../../components/Datepicker';
+
 import { getLoan, createLoan, editLoan, deleteLoan, clearLoan } from '../../redux/actions';
 
 import { DATE_FORMAT, LOAN_STATUS_MAP, PIPELINE_STATUS_MAP, PROPERTY_TYPE_MAP } from '../../helpers/utils';
@@ -28,19 +29,18 @@ const LoanDetails = (props) => {
       props.clearLoan();
     }
   }, [creating, id]);
-
-  // useEffect(() => {
-  //   setOriginationDate(loan.originationDate);
-  // }, [loan]);
-
-  const today = new Date();
-  const [originationDate, setOriginationDate] = useState(today);
+  
   const [property, setProperty] = useState({});
   const [propertyMode, setPropertyMode] = useState('create');
   const [showPropertyModal, setShowPropertyModal] = useState(false);
   const [showDeletePropertyModal, setShowDeletePropertyModal] = useState(false);
   const [showDeleteLoanModal, setShowDeleteLoanModal] = useState(false);
   
+  const [originationDate, setOriginationDate] = useState(new Date());
+  useEffect(() => {
+    setOriginationDate(moment(loan.originationDate).toDate());
+  }, [loan]);
+
   const [isSaving, setIsSaving] = useState(false);
   useEffect(() => {
     if (props.added || props.edited) {
@@ -120,10 +120,6 @@ const LoanDetails = (props) => {
     setShowDeleteLoanModal(!showDeleteLoanModal);
   }
 
-  const handleDateChange = (date) => {
-    setOriginationDate(date);
-  }
-
   return (
     <>
       <PageTitle
@@ -192,11 +188,11 @@ const LoanDetails = (props) => {
                       <AvGroup className="position-relative">
                         <Label for="originationDate">Origination Date *</Label>
                         <div className="input-group">
-                          <HyperDatepicker
-                            hideAddon={true}
+                          <DatePicker
+                            className="form-control date"
                             dateFormat="MM/dd/yyyy" 
                             selected={originationDate}
-                            onChange={handleDateChange}
+                            onChange={date => setOriginationDate(date)}
                           />
                         </div>
                       </AvGroup>
@@ -205,7 +201,7 @@ const LoanDetails = (props) => {
                     <Col sm={6}>
                       <AvGroup className="position-relative">
                         <Label for="EJRating">EJ Rating *</Label>
-                        <AvInput name="EJRating" id="EJRating" defaultValue={loan.EJRating} required disabled={viewing} />
+                        <AvInput name="EJRating" id="EJRating" value={loan.EJRating} required disabled={viewing} />
                         <AvFeedback tooltip>EJ Rating is required</AvFeedback>
                       </AvGroup>
                     </Col>
@@ -216,7 +212,7 @@ const LoanDetails = (props) => {
                       <AvGroup className="position-relative">
                         <Label for="loanRate">Loan Rate *</Label>
                         <div className="input-group">
-                          <AvInput name="loanRate" id="loanRate" defaultValue={loan.loanRate} required disabled={viewing} />
+                          <AvInput name="loanRate" id="loanRate" value={loan.loanRate} required disabled={viewing} />
                           <AvFeedback tooltip>Loan Rate is required</AvFeedback>
                           <InputGroupAddon addonType="append">%</InputGroupAddon>
                         </div>
@@ -420,7 +416,14 @@ const LoanActionButtons = ({ creating, editing, viewing, loanId, handleDeleteLoa
 }
 
 const mapStateToProps = state => {
-  return state.Loan;
+  const { 
+    loan, 
+    loaded
+  } = state.Loan;
+  return {
+    loan,
+    loaded
+  };
 };
 
 export default connect(

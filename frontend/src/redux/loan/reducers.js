@@ -22,9 +22,22 @@ import {
 } from './constants';
 
 type Action = { type: string, payload: {} };
-type State = { +value: boolean };
 
-const Loan = (state: State = {}, action: Action) => {
+type State = {
+  loans: Array<{}>,
+  loan: {},
+  loaded: boolean,
+  deleted: boolean
+};
+
+const initialState = {
+  loans: [],
+  loan: {},
+  loaded: false,
+  deleted: false
+};
+
+const Loan = (state: State = initialState, action: Action) => {
   switch (action.type) {
     /* Loans */
     case GET_LOANS:

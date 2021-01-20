@@ -46,7 +46,6 @@ public class Address {
 	@JsonProperty
 	@Column(name = "city")
 	@Size(max = 256)
-	@NotBlank
 	private String city;
 	
 	@JsonProperty

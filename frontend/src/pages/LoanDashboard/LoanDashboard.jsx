@@ -8,6 +8,8 @@ import { getLoans, get60DayLoans } from '../../redux/actions';
 
 const LoanDashboard = (props) => {
 
+  const { loans, report } = props;
+
   useEffect(() => {
     if (report === 'list') {
       props.getLoans();
@@ -15,7 +17,6 @@ const LoanDashboard = (props) => {
     else if (report === '60-day') {
       props.get60DayLoans();
     }
-    
   }, [report]);
 
   const breadcrumb = ((report) => {
@@ -24,10 +25,11 @@ const LoanDashboard = (props) => {
         return { label: 'Loans', path: '/loans/list' };
       case '60-day':
         return { label: '60 Day Loan Report', path: '/loans/60-day' };
+      default:
+        return { label: '', path: '' };
     }
   })(props.report);
 
-  const { loans, report } = props;
   return (
     <>
       <PageTitle

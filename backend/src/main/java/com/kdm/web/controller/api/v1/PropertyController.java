@@ -35,10 +35,12 @@ import org.springframework.web.server.ResponseStatusException;
 import com.kdm.web.data.repository.AppraisalRepository;
 import com.kdm.web.data.repository.PropertyRepository;
 import com.kdm.web.model.Appraisal;
+import com.kdm.web.model.Borrower;
 import com.kdm.web.model.Property;
 import com.kdm.web.model.view.LatestAppraisalView;
 import com.kdm.web.service.EntityUtil;
 import com.kdm.web.service.LoanService;
+import com.kdm.web.service.PropertyService;
 import com.kdm.web.util.error.ErrorResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -70,6 +72,9 @@ public class PropertyController {
 	
 	@Autowired
 	private AppraisalRepository appraisalRepository;
+	
+	@Autowired
+	private PropertyService propertyService;
 	
 	@Operation(
 		summary = "Get list of proeprties according to search criteria and pagination options", 
@@ -217,6 +222,26 @@ public class PropertyController {
 		Property updatedProperty = entityUtil.tryGetEntity(Property.class, propertyId);
 		
 		return new ResponseEntity<Property>(updatedProperty, OK);
+	}
+	
+	@Operation(summary = "assign a borrower to a property, the borrower is added to the database", tags = "property", responses = {
+			@ApiResponse(responseCode = "200", description = "borrower assigned"),
+			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+			@ApiResponse(responseCode = "404", description = "loan or sponsor not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
+	)
+	@ResponseBody
+	@PutMapping(path = "/{propertyId}/borrower/")
+	@Transactional
+	public ResponseEntity<Borrower> assignBorrower(@PathVariable("propertyId") Long propertyId, @RequestBody @Valid Borrower borrower, BindingResult bindingResult) throws BindException {
+		Property property = entityUtil.tryGetEntity(Property.class, propertyId);
+		
+		if (bindingResult.hasErrors()) {
+			throw new BindException(bindingResult);
+		}
+		
+		Borrower newBorrower = propertyService.createBorrower(property, borrower);
+		
+		return new ResponseEntity<Borrower>(newBorrower, OK);
 	}
 
 }
