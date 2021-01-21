@@ -18,10 +18,11 @@ public interface PropertyService {
 	 * @param sponsor
 	 * @return
 	 */
-	//Sponsor updateSponsor(Sponsor sponsor);
+	Borrower updateBorrower(Borrower borrower);
 	
 	/**
 	 * deletes the given sponsor, and take care of relationship with other entities
 	 */
-	//void deleteSponsor(Sponsor sponsor);
+	void deleteBorrower(Borrower borrower);
+	
 }

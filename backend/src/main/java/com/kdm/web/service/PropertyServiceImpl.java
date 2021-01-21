@@ -60,4 +60,42 @@ public class PropertyServiceImpl implements PropertyService {
 		
 		return savedBorrower;
 	}
+	
+	@Override
+	@Transactional
+	public Borrower updateBorrower(Borrower borrower) {
+		if (borrower == null) {
+			throw new IllegalArgumentException(messageSource.getMessage("common.invalid_parameter", Arrays.array("borrower object is null"), Locale.US));
+		}
+	
+		// lets figure if the address already exists
+		Optional<Address> address = addressService.getOrPersistAddress(borrower.getAddressID(), borrower.getAddress());
+		if (!address.isPresent()) {
+			throw new IllegalArgumentException(messageSource.getMessage("common.invalid_parameter", Arrays.array("address object is null"), Locale.US));
+		}
+		
+		borrower.setAddressID(address.get().getId());
+		Borrower savedBorrower = borrowerRepository.saveAndFlush(borrower);
+		
+		return savedBorrower;
+	}
+	
+	@Override
+	@Transactional
+	public void deleteBorrower(Borrower borrower) {
+		if (borrower == null || borrower.getId() == null) {
+			throw new IllegalArgumentException(messageSource.getMessage("common.invalid_parameter", Arrays.array("borrower object is null"), Locale.US));
+		}
+		
+		//check for a loan related to this sponsor
+		Optional<Property> propertyOp = propertyRepository.findByBorrowerId(borrower.getId());
+		
+		if (propertyOp.isPresent()) {
+			Property property = propertyOp.get();
+			property.setBorrower(null);
+			propertyRepository.save(property);
+		}
+		
+		borrowerRepository.delete(borrower);	
+	}
 }
