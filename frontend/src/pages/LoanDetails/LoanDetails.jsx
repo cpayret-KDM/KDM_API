@@ -38,6 +38,7 @@ const LoanDetails = (props) => {
   
   const [originationDate, setOriginationDate] = useState(new Date());
   useEffect(() => {
+    if (!loan.originationDate) return;
     setOriginationDate(moment(loan.originationDate).toDate());
   }, [loan]);
 
