@@ -33,6 +33,10 @@ const SecurityDetails = (props) => {
   const [showDeletePropertyModal, setShowDeletePropertyModal] = useState(false);
   const [showDeleteSecurityModal, setShowDeleteSecurityModal] = useState(false);
 
+  // const tradeDate = security.tradeDate
+  // const maturityDate = security.maturityDate
+  // const [tradeDate, setTradeDate] = useState(security.tradeDate, new Date());
+  // const [maturityDate, setMaturityDate] = useState(security.maturityDate, new Date());
   const [tradeDate, setTradeDate] = useState(new Date());
   const [maturityDate, setMaturityDate] = useState(new Date());
   // useEffect(() => {
@@ -179,8 +183,8 @@ const SecurityDetails = (props) => {
                             <DatePicker
                               className="form-control date"
                               dateFormat="MM/dd/yyyy"
-                              // value={security.tradeDate}
-                              selected={tradeDate}
+                              value={security.tradeDate}
+                              // selected={tradeDate}
                               onChange={date => setTradeDate(date)}
                               required disabled={viewing}
                             />
@@ -197,8 +201,8 @@ const SecurityDetails = (props) => {
                             <DatePicker
                               className="form-control date"
                               dateFormat="MM/dd/yyyy"
-                              // value={security.maturityDate}
-                              selected={maturityDate}
+                              value={security.maturityDate}
+                              // selected={maturityDate}
                               onChange={date => setMaturityDate(date)}
                               required disabled={viewing}
                             />
