@@ -155,8 +155,8 @@ const SecurityDetails = (props) => {
                       <Col sm={6}>
                         <AvGroup className="position-relative">
                           <Label for="number">Note Number *</Label>
-                          <AvInput name="number" id="number" required disabled={viewing} />
-                          {/* <AvInput name="number" id="number" value={security.number} required disabled={viewing} /> */}
+                          {/* <AvInput name="number" id="number" required disabled={viewing} /> */}
+                          <AvInput name="number" id="number" value={security.number} required disabled={viewing} />
                           <AvFeedback tooltip>Note Number is required</AvFeedback>
                         </AvGroup>
                       </Col>
@@ -165,8 +165,8 @@ const SecurityDetails = (props) => {
                         <AvGroup className="position-relative">
                           <Label for="noteRate">Note Rate *</Label>
                           <div className="input-group">
-                            <AvInput name="noteRate" id="noteRate" required disabled={viewing} />
-                            {/* <AvInput name="noteRate" id="noteRate" defaultValue={security.noteRate} required disabled={viewing} /> */}
+                            {/* <AvInput name="noteRate" id="noteRate" required disabled={viewing} /> */}
+                            <AvInput name="noteRate" id="noteRate" value={security.noteRate} required disabled={viewing} />
                             <AvFeedback tooltip>Note Rate is required</AvFeedback>
                             <InputGroupAddon addonType="append">%</InputGroupAddon>
                           </div>
