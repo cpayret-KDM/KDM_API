@@ -179,6 +179,7 @@ const SecurityDetails = (props) => {
                               dateFormat="MM/dd/yyyy"
                               selected={tradeDate}
                               onChange={date => setTradeDate(date)}
+                              required disabled={viewing}
                             />
                             {/* <AvInput name="tradeDate" id="tradeDate" value={security.tradeDate} required disabled={viewing} />
                             <AvFeedback tooltip>Trade Date is required</AvFeedback> */}
@@ -195,6 +196,7 @@ const SecurityDetails = (props) => {
                               dateFormat="MM/dd/yyyy"
                               selected={maturityDate}
                               onChange={date => setMaturityDate(date)}
+                              required disabled={viewing}
                             />
                             {/* <AvInput name="maturityDate" id="maturityDate" value={security.maturityDate} required disabled={viewing} /> */}
                             <AvFeedback tooltip>Maturity Date is required</AvFeedback>
