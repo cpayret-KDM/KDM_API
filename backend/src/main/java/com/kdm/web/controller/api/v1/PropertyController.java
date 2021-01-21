@@ -163,7 +163,7 @@ public class PropertyController {
 	@Transactional
 	public ResponseEntity<Property> updateProperty(@PathVariable("propertyId") Long propertyId, @RequestBody @Valid Property property, BindingResult bindingResult) throws BindException {
 		
-		if (property.getId() != propertyId) {
+		if (!property.getId().equals(propertyId)) {
 			throw new ResponseStatusException(BAD_REQUEST,
 					messageSource.getMessage("controller.id_not_match", Arrays.array(propertyId, property.getId()), Locale.US));
 		}
@@ -174,6 +174,7 @@ public class PropertyController {
 		
 		Property prevProperty = entityUtil.tryGetEntity(Property.class, propertyId);
 		
+		property.setAppraisal(prevProperty.getAppraisal());
 		Property updatedProperty = loanService.updateProperty(property);
 		
 		return new ResponseEntity<Property>(updatedProperty, OK);
