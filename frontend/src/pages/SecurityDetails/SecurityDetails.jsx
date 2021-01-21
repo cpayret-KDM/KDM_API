@@ -179,13 +179,13 @@ const SecurityDetails = (props) => {
                         <AvGroup className="position-relative">
                           <Label for="tradeDate">Trade Date *</Label>
                           <div className="input-group">
-                            <HyperDatepicker
+                            {/* <HyperDatepicker
                               hideAddon={true}
                               dateFormat="MM/dd/yyyy"
                               selected={tradeDate}
                               onChange={handleTradeDateChange}
-                            />
-                            {/* <AvInput name="tradeDate" id="tradeDate" defaultValue={security.tradeDate} required disabled={viewing} /> */}
+                            /> */}
+                            <AvInput name="tradeDate" id="tradeDate" value={security.tradeDate} required disabled={viewing} />
                             <AvFeedback tooltip>Trade Date is required</AvFeedback>
                           </div>
                         </AvGroup>
@@ -195,13 +195,13 @@ const SecurityDetails = (props) => {
                         <AvGroup className="position-relative">
                           <Label for="maturityDate">Maturity Date *</Label>
                           <div className="input-group">
-                            <HyperDatepicker
+                            {/* <HyperDatepicker
                               hideAddon={true}
                               dateFormat="MM/dd/yyyy"
                               selected={maturityDate}
                               onChange={handleMaturityDateChange}
-                            />
-                            {/* <AvInput name="maturityDate" id="maturityDate" defaultValue={security.maturityDate} required disabled={viewing} /> */}
+                            /> */}
+                            <AvInput name="maturityDate" id="maturityDate" value={security.maturityDate} required disabled={viewing} />
                             <AvFeedback tooltip>Maturity Date is required</AvFeedback>
                           </div>
                         </AvGroup>
