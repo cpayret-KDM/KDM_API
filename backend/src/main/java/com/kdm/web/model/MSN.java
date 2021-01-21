@@ -4,15 +4,10 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.kdm.web.model.view.MSNRatingLatestByMSNView;
@@ -22,95 +17,89 @@ import com.kdm.web.model.view.MSNRatingLatestByMSNView;
 @Table
 public class MSN {
 
-	@Id
-	@JsonProperty
-	@Column(name = "msnID")
-	private Long id;
-	
-	/*
-	@JsonProperty
-	@ManyToOne
+    @Id
+    @JsonProperty
+    @Column(name = "msnID")
+    private Long id;
+
+    @JsonIgnore
+    @ManyToOne
     @JoinColumn(name = "cusipID", referencedColumnName = "cusipID", nullable = false)
-	private Cusip cusip;
-	*/
-	
-	@JsonProperty
-	@Column
-	private Long cusipID;
-	
-	@JsonProperty
-	@Column(length = 256)
-	@Size(max = 256)
-	private String number;
-	
-	@JsonProperty
-	@Column(nullable = true)
-	private ZonedDateTime tradeDate;
-	
-	@JsonProperty
-	@Column(nullable = false)
-	private ZonedDateTime maturityDate;
-	
-	@JsonProperty
-	@Column(precision = 5, scale = 2)
-	private BigDecimal noteRate;
-	
-	@JsonProperty
-	@OneToMany(mappedBy="msn", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
-	private Set<MSNRatingLatestByMSNView> ratings;
-	
-	public MSN() {
-		
-	}
+    private Cusip cusip;
 
-	public Long getId() {
-		return id;
-	}
+    @JsonProperty
+    @Column(length = 256)
+    @Size(max = 256)
+    private String number;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @JsonProperty
+    @Column(nullable = true)
+    private ZonedDateTime tradeDate;
 
-	/*
-	public Cusip getCusip() {
-		return cusip;
-	}
+    @JsonProperty
+    @Column(nullable = false)
+    private ZonedDateTime maturityDate;
 
-	public void setCusip(Cusip cusip) {
-		this.cusip = cusip;
-	}
-	*/
+    @JsonProperty
+    @Column(precision = 5, scale = 2)
+    private BigDecimal noteRate;
 
-	public String getNumber() {
-		return number;
-	}
+    @JsonProperty
+    @OneToMany(mappedBy="msn", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
+    private Set<MSNRatingLatestByMSNView> ratings;
 
-	public void setNumber(String number) {
-		this.number = number;
-	}
+    public MSN() {
 
-	public ZonedDateTime getTradeDate() {
-		return tradeDate;
-	}
+    }
 
-	public void setTradeDate(ZonedDateTime tradeDate) {
-		this.tradeDate = tradeDate;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public ZonedDateTime getMaturityDate() {
-		return maturityDate;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setMaturityDate(ZonedDateTime maturityDate) {
-		this.maturityDate = maturityDate;
-	}
+    /*
+    public Cusip getCusip() {
+        return cusip;
+    }
 
-	public BigDecimal getNoteRate() {
-		return noteRate;
-	}
+    public void setCusip(Cusip cusip) {
+        this.cusip = cusip;
+    }
+    */
 
-	public void setNoteRate(BigDecimal noteRate) {
-		this.noteRate = noteRate;
-	}
-	
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public ZonedDateTime getTradeDate() {
+        return tradeDate;
+    }
+
+    public void setTradeDate(ZonedDateTime tradeDate) {
+        this.tradeDate = tradeDate;
+    }
+
+    public ZonedDateTime getMaturityDate() {
+        return maturityDate;
+    }
+
+    public void setMaturityDate(ZonedDateTime maturityDate) {
+        this.maturityDate = maturityDate;
+    }
+
+    public BigDecimal getNoteRate() {
+        return noteRate;
+    }
+
+    public void setNoteRate(BigDecimal noteRate) {
+        this.noteRate = noteRate;
+    }
+
 }
