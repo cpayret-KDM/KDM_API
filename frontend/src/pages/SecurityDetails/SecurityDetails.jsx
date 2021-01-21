@@ -183,8 +183,8 @@ const SecurityDetails = (props) => {
                             <DatePicker
                               className="form-control date"
                               dateFormat="MM/dd/yyyy"
-                              value={security.tradeDate}
-                              // selected={tradeDate}
+                              // value={security.tradeDate}
+                              selected={tradeDate}
                               onChange={date => setTradeDate(date)}
                               required disabled={viewing}
                             />
@@ -201,8 +201,8 @@ const SecurityDetails = (props) => {
                             <DatePicker
                               className="form-control date"
                               dateFormat="MM/dd/yyyy"
-                              value={security.maturityDate}
-                              // selected={maturityDate}
+                              // value={security.maturityDate}
+                              selected={maturityDate}
                               onChange={date => setMaturityDate(date)}
                               required disabled={viewing}
                             />
