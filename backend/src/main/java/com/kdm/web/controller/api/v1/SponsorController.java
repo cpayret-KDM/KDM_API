@@ -191,7 +191,7 @@ public class SponsorController {
 	@Transactional
 	public ResponseEntity<Sponsor> updateSponsor(@PathVariable("sponsorId") Long sponsorId, @RequestBody @Valid Sponsor sponsor, BindingResult bindingResult) throws BindException {
 		
-		if (sponsor.getId() != sponsorId) {
+		if (!sponsor.getId().equals(sponsorId)) {
 			throw new ResponseStatusException(BAD_REQUEST,
 					messageSource.getMessage("controller.id_not_match", Arrays.array(sponsorId, sponsor.getId()), Locale.US));
 		}

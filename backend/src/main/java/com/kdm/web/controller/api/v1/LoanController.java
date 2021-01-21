@@ -195,7 +195,7 @@ public class LoanController {
 	@Transactional
 	public ResponseEntity<Loan> updateLoan(@PathVariable("loanId") Long loanId, @RequestBody @JsonView(View.ExtendedBasic.class) @Valid Loan loan, BindingResult bindingResult) throws BindException {
 		
-		if (loan.getId() != loanId) {
+		if (!loan.getId().equals(loanId)) {
 			throw new ResponseStatusException(BAD_REQUEST,
 					messageSource.getMessage("controller.id_not_match", Arrays.array(loanId, loan.getId()), Locale.US));
 		}
@@ -206,6 +206,10 @@ public class LoanController {
 		
 		// do this just to make sure it exist
 		Loan prevloan = entityUtil.tryGetEntity(Loan.class, loanId);
+		
+		//sync the related entities
+		loan.setProperties(prevloan.getProperties());
+		loan.setRatings(prevloan.getRatings());
 		
 		// merge will update the entity give by its id
 		Loan updatedLoan = entityManager.merge(loan);

@@ -166,7 +166,7 @@ public class MSNController {
 	@Transactional
 	public ResponseEntity<MSN> updateMSN(@PathVariable("msnId") Long msnId, @RequestBody @JsonView(View.ExtendedBasic.class) @Valid MSN msn, BindingResult bindingResult) throws BindException {
 		
-		if (msn.getId() != msnId) {
+		if (!msn.getId().equals(msnId)) {
 			throw new ResponseStatusException(BAD_REQUEST,
 					messageSource.getMessage("controller.id_not_match", Arrays.array(msnId, msn.getId()), Locale.US));
 		}
@@ -177,6 +177,8 @@ public class MSNController {
 		
 		// do this just to make sure it exist
 		MSN prevmsn = entityUtil.tryGetEntity(MSN.class, msnId);
+		
+		msn.setRatings(prevmsn.getRatings());
 		
 		// merge will update the entity give by its id
 		MSN updatedMSN = entityManager.merge(msn);
