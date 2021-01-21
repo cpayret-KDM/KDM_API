@@ -184,6 +184,11 @@ const SecurityDetails = (props) => {
                               className="form-control date"
                               dateFormat="MM/dd/yyyy"
                               // value={security.tradeDate}
+                              // value={tradeDate}
+                              // defaultValue={tradeDate}
+                              // defaultDate={security.tradeDate}
+                              // openToDate={security.tradeDate}
+                              // placeholderText={security.tradeDate}
                               selected={tradeDate}
                               onChange={date => setTradeDate(date)}
                               required disabled={viewing}
@@ -202,6 +207,7 @@ const SecurityDetails = (props) => {
                               className="form-control date"
                               dateFormat="MM/dd/yyyy"
                               // value={security.maturityDate}
+                              // value={maturityDate}
                               selected={maturityDate}
                               onChange={date => setMaturityDate(date)}
                               required disabled={viewing}
