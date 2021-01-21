@@ -129,7 +129,7 @@ public class LoanServiceImpl implements LoanService {
 	@Transactional
 	public Sponsor updateSponsor(Sponsor sponsor) {
 		if (sponsor == null) {
-			throw new IllegalArgumentException(messageSource.getMessage("common.invalid_parameter", Arrays.array("loan object is null"), Locale.US));
+			throw new IllegalArgumentException(messageSource.getMessage("common.invalid_parameter", Arrays.array("sponsor object is null"), Locale.US));
 		}
 	
 		// lets figure if the address already exists
@@ -148,7 +148,7 @@ public class LoanServiceImpl implements LoanService {
 	@Transactional
 	public void deleteSponsor(Sponsor sponsor) {
 		if (sponsor == null || sponsor.getId() == null) {
-			throw new IllegalArgumentException(messageSource.getMessage("common.invalid_parameter", Arrays.array("loan object is null"), Locale.US));
+			throw new IllegalArgumentException(messageSource.getMessage("common.invalid_parameter", Arrays.array("borrower object is null"), Locale.US));
 		}
 		
 		//check for a loan related to this sponsor
