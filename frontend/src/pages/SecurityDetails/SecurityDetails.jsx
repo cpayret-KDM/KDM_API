@@ -12,8 +12,6 @@ import ModalDeleteSecurity from './ModalDeleteSecurity';
 import DatePicker from 'react-datepicker';
 import { getSecurity, createSecurity, editSecurity, deleteSecurity, clearSecurity } from '../../redux/actions';
 
-import { DATE_FORMAT, SECURITY_STATUS_MAP, PIPELINE_STATUS_MAP, PROPERTY_TYPE_MAP } from '../../helpers/utils';
-
 const SecurityDetails = (props) => {
   const { security = {}, loaded } = props;
   const creating = (props.mode === 'create');
@@ -36,20 +34,24 @@ const SecurityDetails = (props) => {
   const [showDeleteSecurityModal, setShowDeleteSecurityModal] = useState(false);
 
   const [tradeDate, setTradeDate] = useState(new Date());
-  useEffect(() => {
-    setTradeDate(moment(security.tradeDate).toDate());
-  }, [security]);
-
   const [maturityDate, setMaturityDate] = useState(new Date());
-  useEffect(() => {
-    setMaturityDate(moment(security.maturityDate).toDate());
-  }, [security]);
+  // useEffect(() => {
+  //   setTradeDate(moment(security.tradeDate).toDate());
+  //   setMaturityDate(moment(security.maturityDate).toDate());
+  // }, [security]);
+
+  // const [maturityDate, setMaturityDate] = useState(new Date());
+  // useEffect(() => {
+  //   setMaturityDate(moment(security.maturityDate).toDate());
+  // }, [security]);
 
   const [isSaving, setIsSaving] = useState(false);
   useEffect(() => {
     if (props.added || props.edited) {
       setIsSaving(false);
     }
+    setTradeDate(moment(security.tradeDate).toDate());
+    setMaturityDate(moment(security.maturityDate).toDate());
   }, [props.added, props.edited]);
 
   const breadcrumb = ((mode) => {
@@ -177,6 +179,7 @@ const SecurityDetails = (props) => {
                             <DatePicker
                               className="form-control date"
                               dateFormat="MM/dd/yyyy"
+                              // value={security.tradeDate}
                               selected={tradeDate}
                               onChange={date => setTradeDate(date)}
                               required disabled={viewing}
@@ -194,6 +197,7 @@ const SecurityDetails = (props) => {
                             <DatePicker
                               className="form-control date"
                               dateFormat="MM/dd/yyyy"
+                              // value={security.maturityDate}
                               selected={maturityDate}
                               onChange={date => setMaturityDate(date)}
                               required disabled={viewing}
