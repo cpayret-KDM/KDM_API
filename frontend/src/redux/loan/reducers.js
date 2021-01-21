@@ -94,30 +94,36 @@ const Loan = (state: State = initialState, action: Action) => {
       return {
         ...state,
         loan: undefined,
+        added: false,
       };
     case CREATE_LOAN_SUCCESS:
       return { 
         ...state, 
         loan: action.payload,
+        added: true,
       };
     case CREATE_LOAN_FAILURE:
       return { 
         ...state,
         loan: action.payload,
+        added: false,
       };
 
     case EDIT_LOAN:
       return {
         ...state,
+        edited: false,
       };
     case EDIT_LOAN_SUCCESS:
       return { 
         ...state, 
         loan: action.payload,
+        edited: true,
       };
     case EDIT_LOAN_FAILURE:
       return { 
         ...state,
+        edited: false,
       };
 
     case DELETE_LOAN:

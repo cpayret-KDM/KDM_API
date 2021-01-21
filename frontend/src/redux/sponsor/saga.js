@@ -22,8 +22,6 @@ const SERVER_URL = process.env.REACT_APP_KDM_API_ENDPOINT;
 
 // Create Sponsor
 function* createSponsor({ payload: { sponsor, loanId } }) {
-
-  console.log('in saga', sponsor, loanId)
   const options = {
     method: 'PUT',
     body: JSON.stringify( sponsor ),

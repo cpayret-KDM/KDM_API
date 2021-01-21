@@ -13,7 +13,7 @@ const ModalDeleteProperty = (props) => {
       setIsSaving(false);
       toggle();
     }
-  }, [props.deleted]);
+  }, [props.deleted, toggle]);
 
   const handleDeleteProperty = () => {
     setIsSaving(true);

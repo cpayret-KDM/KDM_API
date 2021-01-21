@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Row, Col, Label, Button, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from 'reactstrap';
 import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
-import PropertyMap from './PropertyMap';
+// import PropertyMap from './PropertyMap';
 import { createProperty, editProperty } from '../../redux/actions';
 import { PROPERTY_TYPE_MAP, US_STATES_MAP } from '../../helpers/utils';
 
@@ -17,7 +17,7 @@ const ModalProperty = (props) => {
       setIsSaving(false);
       toggle();
     }
-  }, [props.added, props.edited]);
+  }, [props.added, props.edited, toggle]);
 
   const handleSubmitProperty = (e, errors, values) => {
     if (errors.length > 0) return false;

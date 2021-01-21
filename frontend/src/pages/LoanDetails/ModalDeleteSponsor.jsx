@@ -13,7 +13,7 @@ const ModalDeleteSponsor = (props) => {
       setIsSaving(false);
       toggle();
     }
-  }, [props.deleted]);
+  }, [props.deleted, toggle]);
 
   const handleDeleteSponsor = () => {
     setIsSaving(true);

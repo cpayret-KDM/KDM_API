@@ -67,13 +67,6 @@ function* get60DayLoans({ payload: { loanNumber, size, page, sort } }) {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   };
-  const params =  {
-    days: 60,
-    // loanNumber,
-    // size,
-    // page,
-    // sort,
-  };
 
   try {
     const response = yield call(fetchJSON, `${SERVER_URL}/loan/anniversary?days=60`, options);

@@ -104,4 +104,30 @@ export const US_STATES_MAP = {
   'WY': 'Wyoming'
 };
 
+export const EMPTY_LOAN = {
+  KDMRating: '',
+  dealName: '',
+  id: '',
+  initialAmount: '',
+  loanNumber: '',
+  loanRate: '',
+  loanStatus: '',
+  loanTermMonths: '',
+  ltv: '',
+  maturityDate: '',
+  memoUrl: '',
+  msn: '',
+  msnId: '',
+  originationDate: '',
+  pipelineStatus: '',
+  prepayMonths: '',
+  principalBalance: '',
+  properties: [],
+  ratings: [],
+  sponsor: '',
+  sponsorID: '',
+  spread: '',
+  tradeDate: '',
+};
+
 export { formatCurrency, formatPercentage };

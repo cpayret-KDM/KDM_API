@@ -11,12 +11,13 @@ const ModalSponsor = (props) => {
   const isEdit = (mode === 'edit');
 
   const [isSaving, setIsSaving] = useState(false);
+  
   useEffect(() => {
-    if (props.added || props.edited) {
+    if (props.added || props.edited || props.deleted) {
       setIsSaving(false);
       toggle();
     }
-  }, [props.added, props.edited]);
+  }, [props.added, props.edited, props.deleted, toggle]);
 
   const handleSubmitSponsor = (e, errors, values) => {
     if (errors.length > 0) return false;
@@ -49,7 +50,6 @@ const ModalSponsor = (props) => {
     }
     return true;
   }
-
 
   return (
     <Modal isOpen={isOpen} toggle={toggle}>
@@ -189,7 +189,7 @@ const ModalSponsor = (props) => {
 }
 
 const mapStateToProps = state => {
-  return state.Property;
+  return state.Sponsor;
 };
 
 export default connect(
