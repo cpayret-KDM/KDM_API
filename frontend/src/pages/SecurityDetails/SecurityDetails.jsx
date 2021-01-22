@@ -39,10 +39,12 @@ const SecurityDetails = (props) => {
   // const [maturityDate, setMaturityDate] = useState(security.maturityDate, new Date());
   const [tradeDate, setTradeDate] = useState(new Date());
   const [maturityDate, setMaturityDate] = useState(new Date());
-  // useEffect(() => {
-  //   setTradeDate(moment(security.tradeDate).toDate());
-  //   setMaturityDate(moment(security.maturityDate).toDate());
-  // }, [security]);
+  useEffect(() => {
+    if (!security.tradeDate) return;
+    if (!security.maturityDate) return;
+    setTradeDate(moment(security.tradeDate).toDate());
+    setMaturityDate(moment(security.maturityDate).toDate());
+  }, [security]);
 
   // const [maturityDate, setMaturityDate] = useState(new Date());
   // useEffect(() => {
@@ -54,8 +56,8 @@ const SecurityDetails = (props) => {
     if (props.added || props.edited) {
       setIsSaving(false);
     }
-    setTradeDate(moment(security.tradeDate).toDate());
-    setMaturityDate(moment(security.maturityDate).toDate());
+    // setTradeDate(moment(security.tradeDate).toDate());
+    // setMaturityDate(moment(security.maturityDate).toDate());
   }, [props.added, props.edited]);
 
   const breadcrumb = ((mode) => {
