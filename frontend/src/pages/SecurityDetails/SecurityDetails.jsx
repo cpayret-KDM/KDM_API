@@ -97,6 +97,9 @@ const SecurityDetails = (props) => {
     }
     if (creating) {
       props.createSecurity(newSecurity);
+      // temporary until specifications received on styling, UI and such
+      alert("Security Created");
+      window.location.href = "/securities/list";
     }
   }
 
@@ -281,23 +284,28 @@ const SecurityActionButtons = ({ creating, editing, viewing, securityId, handleD
             }
           </Button>
         </>
-      )}
+      )
+      }
 
       {/* verified to work in KDM-97-update-delete-new-security*/}
-      {editing && (
-        <>
-          <Link to={`/securities/${securityId}`} className="btn btn-secondary mr-2">Cancel</Link>
-          <Button type="submit" className="btn btn-primary">Save Changes</Button>
-        </>
-      )}
+      {
+        editing && (
+          <>
+            <Link to={`/securities/${securityId}`} className="btn btn-secondary mr-2">Cancel</Link>
+            <Button type="submit" className="btn btn-primary">Save Changes</Button>
+          </>
+        )
+      }
 
-      {viewing && (
-        <>
-          <Button className="btn btn-danger mr-2" onClick={(e) => handleDeleteSecurity(securityId)}>Delete Security</Button>
-          <Link to={`/securities/${securityId}/edit`} className="btn btn-primary">Edit Security</Link>
-        </>
-      )}
-    </div>
+      {
+        viewing && (
+          <>
+            <Button className="btn btn-danger mr-2" onClick={(e) => handleDeleteSecurity(securityId)}>Delete Security</Button>
+            <Link to={`/securities/${securityId}/edit`} className="btn btn-primary">Edit Security</Link>
+          </>
+        )
+      }
+    </div >
   );
 }
 
