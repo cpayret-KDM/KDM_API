@@ -25,6 +25,23 @@ type Action = { type: string, payload: {} };
 type State = { +value: boolean };
 
 const Security = (state: State = {}, action: Action) => {
+
+  // type State = {
+  //   securities: Array<{}>,
+  //   security: {},
+  //   loaded: boolean,
+  //   deleted: boolean
+  // };
+
+  // const initialState = {
+  //   securities: [],
+  //   security: {},
+  //   loaded: false,
+  //   deleted: false
+  // };
+
+  // const Security = (state: State = initialState, action: Action) => {
+
   switch (action.type) {
     /* Securities */
     case GET_SECURITIES:
