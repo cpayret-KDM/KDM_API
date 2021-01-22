@@ -3,8 +3,8 @@ package com.kdm.web.controller.api.v1;
 import com.kdm.web.data.repository.AppraisalRepository;
 import com.kdm.web.data.repository.CusipRepository;
 import com.kdm.web.data.repository.PropertyRepository;
-import com.kdm.web.model.Cusip;
-import com.kdm.web.model.Loan;
+import com.kdm.web.model.*;
+import com.kdm.web.model.util.Note;
 import com.kdm.web.service.EntityUtil;
 import com.kdm.web.service.LoanService;
 import com.kdm.web.util.error.ErrorResponse;
@@ -28,6 +28,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.persistence.EntityManager;
 import javax.validation.Valid;
 
+import java.time.ZonedDateTime;
 import java.util.Locale;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -62,7 +63,7 @@ public class CusipController {
     }
 
     @Operation(summary = "Create a CUSIP", tags = "cusip", responses = {
-            @ApiResponse(responseCode = "200", description = "cusip created"),
+            @ApiResponse(responseCode = "200", description = "CUSIP created"),
             @ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
     @ResponseBody
     @PostMapping(path = {"/",""}, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -75,9 +76,9 @@ public class CusipController {
     }
 
     @Operation(summary = "Update a CUSIP", tags = "cusip", responses = {
-            @ApiResponse(responseCode = "200", description = "cusip created"),
+            @ApiResponse(responseCode = "200", description = "CUSIP created"),
             @ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404", description = "cusip not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
+            @ApiResponse(responseCode = "404", description = "CUSIP not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
     )
     @ResponseBody
     @PutMapping(path = "/{cusipId}")
@@ -91,54 +92,53 @@ public class CusipController {
             throw new BindException(bindingResult);
         }
         Cusip updatedCusip = entityManager.merge(cusip);
-        return new ResponseEntity<Cusip>(updatedCusip, OK);
+        return new ResponseEntity<>(updatedCusip, OK);
     }
 
-    /*
-    @Operation(summary = "Delete a property", tags = "property", responses = {
-            @ApiResponse(responseCode = "200", description = "property deleated"),
+
+    @Operation(summary = "Delete a CUSIP", tags = "cusip", responses = {
+            @ApiResponse(responseCode = "200", description = "CUSIP deleted"),
             @ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404", description = "property not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
+            @ApiResponse(responseCode = "404", description = "CUSIP not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
     )
     @ResponseBody
-    @DeleteMapping(path = "/{propertyId}")
-    public ResponseEntity<Void> deleteProperty(@PathVariable("propertyId") Long propertyId) {
-        Property property = entityUtil.tryGetEntity(Property.class, propertyId);
-
-        propertyRepository.delete(property);
-
+    @DeleteMapping(path = "/{cusipId}")
+    public ResponseEntity<Void> deleteProperty(@PathVariable("cusipId") Long cusipId) {
+        Cusip cusip = entityUtil.tryGetEntity(Cusip.class, cusipId);
+        cusipRepository.delete(cusip);
         return new ResponseEntity<Void>(OK);
     }
 
-    @Operation(summary = "assign a appraisal to a property", tags = "property", responses = {
-            @ApiResponse(responseCode = "200", description = "appraisal assigned"),
+    @Operation(summary = "Assign MSN to a CUSIP", tags = "cusip", responses = {
+            @ApiResponse(responseCode = "200", description = "MSN assigned"),
             @ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404", description = "property not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
+            @ApiResponse(responseCode = "404", description = "CUSIP or MSN not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
     )
     @ResponseBody
-    @PutMapping(path = "/{propertyId}/appraisal")
-    @Transactional
-    public ResponseEntity<Property> changeAppraisal(@PathVariable("propertyId") Long propertyId, @RequestBody @Valid LatestAppraisalView appraisalParam, BindingResult bindingResult) throws BindException {
-        Property property = entityUtil.tryGetEntity(Property.class, propertyId);
+    @PutMapping(path = "/{cusipId}/msn/{msnId}")
+    public ResponseEntity<Loan> assignMsn(@PathVariable("cusipId") Long cusipId, @PathVariable("msnId") Long msnId) {
+        Cusip cusip = entityUtil.tryGetEntity(Cusip.class, cusipId);
+        MSN msn = entityUtil.tryGetEntity(MSN.class, msnId);
 
-        if (bindingResult.hasErrors()) {
-            throw new BindException(bindingResult);
-        }
+        // TODO: the assign stuff
 
-        Appraisal newAppraisal = Appraisal.builder()
-                .note(appraisalParam.getNote())
-                .value(appraisalParam.getValue())
-                .property(property)
-                .build();
-
-        appraisalRepository.saveAndFlush(newAppraisal);
-
-        entityManager.detach(property);
-
-        Property updatedProperty = entityUtil.tryGetEntity(Property.class, propertyId);
-
-        return new ResponseEntity<Property>(updatedProperty, OK);
+        return null;
     }
-    */
+
+    @Operation(summary = "Remove MSN from a CUSIP", tags = "cusip", responses = {
+            @ApiResponse(responseCode = "200", description = "MSN removed"),
+            @ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "CUSIP or MSN not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
+    )
+    @ResponseBody
+    @DeleteMapping(path = "/{cusipId}/msn/{msnId}")
+    public ResponseEntity<Loan> removeMsn(@PathVariable("cusipId") Long cusipId, @PathVariable("msnId") Long msnId) {
+        Cusip cusip = entityUtil.tryGetEntity(Cusip.class, cusipId);
+        MSN msn = entityUtil.tryGetEntity(MSN.class, msnId);
+
+        // TODO: the unassign stuff
+
+        return null;
+    }
 
 }
