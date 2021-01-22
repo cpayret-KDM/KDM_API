@@ -190,7 +190,9 @@ const SecurityDetails = (props) => {
                               // openToDate={security.tradeDate}
                               // placeholderText={security.tradeDate}
                               selected={tradeDate}
+                              // onSelect={tradeDate}
                               onChange={date => setTradeDate(date)}
+                              // placeholderText={security.tradeDate}
                               required disabled={viewing}
                             />
                             {/* <AvInput name="tradeDate" id="tradeDate" value={security.tradeDate} required disabled={viewing} />
