@@ -36,7 +36,7 @@ import com.kdm.web.model.PropertyType;
 import com.kdm.web.model.Sponsor;
 import com.kdm.web.restclient.tmo.service.TMOLoanService;
 import com.kdm.web.service.LoanService;
-import com.kdm.web.service.PropertyService;
+import com.kdm.web.service.BorrowerService;
 
 @WebMvcTest(controllers = LoanController.class)
 public class LoanControllerTest extends BaseControllerTest {
@@ -75,7 +75,7 @@ public class LoanControllerTest extends BaseControllerTest {
 	private TMOLoanService tmoOLoanService;
 	
 	@MockBean
-	private PropertyService propertyService;
+	private BorrowerService propertyService;
 
 	@Test
 	public void getLoanTest() throws Exception {

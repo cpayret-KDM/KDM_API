@@ -32,15 +32,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.kdm.web.data.repository.AppraisalRepository;
 import com.kdm.web.data.repository.PropertyRepository;
 import com.kdm.web.model.Appraisal;
 import com.kdm.web.model.Borrower;
 import com.kdm.web.model.Property;
 import com.kdm.web.model.view.LatestAppraisalView;
+import com.kdm.web.service.BorrowerService;
 import com.kdm.web.service.EntityUtil;
 import com.kdm.web.service.LoanService;
-import com.kdm.web.service.PropertyService;
+import com.kdm.web.util.View;
 import com.kdm.web.util.error.ErrorResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -74,7 +76,7 @@ public class PropertyController {
 	private AppraisalRepository appraisalRepository;
 	
 	@Autowired
-	private PropertyService propertyService;
+	private BorrowerService propertyService;
 	
 	@Operation(
 		summary = "Get list of proeprties according to search criteria and pagination options", 
@@ -233,7 +235,7 @@ public class PropertyController {
 	@ResponseBody
 	@PutMapping(path = "/{propertyId}/borrower/")
 	@Transactional
-	public ResponseEntity<Borrower> assignBorrower(@PathVariable("propertyId") Long propertyId, @RequestBody @Valid Borrower borrower, BindingResult bindingResult) throws BindException {
+	public ResponseEntity<Borrower> assignBorrower(@PathVariable("propertyId") Long propertyId, @RequestBody @Valid @JsonView(View.Basic.class) Borrower borrower, BindingResult bindingResult) throws BindException {
 		Property property = entityUtil.tryGetEntity(Property.class, propertyId);
 		
 		if (bindingResult.hasErrors()) {

@@ -1,11 +1,10 @@
 package com.kdm.web.controller.api.v1;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 
 import java.util.Locale;
-import java.util.Optional;
+import java.util.Objects;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -33,10 +32,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.kdm.web.data.repository.BorrowerRepository;
 import com.kdm.web.model.Borrower;
+import com.kdm.web.service.BorrowerService;
 import com.kdm.web.service.EntityUtil;
-import com.kdm.web.service.PropertyService;
+import com.kdm.web.util.View;
 import com.kdm.web.util.error.ErrorResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -62,10 +63,10 @@ public class BorrowerController {
 	private BorrowerRepository borrowerRepository;
 	
 	@Autowired
-	private EntityUtil entityUtil;
+	private BorrowerService borrowerService;
 	
 	@Autowired
-	private PropertyService propertyService;
+	private EntityUtil entityUtil;
 
 	@Operation(
 			summary = "Get list of borrowers according to search criteria and pagination options", 
@@ -125,7 +126,7 @@ public class BorrowerController {
 				@Parameter(
 					name = "sort",
 					description = "sort criteria, can have multiple values",
-					example = "loanNumber,desc",
+					example = "Company,desc",
 					schema = @Schema(
 						type = "string"
 					),
@@ -134,7 +135,7 @@ public class BorrowerController {
 			responses = {
 				@ApiResponse(
 					responseCode = "200", 
-					description = "pagination response with content of loans matching to search criteria", 
+					description = "pagination response with content of borrowers matching to search criteria", 
 					content = @Content(
 						schema = @Schema(implementation = Page.class)
 					)
@@ -170,15 +171,15 @@ public class BorrowerController {
 			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
 	@ResponseBody
 	@PostMapping(path = {"/",""}, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Borrower> saveBorrower(@RequestBody @Valid Borrower borrower, BindingResult bindingResult) throws BindException {
+	public ResponseEntity<Borrower> saveBorrower(@RequestBody @Valid @JsonView(View.Basic.class) Borrower borrower, BindingResult bindingResult) throws BindException {
 		if (bindingResult.hasErrors()) {
 			throw new BindException(bindingResult);
 		}
-		Borrower newBorrower = borrowerRepository.saveAndFlush(borrower);
+		Borrower newBorrower = borrowerService.createBorrower(borrower);
 		
 		return new ResponseEntity<Borrower>(newBorrower, OK);
 	}
-	
+
 	@Operation(summary = "updates a borrower", tags = "borrower", responses = {
 			@ApiResponse(responseCode = "200", description = "borrower updated"),
 			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
@@ -189,7 +190,7 @@ public class BorrowerController {
 	@Transactional
 	public ResponseEntity<Borrower> updateBorrower(@PathVariable("borrowerId") Long borrowerId, @RequestBody @Valid Borrower borrower, BindingResult bindingResult) throws BindException {
 		
-		if (!borrower.getId().equals(borrowerId)) {
+		if (!Objects.equals(borrowerId,borrower.getId())) {
 			throw new ResponseStatusException(BAD_REQUEST,
 					messageSource.getMessage("controller.id_not_match", Arrays.array(borrowerId, borrower.getId()), Locale.US));
 		}
@@ -198,14 +199,9 @@ public class BorrowerController {
 			throw new BindException(bindingResult);
 		}
 		
+		Borrower prevBorrower = entityUtil.tryGetEntity(Borrower.class, borrowerId);
 		
-		Optional<Borrower> prevBorrower = borrowerRepository.findById(borrowerId);
-		if (!prevBorrower.isPresent()) {
-			throw new ResponseStatusException(NOT_FOUND,
-					messageSource.getMessage("controller.entity_no_exists", Arrays.array(borrowerId), Locale.US));
-		}
-		
-		Borrower updatedBorrower = propertyService.updateBorrower(borrower);
+		Borrower updatedBorrower = borrowerService.updateBorrower(borrower);
 		
 		return new ResponseEntity<Borrower>(updatedBorrower, OK);
 	}
@@ -217,10 +213,10 @@ public class BorrowerController {
 	)
 	@ResponseBody
 	@DeleteMapping(path = "/{borrowerId}")
-	public ResponseEntity<Void> deleteRating(@PathVariable("borrowerId") Long borrowerId) {
+	public ResponseEntity<Void> deleteBorrower(@PathVariable("borrowerId") Long borrowerId) {
 		Borrower borrower = entityUtil.tryGetEntity(Borrower.class, borrowerId);
 		
-		propertyService.deleteBorrower(borrower);
+		borrowerService.deleteBorrower(borrower);
 		
 		return new ResponseEntity<Void>(OK);
 	}

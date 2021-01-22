@@ -22,7 +22,7 @@ import com.kdm.web.data.repository.PropertyRepository;
 import com.kdm.web.model.Address;
 import com.kdm.web.model.Property;
 import com.kdm.web.service.LoanService;
-import com.kdm.web.service.PropertyService;
+import com.kdm.web.service.BorrowerService;
 
 @WebMvcTest(controllers = PropertyController.class)
 public class PropertyControllerTest extends BaseControllerTest {
@@ -43,7 +43,7 @@ public class PropertyControllerTest extends BaseControllerTest {
 	private AppraisalRepository appraisalRepository;
 	
 	@MockBean
-	private PropertyService propertyService;
+	private BorrowerService propertyService;
 	
 	@Test
 	public void getPropertyTest() throws Exception {
