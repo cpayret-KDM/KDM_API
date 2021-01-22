@@ -3,25 +3,33 @@ package com.kdm.web.service;
 import com.kdm.web.model.Borrower;
 import com.kdm.web.model.Property;
 
-public interface PropertyService {
+public interface BorrowerService {
+	
+	/**
+	 * creates the given borrower
+	 * @param property
+	 * @param borrower
+	 * @return
+	 */
+	Borrower createBorrower(Borrower borrower);
 	
 	/**
 	 * assign the given borrower to the property
-	 * @param loan
-	 * @param sponsor
+	 * @param property
+	 * @param borrower
 	 * @return
 	 */
 	Borrower createBorrower(Property property, Borrower borrower);
 	
 	/**
-	 * updates the given sponsor
-	 * @param sponsor
+	 * updates the given borrower
+	 * @param borrower
 	 * @return
 	 */
 	Borrower updateBorrower(Borrower borrower);
 	
 	/**
-	 * deletes the given sponsor, and take care of relationship with other entities
+	 * deletes the given borrower, and take care of relationship with other entities
 	 */
 	void deleteBorrower(Borrower borrower);
 	

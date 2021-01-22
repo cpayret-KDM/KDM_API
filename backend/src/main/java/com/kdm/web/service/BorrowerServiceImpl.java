@@ -18,7 +18,7 @@ import com.kdm.web.model.Borrower;
 import com.kdm.web.model.Property;
 
 @Service
-public class PropertyServiceImpl implements PropertyService {
+public class BorrowerServiceImpl implements BorrowerService {
 
 	@Autowired
 	private MessageSource messageSource;
@@ -34,6 +34,26 @@ public class PropertyServiceImpl implements PropertyService {
 	
 	@Autowired
 	private BorrowerRepository borrowerRepository;
+	
+	@Override
+	@Transactional
+	public Borrower createBorrower(Borrower borrower) {
+		
+		if ((borrower == null) || (borrower.getAddress() == null)){
+			throw new IllegalArgumentException(messageSource.getMessage("common.invalid_parameter", Arrays.array("borrower or address object is null"), Locale.US));
+		}
+
+		// lets figure if the address already exists
+		Optional<Address> address = addressService.getOrPersistAddress(borrower.getAddressID(), borrower.getAddress());
+		if (!address.isPresent()) {
+			throw new IllegalArgumentException(messageSource.getMessage("common.invalid_parameter", Arrays.array("address object is null"), Locale.US));
+		}
+		
+		borrower.setAddressID(address.get().getId());
+		Borrower savedBorrower = borrowerRepository.save(borrower); 
+			
+		return savedBorrower;
+	}
 	
 	@Override
 	@Transactional
