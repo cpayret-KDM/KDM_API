@@ -5,4 +5,5 @@ export * from './appMenu/actions';
 // KDM
 export * from './loan/actions';
 export * from './property/actions';
+export * from './security/actions';
 // export * from './sponsor/actions';
