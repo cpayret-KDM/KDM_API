@@ -31,41 +31,41 @@ public class MSN {
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "MSN_msnID_seq")
 	@JsonView(View.ExtendedBasic.class)
 	private Long id;
-	
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "cusipID", referencedColumnName = "cusipID", nullable = false)
-    private Cusip cusip;
-	
-	/*@JsonProperty
-	@Column
+
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "cusipID", referencedColumnName = "cusipID", nullable = true)
+	private Cusip cusip;
+
+	@JsonProperty
+	@Column(name = "cusipID", insertable = false, updatable = false)
 	@JsonView(View.All.class)
-	private Long cusipID;*/
-	
+	private Long cusipID;
+
 	@JsonProperty
 	@Column(length = 256)
 	@Size(max = 256)
 	@JsonView(View.Basic.class)
 	private String number;
-	
+
 	@JsonProperty
 	@Column(nullable = true)
 	@JsonView(View.Basic.class)
 	private ZonedDateTime tradeDate;
-	
+
 	@JsonProperty
 	@Column(nullable = false)
 	@JsonView(View.Basic.class)
 	private ZonedDateTime maturityDate;
-	
+
 	@JsonProperty
 	@Column(precision = 5, scale = 2)
 	@JsonView(View.Basic.class)
 	private BigDecimal noteRate;
-	
+
 	@JsonProperty
 	@OneToMany(mappedBy="msn", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
 	@JsonView(View.All.class)
 	private Set<MSNRatingLatestByMSNView> ratings;
-	
+
 }

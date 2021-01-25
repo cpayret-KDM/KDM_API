@@ -1,10 +1,12 @@
 package com.kdm.web.controller.api.v1;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.kdm.web.data.repository.CusipRepository;
 import com.kdm.web.data.repository.MSNRepository;
 import com.kdm.web.model.Cusip;
 import com.kdm.web.model.MSN;
 import com.kdm.web.service.EntityUtil;
+import com.kdm.web.util.View;
 import com.kdm.web.util.error.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,6 +36,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.persistence.EntityManager;
 import javax.validation.Valid;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.*;
@@ -142,7 +145,7 @@ public class CusipController {
             @ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
     @ResponseBody
     @PostMapping(path = {"/",""}, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Cusip> saveCusip(@RequestBody @Valid Cusip cusip, BindingResult bindingResult) throws BindException {
+    public ResponseEntity<Cusip> saveCusip(@RequestBody @Valid @JsonView(View.Basic.class) Cusip cusip, BindingResult bindingResult) throws BindException {
         if (bindingResult.hasErrors()) {
             throw new BindException(bindingResult);
         }
@@ -153,13 +156,12 @@ public class CusipController {
     @Operation(summary = "Update a CUSIP", tags = "cusip", responses = {
             @ApiResponse(responseCode = "200", description = "CUSIP created"),
             @ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404", description = "CUSIP not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
-    )
+            @ApiResponse(responseCode = "404", description = "CUSIP not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
     @ResponseBody
     @PutMapping(path = "/{cusipId}")
     @Transactional
     public ResponseEntity<Cusip> updateCusip(@PathVariable("cusipId") Long cusipId, @RequestBody @Valid Cusip cusip, BindingResult bindingResult) throws BindException {
-        if (cusip.getId() != cusipId) {
+        if (!Objects.equals(cusip.getId(),cusipId)) {
             throw new ResponseStatusException(BAD_REQUEST,
                     messageSource.getMessage("controller.id_not_match", Arrays.array(cusipId, cusip.getId()), Locale.US));
         }
@@ -170,12 +172,10 @@ public class CusipController {
         return new ResponseEntity<>(updatedCusip, OK);
     }
 
-
     @Operation(summary = "Delete a CUSIP", tags = "cusip", responses = {
             @ApiResponse(responseCode = "200", description = "CUSIP deleted"),
             @ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404", description = "CUSIP not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
-    )
+            @ApiResponse(responseCode = "404", description = "CUSIP not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
     @ResponseBody
     @DeleteMapping(path = "/{cusipId}")
     public ResponseEntity<Void> deleteCusip(@PathVariable("cusipId") Long cusipId) {
@@ -184,93 +184,46 @@ public class CusipController {
         return new ResponseEntity<>(OK);
     }
 
-    @Operation(
-            summary = "Add MSN to a CUSIP",
-            tags = "workflow",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "MSN added to CUSIP"),
-                    @ApiResponse(responseCode = "400", description = "bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
-            })
+    @Operation(summary = "Add MSN to a CUSIP", tags = "cusip", responses = {
+            @ApiResponse(responseCode = "200", description = "MSN added to CUSIP"),
+            @ApiResponse(responseCode = "400", description = "bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
     @ResponseBody
     @PostMapping(path = {"/{cusipId}/msn/{msnId}"})
-    public ResponseEntity<Cusip> addMsnToCusip(
+    public ResponseEntity<Void> addMsnToCusip(
             @PathVariable("cusipId") Long cusipId,
             @PathVariable("msnId") Long msnId) {
 
-        // Get CUSIP
-        Optional<Cusip> cusip = cusipRepository.findById(cusipId);
-        if (!cusip.isPresent()) {
-            logger.debug("CUSIP ({}) not found", cusipId);
-            throw new ResponseStatusException(NOT_FOUND,
-                    messageSource.getMessage("controller.does_not_exist", new Object[] {cusipId}, Locale.US));
-        }
+        Cusip cusip = entityUtil.tryGetEntity(Cusip.class, cusipId);
+        MSN msn = entityUtil.tryGetEntity(MSN.class, msnId);
+        msn.setCusip(cusip);
+        msnRepository.saveAndFlush(msn);
 
-        // Get MSN
-        Optional<MSN> msn = msnRepository.findById(msnId);
-        if (!msn.isPresent()) {
-            logger.debug("MSN ({}) not found", msnId);
-            throw new ResponseStatusException(NOT_FOUND,
-                    messageSource.getMessage("controller.does_not_exist", new Object[] {msnId}, Locale.US));
-        }
-
-        // Make sure msn has not already been added
-        if (cusip.get().getMsns().contains(msn.get())) {
-            logger.debug("MSN ({}) and CUSIP ({}) are already associated", msnId, cusipId);
-            throw new ResponseStatusException(
-                    BAD_REQUEST,
-                    messageSource.getMessage(
-                            "controller.entity_already_associated", new Object[] {"MSN", msnId, "CUSIP", cusipId}, Locale.US));
-        }
-
-        Cusip cusipToUpdate = cusip.get();
-        cusipToUpdate.getMsns().add(msn.get());
-        cusipRepository.saveAndFlush(cusipToUpdate);
-        return new ResponseEntity<>(cusipToUpdate, OK);
+        return new ResponseEntity<>(OK);
     }
 
-    @Operation(
-            summary = "Remove MSN from CUSIP",
-            tags = "workflow",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "MSN removed from CUSIP"),
-                    @ApiResponse(responseCode = "400", description = "bad request"),
-                    @ApiResponse(responseCode = "404", description = "MSN or CUSIP not found")
-            })
+    @Operation(summary = "Remove MSN from CUSIP", tags = "cusip", responses = {
+            @ApiResponse(responseCode = "200", description = "MSN removed from CUSIP"),
+            @ApiResponse(responseCode = "400", description = "bad request"),
+            @ApiResponse(responseCode = "404", description = "MSN or CUSIP not found") })
     @ResponseBody
     @DeleteMapping(path = {"/{cusipId}/msn/{msnId}"})
-    public ResponseEntity<Cusip> removeMsnFromCusip(
+    public ResponseEntity<Void> removeMsnFromCusip(
             @PathVariable("cusipId") Long cusipId,
             @PathVariable("msnId") Long msnId) {
 
-        // Get CUSIP
-        Optional<Cusip> cusip = cusipRepository.findById(cusipId);
-        if (!cusip.isPresent()) {
-            logger.debug("CUSIP ({}) not found", cusipId);
-            throw new ResponseStatusException(NOT_FOUND,
-                    messageSource.getMessage("controller.does_not_exist", new Object[] {cusipId}, Locale.US));
+        Cusip cusip = entityUtil.tryGetEntity(Cusip.class, cusipId);
+        MSN msn = entityUtil.tryGetEntity(MSN.class, msnId);
+
+        // Make sure the MSN is actually associated with the CUSIP
+        if (!Objects.equals(cusip.getId(), msn.getCusipID())) {
+            throw new ResponseStatusException(BAD_REQUEST,
+                    messageSource.getMessage("controller.entity_not_associated", Arrays.array(cusipId), Locale.US));
         }
 
-        // Get MSN
-        Optional<MSN> msn = msnRepository.findById(msnId);
-        if (!msn.isPresent()) {
-            logger.debug("MSN ({}) not found", msnId);
-            throw new ResponseStatusException(NOT_FOUND,
-                    messageSource.getMessage("controller.does_not_exist", new Object[] {msnId}, Locale.US));
-        }
+        msn.setCusip(null);
+        msnRepository.saveAndFlush(msn);
 
-        // Make sure task has already been added
-        if (!cusip.get().getMsns().contains(msn.get())) {
-            logger.debug("MSN ({}) and CUSIP ({}) are already associated", msnId, cusipId);
-            throw new ResponseStatusException(
-                    BAD_REQUEST,
-                    messageSource.getMessage(
-                            "controller.entity_not_associated", new Object[] {"MSN", msnId, "CUSIP", cusipId}, Locale.US));
-        }
-
-        Cusip cusipToUpdate = cusip.get();
-        cusipToUpdate.getMsns().add(msn.get());
-        cusipRepository.saveAndFlush(cusipToUpdate);
-        return new ResponseEntity<>(cusipToUpdate, OK);
+        return new ResponseEntity<>(OK);
     }
 
 }
