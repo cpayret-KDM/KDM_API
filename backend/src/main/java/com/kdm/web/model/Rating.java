@@ -1,15 +1,21 @@
 package com.kdm.web.model;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -41,5 +47,16 @@ public class Rating {
 	@Size(max = 8)
 	@NotBlank
 	private String rating;
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "rating", fetch = FetchType.LAZY)
+	private Set<LoanRating> loanRatings;
+	
+	public void addLoanRating(LoanRating loanRating) {
+		if (this.loanRatings == null) {
+			this.loanRatings = new LinkedHashSet<LoanRating>();
+		}
+		this.loanRatings.add(loanRating);
+	}
 	
 }

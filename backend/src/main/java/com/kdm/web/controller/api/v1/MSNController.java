@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.kdm.web.data.repository.MSNRatingRepository;
 import com.kdm.web.data.repository.MSNRepository;
 import com.kdm.web.model.MSN;
@@ -39,6 +40,7 @@ import com.kdm.web.model.MSNRating;
 import com.kdm.web.model.Rating;
 import com.kdm.web.model.util.Note;
 import com.kdm.web.service.EntityUtil;
+import com.kdm.web.util.View;
 import com.kdm.web.util.error.ErrorResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -140,10 +142,11 @@ public class MSNController {
 	
 	@Operation(summary = "Create a MSN", tags = "msn", responses = {
 			@ApiResponse(responseCode = "200", description = "msn created"),
-			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
+			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))},
+			ignoreJsonView=false)
 	@ResponseBody
 	@PostMapping(path = {"/",""}, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<MSN> saveMSN(@RequestBody @Valid MSN msn, BindingResult bindingResult) throws BindException {
+	public ResponseEntity<MSN> saveMSN(@RequestBody @Valid @JsonView(View.Basic.class) MSN msn, BindingResult bindingResult) throws BindException {
 		if (bindingResult.hasErrors()) {
 			throw new BindException(bindingResult);
 		}
@@ -161,9 +164,9 @@ public class MSNController {
 	@ResponseBody
 	@PutMapping(path = "/{msnId}")
 	@Transactional
-	public ResponseEntity<MSN> updateMSN(@PathVariable("msnId") Long msnId, @RequestBody @Valid MSN msn, BindingResult bindingResult) throws BindException {
+	public ResponseEntity<MSN> updateMSN(@PathVariable("msnId") Long msnId, @RequestBody @JsonView(View.ExtendedBasic.class) @Valid MSN msn, BindingResult bindingResult) throws BindException {
 		
-		if (msn.getId() != msnId) {
+		if (!msn.getId().equals(msnId)) {
 			throw new ResponseStatusException(BAD_REQUEST,
 					messageSource.getMessage("controller.id_not_match", Arrays.array(msnId, msn.getId()), Locale.US));
 		}
@@ -174,6 +177,8 @@ public class MSNController {
 		
 		// do this just to make sure it exist
 		MSN prevmsn = entityUtil.tryGetEntity(MSN.class, msnId);
+		
+		msn.setRatings(prevmsn.getRatings());
 		
 		// merge will update the entity give by its id
 		MSN updatedMSN = entityManager.merge(msn);

@@ -8,7 +8,9 @@ public enum PropertyType {
 	INDUSTRIAL("Industrial"),
 	RETAIL("Retail"),
 	HOTEL("Hotel"),
-	SPECIAL_PURPOSE("Special-Pupose");
+	SPECIAL_PURPOSE("Special-Pupose"),
+	COMMERCIAL("Commercial"),
+	OTHER("Other");
 
 	private final String label;
 	

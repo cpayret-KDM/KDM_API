@@ -13,7 +13,6 @@ const db = {
     password: config.requireSecret("dbpassword"),
     db: config.require("dbdb")
 }
-
 const springProfile = config.require("springProfile")
 const isFlyway = config.get("isFlyway") || "false"
 const allowedOrigins = config.get("allowedOrigins")
@@ -21,6 +20,7 @@ const dns = {
     zoneId: config.get("dns_zoneId"),
     dnsName: config.get("dns_dnsName")
 }
+const tmoAPIToken = config.requireSecret("tmoAPIToken")
 /*******************************************************************************
 *   Networking
 *******************************************************************************/
@@ -134,6 +134,10 @@ let service = new awsx.ecs.FargateService("kdm_api", {
                     {
                         name: "kdm.api.allowedOrigins",
                         value: allowedOrigins
+                    },
+                    {
+                        name: "tmo.api.token",
+                        value: tmoAPIToken
                     }
                 ]
             }

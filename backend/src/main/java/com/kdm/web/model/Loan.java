@@ -24,7 +24,9 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.kdm.web.model.view.LoanRatingLatestByLoanView;
+import com.kdm.web.util.View;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,6 +36,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name="Loan", schema = "public")
+@JsonView
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Loan {
 
@@ -42,95 +45,117 @@ public class Loan {
 	@Column(name = "loanID")
 	@SequenceGenerator(name="Loan_loanID_seq", sequenceName="Loan_loanID_seq", allocationSize=1)
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "Loan_loanID_seq")
+	@JsonView(View.ExtendedBasic.class)
 	private Long id;
 	
 	@JsonProperty
 	@OneToMany(mappedBy="loan", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
+	@JsonView(View.All.class)
 	private List<Property> properties;
 	
 	@JsonProperty
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sponsorID", referencedColumnName = "sponsorID", nullable = true)
+	@JsonView(View.All.class)
 	private Sponsor sponsor;
 	
 	@JsonProperty
 	@Column(name = "sponsorID", insertable = false, updatable = false)
+	@JsonView(View.All.class)
 	private Long sponsorID;
 	
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "msnID", referencedColumnName = "msnID", nullable = true)
+	@JsonView(View.All.class)
 	private MSN msn;
 	
 	@JsonProperty
 	@Column(name = "msnID", insertable = false, updatable = false)
+	@JsonView(View.All.class)
 	private Long msnId;
 	
 	@JsonProperty(value = "loanNumber")
 	@Column(name = "loanNumber", length = 16)
 	@Size(max = 16)
+	@JsonView(View.Basic.class)
 	private String loanNumber;
 	
 	@JsonProperty(value = "dealName")
 	@Column(length = 256, nullable = true)
 	@Size(max = 256)
+	@JsonView(View.Basic.class)
 	private String dealName;
 	
 	@JsonProperty(value = "originationDate")
 	@Column(nullable = true)
+	@JsonView(View.Basic.class)
 	private ZonedDateTime originationDate;
 	
 	@JsonProperty(value = "maturityDate")
 	@Column
+	@JsonView(View.Basic.class)
 	private ZonedDateTime maturityDate;
 	
 	@JsonProperty(value = "tradeDate")
 	@Column(nullable = true)
+	@JsonView(View.Basic.class)
 	private ZonedDateTime tradeDate;
 	
 	@JsonProperty(value = "loanStatus")
 	@Enumerated(EnumType.STRING)
+	@JsonView(View.Basic.class)
 	private LoanStatus loanStatus;
 	
 	@JsonProperty(value = "initialAmount")
 	@Column(precision = 12, scale = 2)
+	@JsonView(View.Basic.class)
 	private BigDecimal initialAmount;
 	
 	@JsonProperty(value = "pipelineStatus")
 	@Enumerated(EnumType.STRING)
+	@JsonView(View.Basic.class)
 	private PipelineStatus pipelineStatus;
 	
 	@JsonProperty(value = "ltv")
 	@Column(name = "LTV", precision = 5, scale = 2)
+	@JsonView(View.Basic.class)
 	private BigDecimal ltv;
 	
 	@JsonProperty(value = "loanRate")
 	@Column(precision = 5, scale = 2)
+	@JsonView(View.Basic.class)
 	private BigDecimal loanRate;
 	
 	@JsonProperty(value = "memoUrl")
 	@Column(name = "memoURL", length = 256, nullable = true)
 	@Size(max = 256)
+	@JsonView(View.Basic.class)
 	private String memoUrl;
 	
 	@JsonProperty(value = "KDMRating")
 	@Column(name="KDMRating")
 	@Size(max = 256)
+	@JsonView(View.Basic.class)
 	private String kdmRating;
 	
 	@JsonProperty(value = "prepayMonths")
 	@Column(name = "prepayMonths")
+	@JsonView(View.Basic.class)
 	private Long prepayMonths;
 	
 	@Column(name = "loanTermMonths")
+	@JsonView(View.Basic.class)
 	private Long loanTermMonths;
 	
 	@JsonProperty(value = "principalBalance")
 	@Column(precision = 12, scale = 2)
+	@JsonView(View.Basic.class)
 	private BigDecimal principalBalance;
 	
 	@JsonProperty
 	@OneToMany(mappedBy="loan", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
+	@JsonView(View.All.class)
 	private Set<LoanRatingLatestByLoanView> ratings;
 	
 	public void addProperty(Property property) {
@@ -145,6 +170,7 @@ public class Loan {
 	}
 	
 	@JsonProperty(value = "spread")
+	@JsonView(View.All.class)
 	public BigDecimal getSpread() {
 		if ((this.msn == null) || (this.msn.getNoteRate() == null) || (this.loanRate == null) ){
 			return null;	

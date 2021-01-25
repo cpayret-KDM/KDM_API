@@ -157,7 +157,7 @@ public class RatingController {
 	@Transactional
 	public ResponseEntity<Rating> updateRating(@PathVariable("ratingId") Long ratingId, @RequestBody @Valid Rating rating, BindingResult bindingResult) throws BindException {
 		
-		if (rating.getId() != ratingId) {
+		if (!rating.getId().equals(ratingId)) {
 			throw new ResponseStatusException(BAD_REQUEST,
 					messageSource.getMessage("controller.id_not_match", Arrays.array(ratingId, rating.getId()), Locale.US));
 		}
@@ -169,6 +169,7 @@ public class RatingController {
 		// do this just to make sure it exist
 		Rating prevRating = entityUtil.tryGetEntity(Rating.class, ratingId);
 		
+		rating.setLoanRatings(prevRating.getLoanRatings());
 		// merge will update the entity give by its id
 		Rating updatedRating = entityManager.merge(rating);
 		

@@ -11,5 +11,7 @@ config:
   infra:dns_zoneId: Z2I7T1WMAPGFC
   infra:isFlyway: "true"
   infra:springProfile: no_kdm_security
+  infra:tmoAPIToken:
+    secure: AAABAJogUiIBP+K53lTJTWmsEupY0F9W7RER1FLATorFmbrXdmcSydbp/o3L/NxB/QyIifFzA97g6Zhm36Tnvg==
   infra:username: cs_korth
   infra:zoneId: Z2I7T1WMAPGFC

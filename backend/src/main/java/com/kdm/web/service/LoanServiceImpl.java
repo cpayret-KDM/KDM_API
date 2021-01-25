@@ -5,7 +5,6 @@ import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -40,6 +39,9 @@ public class LoanServiceImpl implements LoanService {
 	
 	@Autowired
 	LoanRepository loanRepository;
+	
+	@Autowired
+	AddressService addressService;
 
 	@Override
 	@Transactional
@@ -49,7 +51,7 @@ public class LoanServiceImpl implements LoanService {
 		}
 	
 		// lets figure if the address already exists
-		Optional<Address> address = getOrPersistAddress(property.getAddressID(), property.getAddress());
+		Optional<Address> address = addressService.getOrPersistAddress(property.getAddressID(), property.getAddress());
 		if (!address.isPresent()) {
 			return null;		
 		}
@@ -69,43 +71,6 @@ public class LoanServiceImpl implements LoanService {
 		return savedProperty; 
 	}
 
-	/**
-	 * checks persist the given address into the data source
-	 * @param addressID  id of the address, if already exist, can be null if it is a new address
-	 * @param address address information to persist can't be null
-	 * @return 
-	 */
-	private Optional<Address> getOrPersistAddress(Long addressID, Address address) {
-		Long givenAddressId = null;
-		if (address != null) {
-			givenAddressId = address.getId();
-		}
-		
-		Long actualAddressId = ObjectUtils.firstNonNull(addressID, givenAddressId);
-		if (actualAddressId != null) {
-			
-			Optional<Address> existingAddress = addressRepository.findById(actualAddressId);
-			if (existingAddress.isPresent() && !existingAddress.get().equals(address)) {
-				//address is different, lets updated it
-				address.setId(actualAddressId);
-				return Optional.of(entityManager.merge(address));
-			}
-			return existingAddress;
-		}
-		
-		
-		// no id so lets try to create the address
-		if (address == null) {
-			return Optional.ofNullable(null);
-		}
-		
-		// lets force Uppercasing for the state field 
-		address.setState(address.getState().toUpperCase());
-		
-		return Optional.of(addressRepository.save(address));
-	}
-	
-
 	@Transactional
 	public Property updateProperty(Property property) {
 		if ((property == null) || (property.getId() == null)) {
@@ -113,7 +78,7 @@ public class LoanServiceImpl implements LoanService {
 		}
 	
 		// lets figure if the address already exists
-		Optional<Address> address = getOrPersistAddress(property.getAddressID(), property.getAddress());
+		Optional<Address> address = addressService.getOrPersistAddress(property.getAddressID(), property.getAddress());
 		if (!address.isPresent()) {
 			return null;		
 		}
@@ -146,7 +111,7 @@ public class LoanServiceImpl implements LoanService {
 		}
 	
 		// lets figure if the address already exists
-		Optional<Address> address = getOrPersistAddress(sponsor.getAddressId(), sponsor.getAddress());
+		Optional<Address> address = addressService.getOrPersistAddress(sponsor.getAddressId(), sponsor.getAddress());
 		if (!address.isPresent()) {
 			throw new IllegalArgumentException(messageSource.getMessage("common.invalid_parameter", Arrays.array("address object is null"), Locale.US));
 		}
@@ -164,11 +129,11 @@ public class LoanServiceImpl implements LoanService {
 	@Transactional
 	public Sponsor updateSponsor(Sponsor sponsor) {
 		if (sponsor == null) {
-			throw new IllegalArgumentException(messageSource.getMessage("common.invalid_parameter", Arrays.array("loan object is null"), Locale.US));
+			throw new IllegalArgumentException(messageSource.getMessage("common.invalid_parameter", Arrays.array("sponsor object is null"), Locale.US));
 		}
 	
 		// lets figure if the address already exists
-		Optional<Address> address = getOrPersistAddress(sponsor.getAddressId(), sponsor.getAddress());
+		Optional<Address> address = addressService.getOrPersistAddress(sponsor.getAddressId(), sponsor.getAddress());
 		if (!address.isPresent()) {
 			throw new IllegalArgumentException(messageSource.getMessage("common.invalid_parameter", Arrays.array("address object is null"), Locale.US));
 		}
@@ -183,7 +148,7 @@ public class LoanServiceImpl implements LoanService {
 	@Transactional
 	public void deleteSponsor(Sponsor sponsor) {
 		if (sponsor == null || sponsor.getId() == null) {
-			throw new IllegalArgumentException(messageSource.getMessage("common.invalid_parameter", Arrays.array("loan object is null"), Locale.US));
+			throw new IllegalArgumentException(messageSource.getMessage("common.invalid_parameter", Arrays.array("borrower object is null"), Locale.US));
 		}
 		
 		//check for a loan related to this sponsor

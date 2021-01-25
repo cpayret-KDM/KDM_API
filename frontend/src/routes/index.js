@@ -14,6 +14,8 @@ const Confirm = React.lazy(() => import('../hyper-pages/auth/Confirm'));
 // pages
 const LoanDashboard = React.lazy(() => import('../pages/LoanDashboard'));
 const LoanDetails = React.lazy(() => import('../pages/LoanDetails'));
+const SecurityDashboard = React.lazy(() => import('../pages/SecurityDashboard'));
+const SecurityDetails = React.lazy(() => import('../pages/SecurityDetails'));
 //const Starter = React.lazy(() => import('../hyper-pages/Starter'));
 // const Profile = React.lazy(() => import('../hyper-pages/profile'));
 //const ErrorPageNotFound = React.lazy(() => import('../hyper-pages/error/PageNotFound'));
@@ -63,7 +65,7 @@ const loanRoutes = {
       name: 'Dashboard',
       component: (props) => <LoanDashboard {...props} report="list" />,
       route: PrivateRoute,
-      roles: ['user','admin'],
+      roles: ['user', 'admin'],
       exact: true,
     },
     {
@@ -71,7 +73,7 @@ const loanRoutes = {
       name: '60 Day Report',
       component: (props) => <LoanDashboard {...props} report="60-day" />,
       route: PrivateRoute,
-      roles: ['user','admin'],
+      roles: ['user', 'admin'],
       exact: true,
     },
     {
@@ -79,7 +81,7 @@ const loanRoutes = {
       name: 'Create Loan',
       component: (props) => <LoanDetails {...props} mode="create" />,
       route: PrivateRoute,
-      roles: ['user','admin'],
+      roles: ['user', 'admin'],
       exact: true,
     },
     {
@@ -94,7 +96,55 @@ const loanRoutes = {
       name: 'Loan Details',
       component: LoanDetails,
       route: PrivateRoute,
-      roles: ['user','admin'],
+      roles: ['user', 'admin'],
+      exact: true,
+    },
+  ],
+};
+
+const securityRoutes = {
+  path: '/securities',
+  name: 'Securities',
+  icon: 'uil-copy-alt',
+  header: 'Custom',
+  children: [
+    {
+      path: '/securities/list',
+      name: 'Dashboard',
+      component: (props) => <SecurityDashboard {...props} report="list" />,
+      route: PrivateRoute,
+      roles: ['user', 'admin'],
+      exact: true,
+    },
+    // {
+    //   path: '/securities/60-day',
+    //   name: '60 Day Report',
+    //   component: (props) => <SecurityDashboard {...props} report="60-day" />,
+    //   route: PrivateRoute,
+    //   roles: ['user', 'admin'],
+    //   exact: true,
+    // },
+    {
+      path: '/securities/create',
+      name: 'Create Security',
+      component: (props) => <SecurityDetails {...props} mode="create" />,
+      route: PrivateRoute,
+      roles: ['user', 'admin'],
+      exact: true,
+    },
+    {
+      path: '/securities/:id/edit',
+      name: 'Edit Security',
+      component: (props) => <SecurityDetails {...props} mode="edit" />,
+      route: PrivateRoute,
+      exact: true,
+    },
+    {
+      path: '/securities/:id',
+      name: 'Security Details',
+      component: SecurityDetails,
+      route: PrivateRoute,
+      roles: ['user', 'admin'],
       exact: true,
     },
   ],
@@ -127,7 +177,7 @@ const authRoutes = {
       path: '/account/confirm',
       name: 'Confirm',
       component: Confirm,
-        route: Route,
+      route: Route,
     },
     {
       path: '/account/forget-password',
@@ -140,23 +190,23 @@ const authRoutes = {
 
 // flatten the list of all nested routes
 const flattenRoutes = routes => {
-    let flatRoutes = [];
+  let flatRoutes = [];
 
-    routes = routes || [];
-    routes.forEach(item => {
-        flatRoutes.push(item);
+  routes = routes || [];
+  routes.forEach(item => {
+    flatRoutes.push(item);
 
-        if (typeof item.children !== 'undefined') {
-            flatRoutes = [...flatRoutes, ...flattenRoutes(item.children)];
-        }
-    });
-    return flatRoutes;
+    if (typeof item.children !== 'undefined') {
+      flatRoutes = [...flatRoutes, ...flattenRoutes(item.children)];
+    }
+  });
+  return flatRoutes;
 };
 
 // All routes
-const allRoutes = [rootRoute, authRoutes, loanRoutes];
+const allRoutes = [rootRoute, authRoutes, loanRoutes, securityRoutes];
 
-const authProtectedRoutes = [loanRoutes];
+const authProtectedRoutes = [loanRoutes, securityRoutes];
 
 const allFlattenRoutes = flattenRoutes(allRoutes);
 
