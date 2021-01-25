@@ -14,6 +14,8 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.kdm.web.util.View;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +25,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name="Borrower", schema = "public")
+@JsonView
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Borrower {
 	
@@ -31,12 +34,14 @@ public class Borrower {
 	@Column(name = "borrowerId")
 	@SequenceGenerator(name="Borrower_borrowerId_seq", sequenceName="Borrower_borrowerId_seq", allocationSize=1)
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "Borrower_borrowerId_seq")
+	@JsonView(View.ExtendedBasic.class)
 	private Long id;
 
 	@JsonProperty
-	@OneToOne
+	@OneToOne(optional=true)
     @JoinColumn(name = "addressId", referencedColumnName = "addressID", nullable = true)
 	@Valid
+	@JsonView(View.Basic.class)
 	private Address address;
 	
 	@JsonIgnore
@@ -46,26 +51,31 @@ public class Borrower {
 	@JsonProperty
 	@Column(name = "Company", length = 256)
 	@Size(max = 256)
+	@JsonView(View.Basic.class)
 	private String company;
 	
 	@JsonProperty
 	@Column(name = "firstName", length = 256)
 	@Size(max = 256)
+	@JsonView(View.Basic.class)
 	private String firstName;
 	
 	@JsonProperty
 	@Column(name = "lastName", length = 256)
 	@Size(max = 256)
+	@JsonView(View.Basic.class)
 	private String lastName;
 	
 	@JsonProperty
 	@Column(name = "phone", length = 256)
 	@Size(max = 256)
+	@JsonView(View.Basic.class)
 	private String phone;
 		
 	@JsonProperty
 	@Column(name = "email", length = 256)
 	@Size(max = 256)
+	@JsonView(View.Basic.class)
 	private String email;
 
 }

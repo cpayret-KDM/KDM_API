@@ -47,7 +47,7 @@ export const PROPERTY_TYPE_MAP = {
   'RETAIL' : 'Retail',
   'HOTEL' : 'Hotel',
   'SPECIAL_PURPOSE' : 'Special-Purpose',
-  'OTHER' : 'Other',
+  'OTHER' : 'Other'
 };
 
 export const US_STATES_MAP = {
