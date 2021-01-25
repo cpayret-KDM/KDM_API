@@ -25,7 +25,7 @@ public class Cusip {
     private Long id;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @OneToMany(mappedBy="cusip", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
+    @OneToMany(mappedBy="cusip", fetch = FetchType.EAGER)
     private List<MSN> msns;
 
     @JsonProperty(value = "class")

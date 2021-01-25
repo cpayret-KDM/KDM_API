@@ -11,15 +11,23 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.kdm.web.model.view.MSNRatingLatestByMSNView;
+import lombok.*;
 
 @JsonRootName("msn")
 @Entity
 @Table
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class MSN {
 
+    @JsonProperty(value = "id")
     @Id
-    @JsonProperty
     @Column(name = "msnID")
+    @SequenceGenerator(name="MSN_msnID_seq", sequenceName="MSN_msnID_seq", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "MSN_msnID_seq")
     private Long id;
 
     @JsonIgnore
@@ -47,59 +55,5 @@ public class MSN {
     @JsonProperty
     @OneToMany(mappedBy="msn", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
     private Set<MSNRatingLatestByMSNView> ratings;
-
-    public MSN() {
-
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    /*
-    public Cusip getCusip() {
-        return cusip;
-    }
-
-    public void setCusip(Cusip cusip) {
-        this.cusip = cusip;
-    }
-    */
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    public ZonedDateTime getTradeDate() {
-        return tradeDate;
-    }
-
-    public void setTradeDate(ZonedDateTime tradeDate) {
-        this.tradeDate = tradeDate;
-    }
-
-    public ZonedDateTime getMaturityDate() {
-        return maturityDate;
-    }
-
-    public void setMaturityDate(ZonedDateTime maturityDate) {
-        this.maturityDate = maturityDate;
-    }
-
-    public BigDecimal getNoteRate() {
-        return noteRate;
-    }
-
-    public void setNoteRate(BigDecimal noteRate) {
-        this.noteRate = noteRate;
-    }
 
 }
