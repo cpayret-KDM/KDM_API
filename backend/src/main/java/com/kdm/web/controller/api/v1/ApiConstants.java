@@ -17,5 +17,8 @@ public class ApiConstants {
 	public static final String LOAN_MAPPING = V1 + "/loan";
 	public static final String SPONSOR_MAPPING = V1 + "/sponsor";
 	public static final String MSN_MAPPING = V1 + "/msn";
+	public static final String RATING_MAPPING = V1 + "/rating";
+	public static final String BORROWER_MAPPING = V1 + "/borrower";
+	public static final String TMO_MAPPING = V1 + "/tmo";
 
 }

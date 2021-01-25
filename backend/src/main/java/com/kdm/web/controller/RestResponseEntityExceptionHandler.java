@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -83,9 +84,19 @@ public class RestResponseEntityExceptionHandler  {
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
 	
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<ErrorResponse> handleDataIntegrityViolationExceptionn(DataIntegrityViolationException ex, WebRequest request) {
+		logger.error(String.format("Exception: %s", ex.getMessage()), ex);
+		
+		ErrorResponse response = buildResponse(HttpStatus.BAD_REQUEST, request.getDescription(false), ex.getMostSpecificCause().getMessage());
+		
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
+	
+	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorResponse> handleException(Exception ex, WebRequest request) {
-		logger.debug(String.format("Exception: %s", ex.getMessage()), ex);
+		logger.error(String.format("Exception: %s", ex.getMessage()), ex);
 		
 		ErrorResponse response = buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, request.getDescription(false), ex.getMessage());
 		

@@ -58,8 +58,13 @@ public class Property {
 	private Long loanId;
 	
 	@JsonProperty
-	@Column(name = "borrowerID")
-	private Long borrowerID;
+	@Column(name = "borrowerID", insertable = false, updatable = false)
+	private Long borrowerId;
+	
+	@JsonProperty
+	@ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "borrowerID", referencedColumnName = "borrowerId", nullable = true)
+	private Borrower borrower;
 	
 	@JsonProperty(value = "type")
 	@Enumerated(EnumType.STRING)
