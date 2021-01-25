@@ -9,6 +9,8 @@ import { getSecurities } from '../../redux/actions';
 
 const SecurityDashboard = (props) => {
 
+  const { securities, report } = props;
+
   useEffect(() => {
     if (report === 'list') {
       props.getSecurities();
@@ -28,7 +30,7 @@ const SecurityDashboard = (props) => {
     }
   })(props.report);
 
-  const { securities, report } = props;
+  // const { securities, report } = props;
   return (
     <>
       <PageTitle

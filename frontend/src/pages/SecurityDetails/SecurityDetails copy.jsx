@@ -9,8 +9,10 @@ import PageTitle from '../../components/PageTitle';
 import ModalProperty from './ModalProperty';
 import ModalDeleteProperty from './ModalDeleteProperty';
 import ModalDeleteSecurity from './ModalDeleteSecurity';
-import DatePicker from 'react-datepicker';
+import HyperDatepicker from '../../components/Datepicker';
 import { getSecurity, createSecurity, editSecurity, deleteSecurity, clearSecurity } from '../../redux/actions';
+
+import { DATE_FORMAT, SECURITY_STATUS_MAP, PIPELINE_STATUS_MAP, PROPERTY_TYPE_MAP } from '../../helpers/utils';
 
 const SecurityDetails = (props) => {
   const { security = {}, loaded } = props;
@@ -27,37 +29,24 @@ const SecurityDetails = (props) => {
     }
   }, [creating, id]);
 
+  // useEffect(() => {
+  //   setOriginationDate(security.originationDate);
+  // }, [security]);
+
+  const today = new Date();
+  const [tradeDate, setTradeDate] = useState(today);
+  const [maturityDate, setMaturityDate] = useState(today);
   const [property, setProperty] = useState({});
   const [propertyMode, setPropertyMode] = useState('create');
   const [showPropertyModal, setShowPropertyModal] = useState(false);
   const [showDeletePropertyModal, setShowDeletePropertyModal] = useState(false);
   const [showDeleteSecurityModal, setShowDeleteSecurityModal] = useState(false);
 
-  // const tradeDate = security.tradeDate
-  // const maturityDate = security.maturityDate
-  // const [tradeDate, setTradeDate] = useState(security.tradeDate, new Date());
-  // const [maturityDate, setMaturityDate] = useState(security.maturityDate, new Date());
-  const [tradeDate, setTradeDate] = useState(new Date());
-  const [maturityDate, setMaturityDate] = useState(new Date());
-  useEffect(() => {
-    if (!security.tradeDate) return;
-    if (!security.maturityDate) return;
-    setTradeDate(moment(security.tradeDate).toDate());
-    setMaturityDate(moment(security.maturityDate).toDate());
-  }, [security]);
-
-  // const [maturityDate, setMaturityDate] = useState(new Date());
-  // useEffect(() => {
-  //   setMaturityDate(moment(security.maturityDate).toDate());
-  // }, [security]);
-
   const [isSaving, setIsSaving] = useState(false);
   useEffect(() => {
     if (props.added || props.edited) {
       setIsSaving(false);
     }
-    // setTradeDate(moment(security.tradeDate).toDate());
-    // setMaturityDate(moment(security.maturityDate).toDate());
   }, [props.added, props.edited]);
 
   const breadcrumb = ((mode) => {
@@ -97,9 +86,6 @@ const SecurityDetails = (props) => {
     }
     if (creating) {
       props.createSecurity(newSecurity);
-      // temporary until specifications received on styling, UI and such
-      alert("Security Created");
-      window.location.href = "/securities/list";
     }
   }
 
@@ -134,6 +120,14 @@ const SecurityDetails = (props) => {
 
   const toggleDeleteSecurityModal = () => {
     setShowDeleteSecurityModal(!showDeleteSecurityModal);
+  }
+
+  const handleTradeDateChange = (date) => {
+    setTradeDate(date);
+  }
+
+  const handleMaturityDateChange = (date) => {
+    setMaturityDate(date);
   }
 
   return (
@@ -185,23 +179,14 @@ const SecurityDetails = (props) => {
                         <AvGroup className="position-relative">
                           <Label for="tradeDate">Trade Date *</Label>
                           <div className="input-group">
-                            <DatePicker
-                              className="form-control date"
+                            {/* <HyperDatepicker
+                              hideAddon={true}
                               dateFormat="MM/dd/yyyy"
-                              // value={security.tradeDate}
-                              // value={tradeDate}
-                              // defaultValue={tradeDate}
-                              // defaultDate={security.tradeDate}
-                              // openToDate={security.tradeDate}
-                              // placeholderText={security.tradeDate}
                               selected={tradeDate}
-                              // onSelect={tradeDate}
-                              onChange={date => setTradeDate(date)}
-                              // placeholderText={security.tradeDate}
-                              required disabled={viewing}
-                            />
-                            {/* <AvInput name="tradeDate" id="tradeDate" value={security.tradeDate} required disabled={viewing} />
-                            <AvFeedback tooltip>Trade Date is required</AvFeedback> */}
+                              onChange={handleTradeDateChange}
+                            /> */}
+                            <AvInput name="tradeDate" id="tradeDate" value={security.tradeDate} required disabled={viewing} />
+                            <AvFeedback tooltip>Trade Date is required</AvFeedback>
                           </div>
                         </AvGroup>
                       </Col>
@@ -210,16 +195,13 @@ const SecurityDetails = (props) => {
                         <AvGroup className="position-relative">
                           <Label for="maturityDate">Maturity Date *</Label>
                           <div className="input-group">
-                            <DatePicker
-                              className="form-control date"
+                            {/* <HyperDatepicker
+                              hideAddon={true}
                               dateFormat="MM/dd/yyyy"
-                              // value={security.maturityDate}
-                              // value={maturityDate}
                               selected={maturityDate}
-                              onChange={date => setMaturityDate(date)}
-                              required disabled={viewing}
-                            />
-                            {/* <AvInput name="maturityDate" id="maturityDate" value={security.maturityDate} required disabled={viewing} /> */}
+                              onChange={handleMaturityDateChange}
+                            /> */}
+                            <AvInput name="maturityDate" id="maturityDate" value={security.maturityDate} required disabled={viewing} />
                             <AvFeedback tooltip>Maturity Date is required</AvFeedback>
                           </div>
                         </AvGroup>
@@ -284,28 +266,23 @@ const SecurityActionButtons = ({ creating, editing, viewing, securityId, handleD
             }
           </Button>
         </>
-      )
-      }
+      )}
 
       {/* verified to work in KDM-97-update-delete-new-security*/}
-      {
-        editing && (
-          <>
-            <Link to={`/securities/${securityId}`} className="btn btn-secondary mr-2">Cancel</Link>
-            <Button type="submit" className="btn btn-primary">Save Changes</Button>
-          </>
-        )
-      }
+      {editing && (
+        <>
+          <Link to={`/securities/${securityId}`} className="btn btn-secondary mr-2">Cancel</Link>
+          <Button type="submit" className="btn btn-primary">Save Changes</Button>
+        </>
+      )}
 
-      {
-        viewing && (
-          <>
-            <Button className="btn btn-danger mr-2" onClick={(e) => handleDeleteSecurity(securityId)}>Delete Security</Button>
-            <Link to={`/securities/${securityId}/edit`} className="btn btn-primary">Edit Security</Link>
-          </>
-        )
-      }
-    </div >
+      {viewing && (
+        <>
+          <Button className="btn btn-danger mr-2" onClick={(e) => handleDeleteSecurity(securityId)}>Delete Security</Button>
+          <Link to={`/securities/${securityId}/edit`} className="btn btn-primary">Edit Security</Link>
+        </>
+      )}
+    </div>
   );
 }
 
