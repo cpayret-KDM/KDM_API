@@ -21,20 +21,20 @@ import {
   CLEAR_LOAN,
 } from './constants';
 
-type LoanAction = { type: string, payload: {} | string };
+type LoanAction = { type: String, payload: {} | String };
 
 // Get Loans
-export const getLoans = (loanNumber: string = '', size: Number, page: Number, sort: string = ''): LoanAction => ({
+export const getLoans = (loanNumber: String = '', size: Number, page: Number, sort: String = ''): LoanAction => ({
   type: GET_LOANS,
   payload: { loanNumber, size, page, sort },
 });
 
-export const getLoansSuccess = (loan: object): LoanAction => ({
+export const getLoansSuccess = (loan: Object): LoanAction => ({
   type: GET_LOANS_SUCCESS,
   payload: loan,
 });
 
-export const getLoansFailure = (err: object): LoanAction => ({
+export const getLoansFailure = (err: Object): LoanAction => ({
   type: GET_LOANS_FAILURE,
   payload: err,
 });
@@ -45,66 +45,66 @@ export const get60DayLoans = (): LoanAction => ({
   payload: { },
 });
 
-export const get60DayLoansSuccess = (loan: object): LoanAction => ({
+export const get60DayLoansSuccess = (loan: Object): LoanAction => ({
   type: GET_60_DAY_LOANS_SUCCESS,
   payload: loan,
 });
 
-export const get60DayLoansFailure = (err: object): LoanAction => ({
+export const get60DayLoansFailure = (err: Object): LoanAction => ({
   type: GET_60_DAY_LOANS_FAILURE,
   payload: err,
 });
 
 // Get Loan
-export const getLoan = (loanId: string): LoanAction => ({
+export const getLoan = (loanId: String): LoanAction => ({
   type: GET_LOAN,
   payload: { loanId },
 });
 
-export const getLoanSuccess = (loan: object): LoanAction => ({
+export const getLoanSuccess = (loan: Object): LoanAction => ({
   type: GET_LOAN_SUCCESS,
   payload: loan,
 });
 
-export const getLoanFailure = (err: object): LoanAction => ({
+export const getLoanFailure = (err: Object): LoanAction => ({
   type: GET_LOAN_FAILURE,
   payload: err,
 });
 
 // Create Loan
-export const createLoan = (loan: object = {}): LoanAction => ({
+export const createLoan = (loan: Object = {}): LoanAction => ({
   type: CREATE_LOAN,
   payload: { loan },
 });
 
-export const createLoanSuccess = (loan: object): LoanAction => ({
+export const createLoanSuccess = (loan: Object): LoanAction => ({
   type: CREATE_LOAN_SUCCESS,
   payload: loan,
 });
 
-export const createLoanFailure = (err: object): LoanAction => ({
+export const createLoanFailure = (err: Object): LoanAction => ({
   type: CREATE_LOAN_FAILURE,
   payload: err,
 });
 
 // Edit Loan
-export const editLoan = (loan: object = {}): LoanAction => ({
+export const editLoan = (loan: Object = {}): LoanAction => ({
   type: EDIT_LOAN,
   payload: { loan },
 });
 
-export const editLoanSuccess = (loan: object): LoanAction => ({
+export const editLoanSuccess = (loan: Object): LoanAction => ({
   type: EDIT_LOAN_SUCCESS,
   payload: loan,
 });
 
-export const editLoanFailure = (err: object): LoanAction => ({
+export const editLoanFailure = (err: Object): LoanAction => ({
   type: EDIT_LOAN_FAILURE,
   payload: err,
 });
 
 // Delete Loan
-export const deleteLoan = (loanId: string = ''): LoanAction => ({
+export const deleteLoan = (loanId: String = ''): LoanAction => ({
   type: DELETE_LOAN,
   payload: { loanId },
 });
@@ -114,12 +114,12 @@ export const deleteLoanSuccess = (): LoanAction => ({
   payload: {},
 });
 
-export const deleteLoanFailure = (err: object): LoanAction => ({
+export const deleteLoanFailure = (err: Object): LoanAction => ({
   type: DELETE_LOAN_FAILURE,
   payload: err,
 });
 
-// Delete Loan
+// Clear Loan
 export const clearLoan = (): LoanAction => ({
   type: CLEAR_LOAN,
   payload: {  },

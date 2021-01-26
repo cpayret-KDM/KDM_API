@@ -2,25 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Row, Col, Label, Button, Modal, ModalHeader, ModalBody, ModalFooter, Spinner, UncontrolledAlert } from 'reactstrap';
 import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
-import { createSponsor, editSponsor } from '../../redux/actions';
+import { getSponsor, createSponsor, editSponsor, clearSponsor } from '../../redux/actions';
 import { US_STATES_MAP } from '../../helpers/utils';
 
 const ModalSponsor = (props) => {
-  const { isOpen, toggle, loanId, mode } = props;
+  const { isOpen, toggle, mode, loanId } = props;
   const isCreate = (mode === 'create');
   const isEdit = (mode === 'edit');
 
-  const [isSaving, setIsSaving] = useState(false);
-  
   useEffect(() => {
-    if (props.error) {
-      setIsSaving(false);
+    if (isEdit) {
+      props.getSponsor(props.sponsorId);
+    } else {
+      props.clearSponsor();
+      setSponsor({});
     }
-    else if (props.added || props.edited || props.deleted) {
-      setIsSaving(false);
-      toggle();
-    }
-  }, [props.added, props.edited, props.deleted, props.error]);
+  }, [props.sponsorId, isEdit]);
 
   /* Setting the sponsor in state instead of props so that validation doesn't flash when form is submitted */
   const [sponsor, setSponsor] = useState({...props.sponsor});
@@ -29,6 +26,22 @@ const ModalSponsor = (props) => {
       setSponsor({...props.sponsor});
     }
   }, [props.sponsor]);
+
+  const [isSaving, setIsSaving] = useState(false);
+  useEffect(() => {
+    if (props.error) {
+      setIsSaving(false);
+    }
+    else if (props.added || props.deleted) {
+      setIsSaving(false);
+      toggle();
+    }
+    else if (props.edited) {
+      setIsSaving(false);
+      toggle();
+      props.getSponsor(props.sponsorId);
+    }
+  }, [props.added, props.edited, props.deleted, props.error]);
 
   const handleSubmitSponsor = (e, errors, values) => {
     if (errors.length > 0) return false;
@@ -211,6 +224,6 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   { 
-    createSponsor, editSponsor,
+    getSponsor, createSponsor, editSponsor, clearSponsor,
   }
 )(ModalSponsor);

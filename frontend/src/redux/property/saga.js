@@ -2,12 +2,15 @@ import { all, call, put, takeEvery, fork } from 'redux-saga/effects';
 import { fetchJSON } from '../../helpers/api';
 
 import {
+  GET_PROPERTY,
   CREATE_PROPERTY,
   EDIT_PROPERTY,
   DELETE_PROPERTY,
 } from './constants';
 
 import {
+  getPropertySuccess,
+  getPropertyFailure,
   createPropertySuccess,
   createPropertyFailure,
   editPropertySuccess,
@@ -22,6 +25,32 @@ import { getLoan } from '../loan/actions';
 
 const SERVER_URL = process.env.REACT_APP_KDM_API_ENDPOINT;
 
+// Get Property
+function* getProperty({ payload: { propertyId } }) {
+  const options = {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  };
+
+  const response = yield call(fetchJSON, `${SERVER_URL}/property/${propertyId}`, options);
+  if (!response.status || response.status === 200) {
+    yield put(getPropertySuccess(response));
+  } else {
+    let message;
+    switch (response.status) {
+      case 500:
+        message = 'Internal Server Error';
+        break;
+      case 401:
+        message = 'Invalid credentials';
+        break;
+      default:
+        message = response.message;
+    }
+    yield put(getPropertyFailure(message));
+  }
+}
+
 // Create Property
 function* createProperty({ payload: { property } }) {
   const options = {
@@ -33,7 +62,7 @@ function* createProperty({ payload: { property } }) {
   const response = yield call(fetchJSON, `${SERVER_URL}/property`, options);
   if (!response.status || response.status === 200) {
     yield put(createPropertySuccess(response));
-    yield put(assignAppraisal(property.id, property.loanId, property.appraisal));
+    yield put(getLoan(property.loanId));
   } else {
     let message;
     switch (response.status) {
@@ -44,7 +73,7 @@ function* createProperty({ payload: { property } }) {
         message = 'Invalid credentials';
         break;
       default:
-        message = response.msesage;
+        message = response.message;
     }
     yield put(createPropertyFailure(message));
   }
@@ -61,7 +90,6 @@ function* editProperty({ payload: { property } }) {
   const response = yield call(fetchJSON, `${SERVER_URL}/property/${property.id}`, options);
   if (!response.status || response.status === 200) {
     yield put(editPropertySuccess(response));
-    console.log('property', property)
     yield assignAppraisal(property.id, property.loanId, property.appraisal);
   } else {
     let message;
@@ -138,6 +166,10 @@ function* assignAppraisal(propertyId, loanId, appraisal) {
 /**
  * Watchers
  */
+export function* watchGetProperty(): any {
+  yield takeEvery(GET_PROPERTY, getProperty);
+}
+
 export function* watchCreateProperty(): any {
   yield takeEvery(CREATE_PROPERTY, createProperty);
 }
@@ -152,6 +184,7 @@ export function* watchDeleteProperty(): any {
 
 function* PropertySaga(): any {
   yield all([
+    fork(watchGetProperty),
     fork(watchCreateProperty),
     fork(watchEditProperty),
     fork(watchDeleteProperty),

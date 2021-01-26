@@ -11,7 +11,7 @@ const ModalDeleteProperty = (props) => {
   useEffect(() => {
     if (props.deleted) {
       setIsSaving(false);
-      toggle();
+      props.toggle();
     }
   }, [props.deleted]);
 

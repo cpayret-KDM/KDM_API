@@ -14,7 +14,6 @@ import ModalSponsor from './ModalSponsor';
 import ModalDeleteSponsor from './ModalDeleteSponsor';
 
 import { getLoan, createLoan, editLoan, deleteLoan, clearLoan } from '../../redux/actions';
-
 import { formatCurrency, DATE_FORMAT, EMPTY_LOAN, LOAN_STATUS_MAP, PIPELINE_STATUS_MAP, PROPERTY_TYPE_MAP } from '../../helpers/utils';
 
 const LoanDetails = (props) => {
@@ -32,12 +31,9 @@ const LoanDetails = (props) => {
     }
   }, [id, creating, props.getLoan, props.clearLoan]);
 
-  const [property, setProperty] = useState({});
+  const [propertyId, setPropertyId] = useState(null);
   const [propertyMode, setPropertyMode] = useState('create');
   const [sponsorMode, setSponsorMode] = useState('create');
-  const [showPropertyModal, setShowPropertyModal] = useState(false);
-  const [showDeletePropertyModal, setShowDeletePropertyModal] = useState(false);
-  const [showDeleteLoanModal, setShowDeleteLoanModal] = useState(false);
 
   const [originationDate, setOriginationDate] = useState(new Date());
   useEffect(() => {
@@ -46,11 +42,11 @@ const LoanDetails = (props) => {
   }, [loan]);
 
   const [showSponsorModal, setShowSponsorModal] = useState(false);
-  const [showDeleteSponsorModal, setShowDeleteSponsorModal] = useState(false);
-  const [sponsor, setSponsor] = useState({});
+  
+  const [sponsorId, setSponsorId] = useState(null);
   useEffect(() => {
     if (loan?.sponsor?.id) {
-      setSponsor(loan.sponsor);
+      setSponsorId(loan.sponsor.id);
     }
   }, [loan]);
 
@@ -83,6 +79,7 @@ const LoanDetails = (props) => {
     }
   })(props.mode);
 
+  /* Loan */
   const submitLoan = (e, errors, values) => {
     if (errors.length !== 0) return;
     setIsSaving(true);
@@ -101,67 +98,75 @@ const LoanDetails = (props) => {
     }
   }
 
+  const [showDeleteLoanModal, setShowDeleteLoanModal] = useState(false);
   const handleDeleteLoan = (loanId) => {
     setShowDeleteLoanModal(true);
-  }
-
-  const handleAddNewProperty = (e) => {
-    if (e) e.preventDefault();
-    setProperty({});
-    setPropertyMode('create');
-    setShowPropertyModal(true);
-  }
-
-  const handleEditProperty = (property) => {
-    setProperty({...property});
-    setPropertyMode('edit');
-    setShowPropertyModal(true);
-  }
-
-  const handleDeleteProperty = (property) => {
-    setProperty({...property});
-    setShowDeletePropertyModal(true);
-  }
-
-  const toggleDeletePropertyModal = () => {
-    setShowDeletePropertyModal(!showDeletePropertyModal);
-  }
-
-  const toggleShowPropertyModal = () => {
-    setShowPropertyModal(!showPropertyModal);
   }
 
   const toggleDeleteLoanModal = () => {
     setShowDeleteLoanModal(!showDeleteLoanModal);
   }
 
+  /* Properties */
+  const [showPropertyModal, setShowPropertyModal] = useState(false);
+  const toggleShowPropertyModal = () => {
+    setShowPropertyModal(!showPropertyModal);
+  }
+
+  const handleAddNewPropertyModal = (e) => {
+    if (e) e.preventDefault();
+    setPropertyId(1);
+    setPropertyMode('create');
+    setShowPropertyModal(true);
+  }
+
+  const handleEditPropertyModal = (propertyId) => {
+    setPropertyId(propertyId);
+    setPropertyMode('edit');
+    setShowPropertyModal(true);
+  }
+
+  const [showDeletePropertyModal, setShowDeletePropertyModal] = useState(false);
+  const handleDeletePropertyModal = (propertyId) => {
+    setPropertyId(propertyId);
+    setShowDeletePropertyModal(true);
+  }
+
+  const toggleDeletePropertyModal = () => {
+    setShowDeletePropertyModal(false);
+    setShowPropertyModal(false);
+  }
+
+  /* Sponsor */
   const toggleSponsorModal = () => {
     setShowSponsorModal(!showSponsorModal);
   }
 
-  const handleAddSponsor = (e) => {
+  const handleAddSponsorModal = (e) => {
     if (e) e.preventDefault();
-    setSponsor({});
+    setSponsorId(1);
     setSponsorMode('create');
     setShowSponsorModal(true);
   }
 
-  const handleEditSponsor = (sponsor) => {
-    setSponsor({...sponsor});
+  const handleEditSponsorModal = (sponsorId) => {
+    setSponsorId(sponsorId);
     setSponsorMode('edit');
     setShowSponsorModal(true);
   }
 
-  const handleDeleteSponsor = (sponsor) => {
-    setSponsor({...sponsor});
+  const [showDeleteSponsorModal, setShowDeleteSponsorModal] = useState(false);
+  const handleDeleteSponsorModal = (sponsorId) => {
+    setSponsorId(sponsorId);
     setShowDeleteSponsorModal(true);
   }
 
   const toggleDeleteSponsorModal = () => {
-    setShowDeleteSponsorModal(!showDeleteSponsorModal);
+    setShowDeleteSponsorModal(false);
+    setShowSponsorModal(false);
   }
 
-  //console.log('loan appraisal',loan.properties)
+  //console.log(loan)
 
   return (
     <>
@@ -348,12 +353,12 @@ const LoanDetails = (props) => {
                     <div className="d-flex justify-content-between">
                       <h4>Properties</h4>
                       <div className="">
-                        <Button className="btn btn-secondary" onClick={() => handleAddNewProperty()}>Add New Property</Button>
+                        <Button className="btn btn-secondary" onClick={() => handleAddNewPropertyModal()}>Add New Property</Button>
                       </div>
                     </div>
 
                     {loan?.properties?.length === 0 ? (
-                      <p>No properties exists for this loan. <strong><a href="/" onClick={(e) => handleAddNewProperty(e)}>Add one &raquo;</a></strong></p>
+                      <p>No properties exists for this loan. <strong><a href="/" onClick={(e) => handleAddNewPropertyModal(e)}>Add one &raquo;</a></strong></p>
                     ) : (
                       <Row>
                         {loan?.properties?.map((property, i) => (
@@ -370,8 +375,8 @@ const LoanDetails = (props) => {
                                       <i>{PROPERTY_TYPE_MAP[property.type]}</i>
                                     </p>
                                     <p className="mb-0">
-                                      <Button className="btn btn-secondary mr-2" onClick={() => handleEditProperty(property)}>Edit</Button>
-                                      <Button className="btn btn-danger" onClick={() => handleDeleteProperty(property)}>Delete</Button>
+                                      <Button className="btn btn-secondary mr-2" onClick={() => handleEditPropertyModal(property.id)}>Edit</Button>
+                                      <Button className="btn btn-danger" onClick={() => handleDeletePropertyModal(property.id)}>Delete</Button>
                                     </p>
                                   </Col>
                                   <Col sm={6}>
@@ -403,13 +408,13 @@ const LoanDetails = (props) => {
                       <h4>Sponsor</h4>
                       {!loan?.sponsor?.id && (
                         <div>
-                          <Button className="btn btn-secondary" onClick={() => handleAddSponsor()}>Add Sponsor</Button>
+                          <Button className="btn btn-secondary" onClick={() => handleAddSponsorModal()}>Add Sponsor</Button>
                         </div>
                       )}
                     </div>
 
                     {!loan?.sponsor?.id ? (
-                      <p>No sponsor exists for this loan. <strong><a href="/" onClick={(e) => handleAddSponsor(e)}>Add one &raquo;</a></strong></p>
+                      <p>No sponsor exists for this loan. <strong><a href="/" onClick={(e) => handleAddSponsorModal(e)}>Add one &raquo;</a></strong></p>
                     ) : (
                       <Row>
                         <Col sm={4}>
@@ -417,30 +422,29 @@ const LoanDetails = (props) => {
                             <CardBody>
                               <Row>
                                 <Col sm={6}>
-                                  <strong>{sponsor?.company}</strong><br />
-                                  {sponsor?.firstName} {sponsor?.lastName}<br />
-                                  {sponsor?.phone}<br />
-                                  {sponsor?.email}<br />
+                                  <strong>{loan?.sponsor?.company}</strong><br />
+                                  {loan?.sponsor?.firstName} {loan?.sponsor?.lastName}<br />
+                                  {loan?.sponsor?.phone}<br />
+                                  {loan?.sponsor?.email}<br />
                                   
                                 </Col>
                                 <Col sm={6}>
-                                  {sponsor?.address?.street1}<br />
-                                  {sponsor?.address?.street2 && (<>{sponsor?.address?.street2}<br /></>)}
-                                  {sponsor?.address?.city}, <span className="text-uppercase">{sponsor?.address?.state}</span> {sponsor?.address?.zip}<br />
-                                  <i>Registered in {sponsor?.registrationState}</i>
+                                  {loan?.sponsor?.address?.street1}<br />
+                                  {loan?.sponsor?.address?.street2 && (<>{loan?.sponsor?.address?.street2}<br /></>)}
+                                  {loan?.sponsor?.address?.city}, <span className="text-uppercase">{loan?.sponsor?.address?.state}</span> {loan?.sponsor?.address?.zip}<br />
+                                  <i>Registered in {loan?.sponsor?.registrationState}</i>
                                 </Col>
                               </Row>
                               
                               <p className="mb-0 mt-3">
-                                <Button className="btn btn-secondary mr-2" onClick={() => handleEditSponsor(sponsor)}>Edit</Button>
-                                <Button className="btn btn-danger" onClick={() => handleDeleteSponsor(sponsor)}>Delete</Button>
+                                <Button className="btn btn-secondary mr-2" onClick={() => handleEditSponsorModal(loan.sponsor.id)}>Edit</Button>
+                                <Button className="btn btn-danger" onClick={() => handleDeleteSponsorModal(loan.sponsor.id)}>Delete</Button>
                               </p>
                             </CardBody>
                           </Card>
                         </Col>
                       </Row>
                     )}
-                    
                   </CardBody>
                 </Card>
               </>)}
@@ -450,37 +454,46 @@ const LoanDetails = (props) => {
         </Col>
       </Row>
 
-      <ModalProperty 
-        isOpen={showPropertyModal} 
-        toggle={toggleShowPropertyModal}
-        mode={propertyMode}
-        property={property}
-        loanId={loan?.id}
-      />
-      <ModalDeleteProperty 
-        isOpen={showDeletePropertyModal} 
-        toggle={toggleDeletePropertyModal}
-        propertyId={property.id}
-        loanId={loan?.id}
-      />
+
       <ModalDeleteLoan
         isOpen={showDeleteLoanModal} 
         toggle={toggleDeleteLoanModal}
         loanId={loan?.id}
       />
-      <ModalSponsor
-        isOpen={showSponsorModal} 
-        toggle={toggleSponsorModal}
-        mode={sponsorMode}
-        sponsor={sponsor}
-        loanId={loan?.id}
-      />
-      <ModalDeleteSponsor
-        isOpen={showDeleteSponsorModal} 
-        toggle={toggleDeleteSponsorModal}
-        sponsorId={sponsor.id}
-        loanId={loan?.id}
-      />
+      {propertyId && (
+        <>
+          <ModalProperty 
+            isOpen={showPropertyModal} 
+            toggle={toggleShowPropertyModal}
+            mode={propertyMode}
+            propertyId={propertyId}
+            loanId={loan?.id}
+          />
+          <ModalDeleteProperty 
+            isOpen={showDeletePropertyModal} 
+            toggle={toggleDeletePropertyModal}
+            propertyId={propertyId}
+            loanId={loan?.id}
+          />
+        </>
+      )}
+      {sponsorId && (
+        <>
+          <ModalSponsor
+            isOpen={showSponsorModal} 
+            toggle={toggleSponsorModal}
+            mode={sponsorMode}
+            sponsorId={sponsorId}
+            loanId={loan?.id}
+          />
+          <ModalDeleteSponsor
+            isOpen={showDeleteSponsorModal} 
+            toggle={toggleDeleteSponsorModal}
+            sponsorId={sponsorId}
+            loanId={loan?.id}
+          />
+        </>
+      )}
     </>
   );
 };

@@ -1,4 +1,7 @@
 import {
+  GET_PROPERTY,
+  GET_PROPERTY_SUCCESS,
+  GET_PROPERTY_FAILURE,
   CREATE_PROPERTY,
   CREATE_PROPERTY_SUCCESS,
   CREATE_PROPERTY_FAILURE,
@@ -11,6 +14,7 @@ import {
   ASSIGN_APPRAISAL,
   ASSIGN_APPRAISAL_SUCCESS,
   ASSIGN_APPRAISAL_FAILURE,
+  CLEAR_PROPERTY,
 } from './constants';
 
 type Action = { type: string, payload: {} };
@@ -18,23 +22,59 @@ type State = { +value: boolean };
 
 const property = (state: State = {}, action: Action) => {
   switch (action.type) {
+    case GET_PROPERTY:
+      return {
+        ...state,
+        property: undefined,
+        added: false,
+        edited: false,
+        deleted: false,
+        error: null,
+      };
+    case GET_PROPERTY_SUCCESS:
+      return { 
+        ...state, 
+        property: action.payload,
+        added: false,
+        edited: false,
+        deleted: false,
+        error: null,
+      };
+    case GET_PROPERTY_FAILURE:
+      return { 
+        ...state,
+        property: undefined,
+        added: false,
+        edited: false,
+        deleted: false,
+        error: action.payload,
+      };
+
     case CREATE_PROPERTY:
       return {
         ...state,
         property: undefined,
         added: false,
+        edited: false,
+        deleted: false,
+        error: null,
       };
     case CREATE_PROPERTY_SUCCESS:
       return { 
         ...state, 
         property: action.payload,
         added: true,
+        edited: false,
+        deleted: false,
+        error: null,
       };
     case CREATE_PROPERTY_FAILURE:
       return { 
         ...state,
         property: undefined,
         added: false,
+        edited: false,
+        deleted: false,
         error: action.payload,
       };
 
@@ -42,18 +82,27 @@ const property = (state: State = {}, action: Action) => {
       return {
         ...state,
         property: undefined,
+        added: false,
         edited: false,
+        deleted: false,
+        error: null,
       };
     case EDIT_PROPERTY_SUCCESS:
       return { 
         ...state, 
         property: action.payload,
+        added: false,
         edited: true,
+        deleted: false,
+        error: null,
       };
     case EDIT_PROPERTY_FAILURE:
       return { 
         ...state,
+        property: undefined,
+        added: false,
         edited: false,
+        deleted: false,
         error: action.payload,
       };
 
@@ -61,18 +110,26 @@ const property = (state: State = {}, action: Action) => {
       return {
         ...state,
         property: undefined,
+        added: false,
+        edited: false,
         deleted: false,
+        error: null,
       };
     case DELETE_PROPERTY_SUCCESS:
       return { 
         ...state, 
         property: action.payload,
+        added: false,
+        edited: false,
         deleted: true,
+        error: null,
       };
     case DELETE_PROPERTY_FAILURE:
       return { 
         ...state,
         property: undefined,
+        added: false,
+        edited: false,
         deleted: false,
         error: action.payload,
       };
@@ -88,6 +145,16 @@ const property = (state: State = {}, action: Action) => {
     case ASSIGN_APPRAISAL_FAILURE:
       return { 
         ...state,
+      };
+
+    case CLEAR_PROPERTY:
+      return {
+        ...state,
+        property: undefined,
+        added: false,
+        edited: false,
+        deleted: false,
+        error: null,
       };
 
     default:
