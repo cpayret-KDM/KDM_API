@@ -1,23 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Row, Col, Label, Button, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from 'reactstrap';
+import { Row, Col, Label, Button, Modal, ModalHeader, ModalBody, ModalFooter, Spinner, UncontrolledAlert } from 'reactstrap';
 import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 import { createSponsor, editSponsor } from '../../redux/actions';
 import { US_STATES_MAP } from '../../helpers/utils';
 
 const ModalSponsor = (props) => {
-  const { isOpen, toggle, sponsor = {}, loanId, mode } = props;
+  const { isOpen, toggle, loanId, mode } = props;
   const isCreate = (mode === 'create');
   const isEdit = (mode === 'edit');
 
   const [isSaving, setIsSaving] = useState(false);
   
   useEffect(() => {
-    if (props.added || props.edited || props.deleted) {
+    if (props.error) {
+      setIsSaving(false);
+    }
+    else if (props.added || props.edited || props.deleted) {
       setIsSaving(false);
       toggle();
     }
-  }, [props.added, props.edited, props.deleted, toggle]);
+  }, [props.added, props.edited, props.deleted, props.error]);
+
+  /* Setting the sponsor in state instead of props so that validation doesn't flash when form is submitted */
+  const [sponsor, setSponsor] = useState({...props.sponsor});
+  useEffect(() => {
+    if (props?.sponsor?.id) {
+      setSponsor({...props.sponsor});
+    }
+  }, [props.sponsor]);
 
   const handleSubmitSponsor = (e, errors, values) => {
     if (errors.length > 0) return false;
@@ -59,14 +70,19 @@ const ModalSponsor = (props) => {
           {isEdit && (<>Edit Sponsor</>)}
         </ModalHeader>
         <ModalBody>
-        <Row>
-          <Col sm={12}>
-            <AvGroup className="position-relative">
-              <Label for="company">Company</Label>
-              <AvInput name="company" id="company" value={sponsor?.company} />
-            </AvGroup>
-          </Col>
-        </Row>
+          {props.error && (
+            <UncontrolledAlert color="danger">
+              {props.error}
+            </UncontrolledAlert>
+          )}
+          <Row>
+            <Col sm={12}>
+              <AvGroup className="position-relative">
+                <Label for="company">Company</Label>
+                <AvInput name="company" id="company" value={sponsor?.company} />
+              </AvGroup>
+            </Col>
+          </Row>
           <Row>
             <Col sm={6}>
               <AvGroup className="position-relative">

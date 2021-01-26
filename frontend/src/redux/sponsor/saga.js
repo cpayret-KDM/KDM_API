@@ -28,13 +28,13 @@ function* createSponsor({ payload: { sponsor, loanId } }) {
     headers: { 'Content-Type': 'application/json' },
   };
 
-  try {
-    const response = yield call(fetchJSON, `${SERVER_URL}/loan/${loanId}/sponsor/`, options);
+  const response = yield call(fetchJSON, `${SERVER_URL}/loan/${loanId}/sponsor/`, options);
+  if (!response.status || response.status === 200) {
     yield put(createSponsorSuccess(response));
     yield put(getLoan(loanId));
-  } catch (error) {
+  } else {
     let message;
-    switch (error.status) {
+    switch (response.status) {
       case 500:
         message = 'Internal Server Error';
         break;
@@ -42,9 +42,9 @@ function* createSponsor({ payload: { sponsor, loanId } }) {
         message = 'Invalid credentials';
         break;
       default:
-        message = error;
-      }
-      yield put(createSponsorFailure(message));
+        message = response.message;
+    }
+    yield put(createSponsorFailure(message));
   }
 }
 
@@ -56,13 +56,13 @@ function* editSponsor({ payload: { sponsor, loanId } }) {
     headers: { 'Content-Type': 'application/json' },
   };
 
-  try {
-    const response = yield call(fetchJSON, `${SERVER_URL}/sponsor/${sponsor.id}`, options);
+  const response = yield call(fetchJSON, `${SERVER_URL}/sponsor/${sponsor.id}`, options);
+  if (!response.status || response.status === 200) {
     yield put(editSponsorSuccess(response));
     yield put(getLoan(loanId));
-  } catch (error) {
+  } else {
     let message;
-    switch (error.status) {
+    switch (response.status) {
       case 500:
         message = 'Internal Server Error';
         break;
@@ -70,9 +70,9 @@ function* editSponsor({ payload: { sponsor, loanId } }) {
         message = 'Invalid credentials';
         break;
       default:
-        message = error;
-      }
-      yield put(editSponsorFailure(message));
+        message = response.message;
+    }
+    yield put(editSponsorFailure(message));
   }
 }
 
@@ -83,13 +83,13 @@ function* deleteSponsor({ payload: { sponsorId, loanId } }) {
     headers: { 'Content-Type': 'application/json' },
   };
 
-  try {
-    const response = yield call(fetchJSON, `${SERVER_URL}/sponsor/${sponsorId}`, options);
+  const response = yield call(fetchJSON, `${SERVER_URL}/sponsor/${sponsorId}`, options);
+  if (!response.status || response.status === 200) {
     yield put(deleteSponsorSuccess(response));
     yield put(getLoan(loanId));
-  } catch (error) {
+  } else {
     let message;
-    switch (error.status) {
+    switch (response.status) {
       case 500:
         message = 'Internal Server Error';
         break;
@@ -97,9 +97,9 @@ function* deleteSponsor({ payload: { sponsorId, loanId } }) {
         message = 'Invalid credentials';
         break;
       default:
-        message = error;
-      }
-      yield put(deleteSponsorFailure(message));
+        message = response.message;
+    }
+    yield put(deleteSponsorFailure(message));
   }
 }
 

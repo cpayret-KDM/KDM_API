@@ -1,23 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Row, Col, Label, Button, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from 'reactstrap';
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
+import { Row, Col, Label, Button, InputGroupAddon, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from 'reactstrap';
 import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 // import PropertyMap from './PropertyMap';
 import { createProperty, editProperty } from '../../redux/actions';
 import { PROPERTY_TYPE_MAP, US_STATES_MAP } from '../../helpers/utils';
 
 const ModalProperty = (props) => {
-  const { isOpen, toggle, property = {}, loanId, mode } = props;
+  const { isOpen, toggle, loanId, mode } = props;
   const isCreate = (mode === 'create');
   const isEdit = (mode === 'edit');
 
   const [isSaving, setIsSaving] = useState(false);
   useEffect(() => {
-    if (props.added || props.edited) {
+    if (props.error) {
+      setIsSaving(false);
+    }
+    else if (props.added || props.edited || props.deleted) {
       setIsSaving(false);
       toggle();
     }
-  }, [props.added, props.edited, toggle]);
+  }, [props.added, props.edited, props.deleted, props.error]);
+
+  /* Setting the property in state instead of props so that validation doesn't flash when form is submitted */
+  const [property, setProperty] = useState({...props.property});
+  useEffect(() => {
+    if (props?.property?.id) {
+      //console.log(props.property)
+      setProperty({...props.property});
+    }
+  }, [props.property]);
+
+  const [appraisalDate, setAppraisalDate] = useState(new Date());
+  useEffect(() => {
+    if (!property?.appraisal?.date) return;
+    setAppraisalDate(moment(property.appraisal.date).toDate());
+  }, [props.property]);
 
   const handleSubmitProperty = (e, errors, values) => {
     if (errors.length > 0) return false;
@@ -36,6 +56,11 @@ const ModalProperty = (props) => {
         state: values.state,
         zip: values.zip,
       },
+      appraisal: {
+        value: Number(values.appraisalValue),
+        date: moment(appraisalDate).utc().format(),
+        note: values.appraisalNote,
+      },
     };
 
     if (isCreate) {
@@ -46,7 +71,6 @@ const ModalProperty = (props) => {
     }
     return true;
   }
-
 
   return (
     <Modal isOpen={isOpen} toggle={toggle}>
@@ -86,7 +110,7 @@ const ModalProperty = (props) => {
             <Col sm={6}>
               <AvGroup className="position-relative">
                 <Label for="street1">Street Address *</Label>
-                <AvInput name="street1" id="street1" value={property?.address?.street1 || ''} required />
+                <AvInput name="street1" id="street1" value={property?.address?.street1 || ' '} required />
                 <AvFeedback tooltip>Street Address is required</AvFeedback>
               </AvGroup>
             </Col>
@@ -128,6 +152,39 @@ const ModalProperty = (props) => {
                 <Label for="zip">Zip Code *</Label>
                 <AvInput name="zip" id="zip" value={property?.address?.zip} required />
                 <AvFeedback tooltip>Zip Code is required</AvFeedback>
+              </AvGroup>
+            </Col>
+          </Row>
+
+          <hr />
+
+          <Row>
+            <Col sm={6}>
+            <AvGroup className="position-relative">
+              <Label for="appraisalValue">Appraisal Amount</Label>
+                <div className="input-group">
+                  <InputGroupAddon addonType="prepend">$</InputGroupAddon>
+                  <AvInput name="appraisalValue" id="appraisalValue" value={property?.appraisal?.value}/>
+                </div>
+            </AvGroup>
+            </Col>
+            <Col sm={6}>
+              <AvGroup className="position-relative">
+                <Label for="appraisalDate">Appraisal Date</Label>
+                <div className="input-group">
+                  <DatePicker
+                    className="form-control date"
+                    dateFormat="MM/dd/yyyy" 
+                    selected={appraisalDate}
+                    onChange={date => setAppraisalDate(date)}
+                  />
+                </div>
+              </AvGroup>
+            </Col>
+            <Col sm={12}>
+              <AvGroup className="position-relative">
+                <Label for="appraisalNote">Appraisal Note</Label>
+                <AvInput name="appraisalNote" id="appraisalNote" value={property?.appraisal?.note} />
               </AvGroup>
             </Col>
           </Row>

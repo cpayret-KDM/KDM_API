@@ -20,6 +20,7 @@ const sponsor = (state: State = {}, action: Action) => {
         ...state,
         sponsor: undefined,
         added: false,
+        error: false,
       };
     case CREATE_SPONSOR_SUCCESS:
       return { 
@@ -30,8 +31,9 @@ const sponsor = (state: State = {}, action: Action) => {
     case CREATE_SPONSOR_FAILURE:
       return { 
         ...state,
-        sponsor: action.payload,
+        sponsor: undefined,
         added: false,
+        error: action.payload,
       };
 
     case EDIT_SPONSOR:
@@ -50,6 +52,7 @@ const sponsor = (state: State = {}, action: Action) => {
       return { 
         ...state,
         edited: false,
+        error: action.payload,
       };
 
     case DELETE_SPONSOR:
@@ -61,7 +64,7 @@ const sponsor = (state: State = {}, action: Action) => {
     case DELETE_SPONSOR_SUCCESS:
       return { 
         ...state, 
-        sponsor: action.payload,
+        sponsor: undefined,
         deleted: true,
       };
     case DELETE_SPONSOR_FAILURE:
@@ -69,6 +72,7 @@ const sponsor = (state: State = {}, action: Action) => {
         ...state,
         sponsor: action.payload,
         deleted: false,
+        error: action.payload,
       };
 
     default:

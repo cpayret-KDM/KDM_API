@@ -8,6 +8,9 @@ import {
   DELETE_PROPERTY,
   DELETE_PROPERTY_SUCCESS,
   DELETE_PROPERTY_FAILURE,
+  ASSIGN_APPRAISAL,
+  ASSIGN_APPRAISAL_SUCCESS,
+  ASSIGN_APPRAISAL_FAILURE,
 } from './constants';
 
 type Action = { type: string, payload: {} };
@@ -30,8 +33,9 @@ const property = (state: State = {}, action: Action) => {
     case CREATE_PROPERTY_FAILURE:
       return { 
         ...state,
-        property: action.payload,
+        property: undefined,
         added: false,
+        error: action.payload,
       };
 
     case EDIT_PROPERTY:
@@ -50,6 +54,7 @@ const property = (state: State = {}, action: Action) => {
       return { 
         ...state,
         edited: false,
+        error: action.payload,
       };
 
     case DELETE_PROPERTY:
@@ -67,8 +72,22 @@ const property = (state: State = {}, action: Action) => {
     case DELETE_PROPERTY_FAILURE:
       return { 
         ...state,
-        property: action.payload,
+        property: undefined,
         deleted: false,
+        error: action.payload,
+      };
+
+    case ASSIGN_APPRAISAL:
+      return {
+        ...state,
+      };
+    case ASSIGN_APPRAISAL_SUCCESS:
+      return { 
+        ...state, 
+      };
+    case ASSIGN_APPRAISAL_FAILURE:
+      return { 
+        ...state,
       };
 
     default:

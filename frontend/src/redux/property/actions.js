@@ -8,6 +8,9 @@ import {
   DELETE_PROPERTY,
   DELETE_PROPERTY_SUCCESS,
   DELETE_PROPERTY_FAILURE,
+  ASSIGN_APPRAISAL,
+  ASSIGN_APPRAISAL_SUCCESS,
+  ASSIGN_APPRAISAL_FAILURE,
 } from './constants';
 
 type PropertyAction = { type: string, payload: {} | string };
@@ -59,5 +62,22 @@ export const deletePropertySuccess = (): PropertyAction => {
 
 export const deletePropertyFailure = (err: object): PropertyAction => ({
   type: DELETE_PROPERTY_FAILURE,
+  payload: err,
+});
+
+// Assign Appraisal to Property
+export const assignAppraisal = (propertyId: String, loanId: String, appraisal: object = {}): PropertyAction => {
+  return ({
+  type: ASSIGN_APPRAISAL,
+  payload: { propertyId, loanId, appraisal },
+})};
+
+export const assignAppraisalSuccess = (appraisal: object): PropertyAction => ({
+  type: ASSIGN_APPRAISAL_SUCCESS,
+  payload: appraisal,
+});
+
+export const assignAppraisalFailure = (err: object): PropertyAction => ({
+  type: ASSIGN_APPRAISAL_FAILURE,
   payload: err,
 });

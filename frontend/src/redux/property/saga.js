@@ -14,6 +14,8 @@ import {
   editPropertyFailure,
   deletePropertySuccess,
   deletePropertyFailure,
+  assignAppraisalSuccess,
+  assignAppraisalFailure,
 } from './actions';
 
 import { getLoan } from '../loan/actions';
@@ -28,13 +30,13 @@ function* createProperty({ payload: { property } }) {
     headers: { 'Content-Type': 'application/json' },
   };
 
-  try {
-    const response = yield call(fetchJSON, `${SERVER_URL}/property`, options);
+  const response = yield call(fetchJSON, `${SERVER_URL}/property`, options);
+  if (!response.status || response.status === 200) {
     yield put(createPropertySuccess(response));
-    yield put(getLoan(property.loanId));
-  } catch (error) {
+    yield put(assignAppraisal(property.id, property.loanId, property.appraisal));
+  } else {
     let message;
-    switch (error.status) {
+    switch (response.status) {
       case 500:
         message = 'Internal Server Error';
         break;
@@ -42,9 +44,9 @@ function* createProperty({ payload: { property } }) {
         message = 'Invalid credentials';
         break;
       default:
-        message = error;
-      }
-      yield put(createPropertyFailure(message));
+        message = response.msesage;
+    }
+    yield put(createPropertyFailure(message));
   }
 }
 
@@ -56,13 +58,14 @@ function* editProperty({ payload: { property } }) {
     headers: { 'Content-Type': 'application/json' },
   };
 
-  try {
-    const response = yield call(fetchJSON, `${SERVER_URL}/property/${property.id}`, options);
+  const response = yield call(fetchJSON, `${SERVER_URL}/property/${property.id}`, options);
+  if (!response.status || response.status === 200) {
     yield put(editPropertySuccess(response));
-    yield put(getLoan(property.loanId));
-  } catch (error) {
+    console.log('property', property)
+    yield assignAppraisal(property.id, property.loanId, property.appraisal);
+  } else {
     let message;
-    switch (error.status) {
+    switch (response.status) {
       case 500:
         message = 'Internal Server Error';
         break;
@@ -70,9 +73,9 @@ function* editProperty({ payload: { property } }) {
         message = 'Invalid credentials';
         break;
       default:
-        message = error;
-      }
-      yield put(editPropertyFailure(message));
+        message = response.message;
+    }
+    yield put(editPropertyFailure(message));
   }
 }
 
@@ -83,13 +86,13 @@ function* deleteProperty({ payload: { propertyId, loanId } }) {
     headers: { 'Content-Type': 'application/json' },
   };
 
-  try {
-    const response = yield call(fetchJSON, `${SERVER_URL}/property/${propertyId}`, options);
+  const response = yield call(fetchJSON, `${SERVER_URL}/property/${propertyId}`, options);
+  if (!response.status || response.status === 200) {
     yield put(deletePropertySuccess(response));
     yield put(getLoan(loanId));
-  } catch (error) {
+  } else {
     let message;
-    switch (error.status) {
+    switch (response.status) {
       case 500:
         message = 'Internal Server Error';
         break;
@@ -97,9 +100,37 @@ function* deleteProperty({ payload: { propertyId, loanId } }) {
         message = 'Invalid credentials';
         break;
       default:
-        message = error;
-      }
-      yield put(deletePropertyFailure(message));
+        message = response.message;
+    }
+    yield put(deletePropertyFailure(message));
+  }
+}
+
+// Assign Appraisal
+function* assignAppraisal(propertyId, loanId, appraisal) {
+  const options = {
+    method: 'PUT',
+    body: JSON.stringify(appraisal),
+    headers: { 'Content-Type': 'application/json' },
+  };
+
+  const response = yield call(fetchJSON, `${SERVER_URL}/property/${propertyId}/appraisal`, options);
+  if (!response.status || response.status === 200) {
+    yield put(assignAppraisalSuccess(response));
+    yield put(getLoan(loanId));
+  } else {
+    let message;
+    switch (response.status) {
+      case 500:
+        message = 'Internal Server Error';
+        break;
+      case 401:
+        message = 'Invalid credentials';
+        break;
+      default:
+        message = response.message;
+    }
+    yield put(assignAppraisalFailure(message));
   }
 }
 

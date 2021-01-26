@@ -13,7 +13,7 @@ const ModalDeleteSponsor = (props) => {
       setIsSaving(false);
       toggle();
     }
-  }, [props.deleted, toggle]);
+  }, [props.deleted]);
 
   const handleDeleteSponsor = () => {
     setIsSaving(true);
@@ -40,7 +40,7 @@ const ModalDeleteSponsor = (props) => {
 }
 
 const mapStateToProps = state => {
-  return state.Property;
+  return state.Sponsor;
 };
 
 export default connect(
