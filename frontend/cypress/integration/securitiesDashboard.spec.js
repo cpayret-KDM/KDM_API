@@ -1,11 +1,14 @@
-describe('Loan Dashboard', () => {   
+describe('Security Dashboard', () => {
 
-    before(() => {   
-        cy.visit('/') 
+    before(() => {
+        cy.visit('/')
         cy.get('.btn').click()
+        // cy.get('span[data-text="Dashboard"]').click()
+        // cy.visit('/securities/list')
     })
 
-    it('should have a loan list', () => {
-        cy.get('.loan-list-table')
+    it('should have a securities list', () => {
+        // cy.visit('/securities/list')
+        cy.get('.security-list-table')
     })
 })
