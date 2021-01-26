@@ -34,20 +34,13 @@ function* getLoans({ payload: { loanNumber, size, page, sort } }) {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   };
-  const params = '';
-  // {
-  //   loanNumber,
-  //   size,
-  //   page,
-  //   sort,
-  // };
 
-  try {
-    const response = yield call(fetchJSON, `${SERVER_URL}/loan${params}`, options);
+  const response = yield call(fetchJSON, `${SERVER_URL}/loan`, options);
+  if (!response.status || response.status === 200) {
     yield put(getLoansSuccess(response));
-  } catch (error) {
+  } else {
     let message;
-    switch (error.status) {
+    switch (response.status) {
       case 500:
         message = 'Internal Server Error';
         break;
@@ -55,9 +48,9 @@ function* getLoans({ payload: { loanNumber, size, page, sort } }) {
         message = 'Invalid credentials';
         break;
       default:
-        message = error;
-      }
-      yield put(getLoansFailure(message));
+        message = response.message;
+    }
+    yield put(getLoansFailure(message));
   }
 }
 
@@ -67,20 +60,13 @@ function* get60DayLoans({ payload: { loanNumber, size, page, sort } }) {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   };
-  const params =  {
-    days: 60,
-    // loanNumber,
-    // size,
-    // page,
-    // sort,
-  };
 
-  try {
-    const response = yield call(fetchJSON, `${SERVER_URL}/loan/anniversary?days=60`, options);
+  const response = yield call(fetchJSON, `${SERVER_URL}/loan/anniversary?days=60`, options);
+  if (!response.status || response.status === 200) {
     yield put(get60DayLoansSuccess(response));
-  } catch (error) {
+  } else {
     let message;
-    switch (error.status) {
+    switch (response.status) {
       case 500:
         message = 'Internal Server Error';
         break;
@@ -88,9 +74,9 @@ function* get60DayLoans({ payload: { loanNumber, size, page, sort } }) {
         message = 'Invalid credentials';
         break;
       default:
-        message = error;
-      }
-      yield put(get60DayLoansFailure(message));
+        message = response.message;
+    }
+    yield put(get60DayLoansFailure(message));
   }
 }
 
@@ -101,12 +87,12 @@ function* getLoan({ payload: { loanId } }) {
     headers: { 'Content-Type': 'application/json' },
   };
 
-  try {
-    const response = yield call(fetchJSON, `${SERVER_URL}/loan/${loanId}`, options);
+  const response = yield call(fetchJSON, `${SERVER_URL}/loan/${loanId}`, options);
+  if (!response.status || response.status === 200) {
     yield put(getLoanSuccess(response));
-  } catch (error) {
+  } else {
     let message;
-    switch (error.status) {
+    switch (response.status) {
       case 500:
         message = 'Internal Server Error';
         break;
@@ -114,9 +100,9 @@ function* getLoan({ payload: { loanId } }) {
         message = 'Invalid credentials';
         break;
       default:
-        message = error;
-      }
-      yield put(getLoanFailure(message));
+        message = response.message;
+    }
+    yield put(getLoanFailure(message));
   }
 }
 
@@ -128,12 +114,12 @@ function* createLoan({ payload: { loan } }) {
     headers: { 'Content-Type': 'application/json' },
   };
 
-  try {
-    const response = yield call(fetchJSON, `${SERVER_URL}/loan`, options);
+  const response = yield call(fetchJSON, `${SERVER_URL}/loan`, options);
+  if (!response.status || response.status === 200) {
     yield put(createLoanSuccess(response));
-  } catch (error) {
+  } else {
     let message;
-    switch (error.status) {
+    switch (response.status) {
       case 500:
         message = 'Internal Server Error';
         break;
@@ -141,9 +127,9 @@ function* createLoan({ payload: { loan } }) {
         message = 'Invalid credentials';
         break;
       default:
-        message = error;
-      }
-      yield put(createLoanFailure(message));
+        message = response.message;
+    }
+    yield put(createLoanFailure(message));
   }
 }
 
@@ -155,22 +141,22 @@ function* editLoan({ payload: { loan } }) {
     headers: { 'Content-Type': 'application/json' },
   };
 
-  try {
-    const response = yield call(fetchJSON, `${SERVER_URL}/loan/${loan.id}`, options);
+  const response = yield call(fetchJSON, `${SERVER_URL}/loan/${loan.id}`, options);
+  if (!response.status || response.status === 200) {
     yield put(editLoanSuccess(response));
-  } catch (error) {
+  } else {
     let message;
-    switch (error.status) {
+    switch (response.status) {
       case 500:
         message = 'Internal Server Error';
         break;
       case 401:
         message = 'Invalid credentials';
-        break;
+      break;
       default:
-        message = error;
-      }
-      yield put(editLoanFailure(message));
+        message = response.message;
+    }
+    yield put(editLoanFailure(message));
   }
 }
 
@@ -181,12 +167,12 @@ function* deleteLoan({ payload: { loanId } }) {
     headers: { 'Content-Type': 'application/json' },
   };
 
-  try {
-    const response = yield call(fetchJSON, `${SERVER_URL}/loan/${loanId}`, options);
+  const response = yield call(fetchJSON, `${SERVER_URL}/loan/${loanId}`, options);
+  if (!response.status || response.status === 200) {
     yield put(deleteLoanSuccess(response));
-  } catch (error) {
+  } else {
     let message;
-    switch (error.status) {
+    switch (response.status) {
       case 500:
         message = 'Internal Server Error';
         break;
@@ -194,9 +180,9 @@ function* deleteLoan({ payload: { loanId } }) {
         message = 'Invalid credentials';
         break;
       default:
-        message = error;
-      }
-      yield put(deleteLoanFailure(message));
+        message = response.message;
+    }
+    yield put(deleteLoanFailure(message));
   }
 }
 

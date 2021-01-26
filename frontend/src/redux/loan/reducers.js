@@ -43,7 +43,7 @@ const Loan = (state: State = initialState, action: Action) => {
     case GET_LOANS:
       return {
         ...state,
-        loans: null,
+        loans: undefined,
       };
     case GET_LOANS_SUCCESS:
       return { 
@@ -54,23 +54,25 @@ const Loan = (state: State = initialState, action: Action) => {
       return { 
         ...state,
         loans: action.payload,
+        error: action.payload,
       };
 
-      case GET_60_DAY_LOANS:
-        return {
-          ...state,
-          loans: null,
-        };
-      case GET_60_DAY_LOANS_SUCCESS:
-        return { 
-          ...state, 
-          loans: action.payload,
-        };
-      case GET_60_DAY_LOANS_FAILURE:
-        return { 
-          ...state,
-          loans: action.payload,
-        };
+    case GET_60_DAY_LOANS:
+      return {
+        ...state,
+        loans: undefined,
+      };
+    case GET_60_DAY_LOANS_SUCCESS:
+      return { 
+        ...state, 
+        loans: action.payload,
+      };
+    case GET_60_DAY_LOANS_FAILURE:
+      return { 
+        ...state,
+        loans: undefined,
+        error: action.payload,
+      };
 
     /* Loan */
     case GET_LOAN:
@@ -82,42 +84,53 @@ const Loan = (state: State = initialState, action: Action) => {
         ...state, 
         loan: action.payload,
         loaded: true,
+        added: false,
+        edited: false,
       };
     case GET_LOAN_FAILURE:
       return { 
         ...state,
-        loan: action.payload,
+        loan: undefined,
         loaded: true,
+        error: action.payload,
       };
 
     case CREATE_LOAN:
       return {
         ...state,
         loan: undefined,
+        added: false,
       };
     case CREATE_LOAN_SUCCESS:
       return { 
         ...state, 
         loan: action.payload,
+        added: true,
       };
     case CREATE_LOAN_FAILURE:
       return { 
         ...state,
-        loan: action.payload,
+        loan: undefined,
+        added: false,
+        error: action.payload,
       };
 
     case EDIT_LOAN:
       return {
         ...state,
+        edited: false,
       };
     case EDIT_LOAN_SUCCESS:
       return { 
         ...state, 
         loan: action.payload,
+        edited: true,
       };
     case EDIT_LOAN_FAILURE:
       return { 
         ...state,
+        edited: false,
+        error: action.payload,
       };
 
     case DELETE_LOAN:
@@ -135,8 +148,9 @@ const Loan = (state: State = initialState, action: Action) => {
     case DELETE_LOAN_FAILURE:
       return { 
         ...state,
-        loan: action.payload,
+        loan: undefined,
         deleted: false,
+        error: action.payload,
       };
 
     case CLEAR_LOAN:

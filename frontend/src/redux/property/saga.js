@@ -2,23 +2,54 @@ import { all, call, put, takeEvery, fork } from 'redux-saga/effects';
 import { fetchJSON } from '../../helpers/api';
 
 import {
+  GET_PROPERTY,
   CREATE_PROPERTY,
   EDIT_PROPERTY,
   DELETE_PROPERTY,
 } from './constants';
 
 import {
+  getPropertySuccess,
+  getPropertyFailure,
   createPropertySuccess,
   createPropertyFailure,
   editPropertySuccess,
   editPropertyFailure,
   deletePropertySuccess,
   deletePropertyFailure,
+  assignAppraisalSuccess,
+  assignAppraisalFailure,
 } from './actions';
 
 import { getLoan } from '../loan/actions';
 
 const SERVER_URL = process.env.REACT_APP_KDM_API_ENDPOINT;
+
+// Get Property
+function* getProperty({ payload: { propertyId } }) {
+  const options = {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  };
+
+  const response = yield call(fetchJSON, `${SERVER_URL}/property/${propertyId}`, options);
+  if (!response.status || response.status === 200) {
+    yield put(getPropertySuccess(response));
+  } else {
+    let message;
+    switch (response.status) {
+      case 500:
+        message = 'Internal Server Error';
+        break;
+      case 401:
+        message = 'Invalid credentials';
+        break;
+      default:
+        message = response.message;
+    }
+    yield put(getPropertyFailure(message));
+  }
+}
 
 // Create Property
 function* createProperty({ payload: { property } }) {
@@ -28,13 +59,13 @@ function* createProperty({ payload: { property } }) {
     headers: { 'Content-Type': 'application/json' },
   };
 
-  try {
-    const response = yield call(fetchJSON, `${SERVER_URL}/property`, options);
+  const response = yield call(fetchJSON, `${SERVER_URL}/property`, options);
+  if (!response.status || response.status === 200) {
     yield put(createPropertySuccess(response));
     yield put(getLoan(property.loanId));
-  } catch (error) {
+  } else {
     let message;
-    switch (error.status) {
+    switch (response.status) {
       case 500:
         message = 'Internal Server Error';
         break;
@@ -42,9 +73,9 @@ function* createProperty({ payload: { property } }) {
         message = 'Invalid credentials';
         break;
       default:
-        message = error;
-      }
-      yield put(createPropertyFailure(message));
+        message = response.message;
+    }
+    yield put(createPropertyFailure(message));
   }
 }
 
@@ -56,13 +87,13 @@ function* editProperty({ payload: { property } }) {
     headers: { 'Content-Type': 'application/json' },
   };
 
-  try {
-    const response = yield call(fetchJSON, `${SERVER_URL}/property/${property.id}`, options);
+  const response = yield call(fetchJSON, `${SERVER_URL}/property/${property.id}`, options);
+  if (!response.status || response.status === 200) {
     yield put(editPropertySuccess(response));
-    yield put(getLoan(property.loanId));
-  } catch (error) {
+    yield assignAppraisal(property.id, property.loanId, property.appraisal);
+  } else {
     let message;
-    switch (error.status) {
+    switch (response.status) {
       case 500:
         message = 'Internal Server Error';
         break;
@@ -70,9 +101,9 @@ function* editProperty({ payload: { property } }) {
         message = 'Invalid credentials';
         break;
       default:
-        message = error;
-      }
-      yield put(editPropertyFailure(message));
+        message = response.message;
+    }
+    yield put(editPropertyFailure(message));
   }
 }
 
@@ -83,13 +114,13 @@ function* deleteProperty({ payload: { propertyId, loanId } }) {
     headers: { 'Content-Type': 'application/json' },
   };
 
-  try {
-    const response = yield call(fetchJSON, `${SERVER_URL}/property/${propertyId}`, options);
+  const response = yield call(fetchJSON, `${SERVER_URL}/property/${propertyId}`, options);
+  if (!response.status || response.status === 200) {
     yield put(deletePropertySuccess(response));
     yield put(getLoan(loanId));
-  } catch (error) {
+  } else {
     let message;
-    switch (error.status) {
+    switch (response.status) {
       case 500:
         message = 'Internal Server Error';
         break;
@@ -97,9 +128,37 @@ function* deleteProperty({ payload: { propertyId, loanId } }) {
         message = 'Invalid credentials';
         break;
       default:
-        message = error;
-      }
-      yield put(deletePropertyFailure(message));
+        message = response.message;
+    }
+    yield put(deletePropertyFailure(message));
+  }
+}
+
+// Assign Appraisal
+function* assignAppraisal(propertyId, loanId, appraisal) {
+  const options = {
+    method: 'PUT',
+    body: JSON.stringify(appraisal),
+    headers: { 'Content-Type': 'application/json' },
+  };
+
+  const response = yield call(fetchJSON, `${SERVER_URL}/property/${propertyId}/appraisal`, options);
+  if (!response.status || response.status === 200) {
+    yield put(assignAppraisalSuccess(response));
+    yield put(getLoan(loanId));
+  } else {
+    let message;
+    switch (response.status) {
+      case 500:
+        message = 'Internal Server Error';
+        break;
+      case 401:
+        message = 'Invalid credentials';
+        break;
+      default:
+        message = response.message;
+    }
+    yield put(assignAppraisalFailure(message));
   }
 }
 
@@ -107,6 +166,10 @@ function* deleteProperty({ payload: { propertyId, loanId } }) {
 /**
  * Watchers
  */
+export function* watchGetProperty(): any {
+  yield takeEvery(GET_PROPERTY, getProperty);
+}
+
 export function* watchCreateProperty(): any {
   yield takeEvery(CREATE_PROPERTY, createProperty);
 }
@@ -121,6 +184,7 @@ export function* watchDeleteProperty(): any {
 
 function* PropertySaga(): any {
   yield all([
+    fork(watchGetProperty),
     fork(watchCreateProperty),
     fork(watchEditProperty),
     fork(watchDeleteProperty),

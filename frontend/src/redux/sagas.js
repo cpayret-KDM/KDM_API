@@ -5,6 +5,7 @@ import layoutSaga from './layout/saga';
 import appMenuSaga from './appMenu/saga';
 import loanSaga from './loan/saga';
 import propertySaga from './property/saga';
+import sponsorSaga from './sponsor/saga';
 import securitySaga from './security/saga';
 
 export default function* rootSaga(getState: any): any {
@@ -15,6 +16,7 @@ export default function* rootSaga(getState: any): any {
 
     loanSaga(),
     propertySaga(),
+    sponsorSaga(),
     securitySaga(),
   ]);
 }

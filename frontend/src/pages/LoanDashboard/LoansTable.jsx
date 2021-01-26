@@ -18,11 +18,13 @@ const LoansTable = (props) => {
   let propertyTypeOptions = [];
   Object.entries(PROPERTY_TYPE_MAP).map((property) => {
     propertyTypeOptions.push({ value: property[0], label: property[1] });
+    return true;
   });
 
   let loanStatusOptions = [];
   Object.entries(LOAN_STATUS_MAP).map((status) => {
     loanStatusOptions.push({ value: status[0], label: status[1] });
+    return true;
   });
 
   let formatRatingString = (loan) => {

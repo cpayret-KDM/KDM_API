@@ -2,33 +2,33 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from 'reactstrap';
 
-import { deleteProperty } from '../../redux/actions';
+import { deleteSponsor } from '../../redux/actions';
 
-const ModalDeleteProperty = (props) => {
-  const { isOpen, toggle, propertyId, loanId } = props;
+const ModalDeleteSponsor = (props) => {
+  const { isOpen, toggle, sponsorId, loanId } = props;
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (props.deleted) {
       setIsSaving(false);
-      props.toggle();
+      toggle();
     }
   }, [props.deleted]);
 
-  const handleDeleteProperty = () => {
+  const handleDeleteSponsor = () => {
     setIsSaving(true);
-    props.deleteProperty(propertyId, loanId);
+    props.deleteSponsor(sponsorId, loanId);
   }
 
   return (
     <Modal isOpen={isOpen} toggle={toggle}>
-      <ModalHeader toggle={toggle}>Delete Property</ModalHeader>
+      <ModalHeader toggle={toggle}>Delete Sponsor</ModalHeader>
       <ModalBody>
-        Are you sure you wish to delete this property? Changes made cannot be undone.
+        Are you sure you wish to delete this sponsor? Changes made cannot be undone.
       </ModalBody>
       <ModalFooter>
         <Button color="secondary" onClick={toggle} className="mr-2" disabled={isSaving}>Cancel</Button>
-        <Button color="danger" onClick={handleDeleteProperty} disabled={isSaving}>
+        <Button color="danger" onClick={handleDeleteSponsor} disabled={isSaving}>
           {isSaving 
             ? (<Spinner size="sm" color="primary" />) 
             : (<>Delete</>)
@@ -40,12 +40,12 @@ const ModalDeleteProperty = (props) => {
 }
 
 const mapStateToProps = state => {
-  return state.Property;
+  return state.Sponsor;
 };
 
 export default connect(
   mapStateToProps,
   { 
-    deleteProperty,
+    deleteSponsor,
   }
-)(ModalDeleteProperty);
+)(ModalDeleteSponsor);

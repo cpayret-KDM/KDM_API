@@ -1,156 +1,140 @@
 import {
-  GET_PROPERTY,
-  GET_PROPERTY_SUCCESS,
-  GET_PROPERTY_FAILURE,
-  CREATE_PROPERTY,
-  CREATE_PROPERTY_SUCCESS,
-  CREATE_PROPERTY_FAILURE,
-  EDIT_PROPERTY,
-  EDIT_PROPERTY_SUCCESS,
-  EDIT_PROPERTY_FAILURE,
-  DELETE_PROPERTY,
-  DELETE_PROPERTY_SUCCESS,
-  DELETE_PROPERTY_FAILURE,
-  ASSIGN_APPRAISAL,
-  ASSIGN_APPRAISAL_SUCCESS,
-  ASSIGN_APPRAISAL_FAILURE,
-  CLEAR_PROPERTY,
+  GET_SPONSOR,
+  GET_SPONSOR_SUCCESS,
+  GET_SPONSOR_FAILURE,
+  CREATE_SPONSOR,
+  CREATE_SPONSOR_SUCCESS,
+  CREATE_SPONSOR_FAILURE,
+  EDIT_SPONSOR,
+  EDIT_SPONSOR_SUCCESS,
+  EDIT_SPONSOR_FAILURE,
+  DELETE_SPONSOR,
+  DELETE_SPONSOR_SUCCESS,
+  DELETE_SPONSOR_FAILURE,
+  CLEAR_SPONSOR,
 } from './constants';
 
 type Action = { type: string, payload: {} };
 type State = { +value: boolean };
 
-const property = (state: State = {}, action: Action) => {
+const sponsor = (state: State = {}, action: Action) => {
   switch (action.type) {
-    case GET_PROPERTY:
+    case GET_SPONSOR:
       return {
         ...state,
-        property: undefined,
+        sponsor: undefined,
         added: false,
         edited: false,
         deleted: false,
-        error: null,
+        error: false,
       };
-    case GET_PROPERTY_SUCCESS:
+    case GET_SPONSOR_SUCCESS:
       return { 
         ...state, 
-        property: action.payload,
+        sponsor: action.payload,
         added: false,
         edited: false,
         deleted: false,
-        error: null,
+        error: false,
       };
-    case GET_PROPERTY_FAILURE:
+    case GET_SPONSOR_FAILURE:
       return { 
         ...state,
-        property: undefined,
+        sponsor: undefined,
         added: false,
         edited: false,
         deleted: false,
         error: action.payload,
       };
 
-    case CREATE_PROPERTY:
+    case CREATE_SPONSOR:
       return {
         ...state,
-        property: undefined,
+        sponsor: undefined,
         added: false,
         edited: false,
         deleted: false,
-        error: null,
+        error: false,
       };
-    case CREATE_PROPERTY_SUCCESS:
+    case CREATE_SPONSOR_SUCCESS:
       return { 
         ...state, 
-        property: action.payload,
+        sponsor: action.payload,
         added: true,
         edited: false,
         deleted: false,
-        error: null,
+        error: false,
       };
-    case CREATE_PROPERTY_FAILURE:
+    case CREATE_SPONSOR_FAILURE:
       return { 
         ...state,
-        property: undefined,
+        sponsor: undefined,
         added: false,
         edited: false,
         deleted: false,
         error: action.payload,
       };
 
-    case EDIT_PROPERTY:
+    case EDIT_SPONSOR:
       return {
         ...state,
-        property: undefined,
+        sponsor: undefined,
         added: false,
         edited: false,
         deleted: false,
-        error: null,
+        error: false,
       };
-    case EDIT_PROPERTY_SUCCESS:
+    case EDIT_SPONSOR_SUCCESS:
       return { 
         ...state, 
-        property: action.payload,
+        sponsor: action.payload,
         added: false,
         edited: true,
         deleted: false,
-        error: null,
+        error: false,
       };
-    case EDIT_PROPERTY_FAILURE:
+    case EDIT_SPONSOR_FAILURE:
       return { 
         ...state,
-        property: undefined,
+        sponsor: undefined,
         added: false,
         edited: false,
         deleted: false,
         error: action.payload,
       };
 
-    case DELETE_PROPERTY:
+    case DELETE_SPONSOR:
       return {
         ...state,
-        property: undefined,
+        sponsor: undefined,
         added: false,
         edited: false,
         deleted: false,
-        error: null,
+        error: false,
       };
-    case DELETE_PROPERTY_SUCCESS:
+    case DELETE_SPONSOR_SUCCESS:
       return { 
         ...state, 
-        property: action.payload,
+        sponsor: undefined,
         added: false,
         edited: false,
         deleted: true,
-        error: null,
+        error: false,
       };
-    case DELETE_PROPERTY_FAILURE:
+    case DELETE_SPONSOR_FAILURE:
       return { 
         ...state,
-        property: undefined,
+        sponsor: action.payload,
         added: false,
         edited: false,
         deleted: false,
         error: action.payload,
       };
 
-    case ASSIGN_APPRAISAL:
+    case CLEAR_SPONSOR:
       return {
         ...state,
-      };
-    case ASSIGN_APPRAISAL_SUCCESS:
-      return { 
-        ...state, 
-      };
-    case ASSIGN_APPRAISAL_FAILURE:
-      return { 
-        ...state,
-      };
-
-    case CLEAR_PROPERTY:
-      return {
-        ...state,
-        property: undefined,
+        sponsor: undefined,
         added: false,
         edited: false,
         deleted: false,
@@ -162,4 +146,4 @@ const property = (state: State = {}, action: Action) => {
   }
 };
 
-export default property;
+export default sponsor;
