@@ -215,6 +215,7 @@ public class PropertyController {
 		Appraisal newAppraisal = Appraisal.builder()
 				.note(appraisalParam.getNote())
 				.value(appraisalParam.getValue())
+				.date(appraisalParam.getDate())
 				.property(property)
 				.build();
 		
