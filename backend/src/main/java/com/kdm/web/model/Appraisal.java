@@ -64,7 +64,9 @@ public class Appraisal {
 	
 	@PrePersist
     public void prePersist() {
-        this.date = ZonedDateTime.now();
+		if (this.date == null) {
+			this.date = ZonedDateTime.now();
+		}
     }
 	
 }

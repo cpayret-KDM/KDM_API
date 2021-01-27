@@ -1,5 +1,6 @@
 package com.kdm.web.data.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -11,6 +12,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.kdm.web.model.Loan;
+import com.kdm.web.model.view.LoanCashFlow;
+
 
 @Repository
 public interface LoanRepository extends JpaRepository<Loan, Long>, JpaSpecificationExecutor<Loan>{
@@ -27,4 +30,9 @@ public interface LoanRepository extends JpaRepository<Loan, Long>, JpaSpecificat
 
 	// query method
 	Optional<Loan> findByLoanNumber(String loanNumber);
+	
+	// query is defined in annotation
+	@Query(nativeQuery=true, name="getCashFlowReport")
+	List<LoanCashFlow> getCashFlowReport();
+	
 }
