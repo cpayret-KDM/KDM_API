@@ -12,6 +12,8 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.kdm.web.util.View;
 import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -138,7 +140,7 @@ public class RatingController {
 			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
 	@ResponseBody
 	@PostMapping(path = {"/",""}, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Rating> saveRating(@RequestBody @Valid Rating rating, BindingResult bindingResult) throws BindException {
+	public ResponseEntity<Rating> saveRating(@RequestBody @Valid @JsonView(View.Basic.class) Rating rating, BindingResult bindingResult) throws BindException {
 		if (bindingResult.hasErrors()) {
 			throw new BindException(bindingResult);
 		}
@@ -155,7 +157,7 @@ public class RatingController {
 	@ResponseBody
 	@PutMapping(path = "/{ratingId}")
 	@Transactional
-	public ResponseEntity<Rating> updateRating(@PathVariable("ratingId") Long ratingId, @RequestBody @Valid Rating rating, BindingResult bindingResult) throws BindException {
+	public ResponseEntity<Rating> updateRating(@PathVariable("ratingId") Long ratingId, @RequestBody @Valid @JsonView(View.ExtendedBasic.class) Rating rating, BindingResult bindingResult) throws BindException {
 		
 		if (!rating.getId().equals(ratingId)) {
 			throw new ResponseStatusException(BAD_REQUEST,

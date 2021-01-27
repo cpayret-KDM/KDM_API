@@ -145,7 +145,7 @@ public class PropertyController {
 			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
 	@ResponseBody
 	@PostMapping(path = {"/",""}, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Property> saveProperty(@RequestBody @Valid Property property, BindingResult bindingResult) throws BindException {
+	public ResponseEntity<Property> saveProperty(@RequestBody @Valid @JsonView(View.Basic.class) Property property, BindingResult bindingResult) throws BindException {
 		if (bindingResult.hasErrors()) {
 			throw new BindException(bindingResult);
 		}
@@ -163,7 +163,7 @@ public class PropertyController {
 	@ResponseBody
 	@PutMapping(path = "/{propertyId}")
 	@Transactional
-	public ResponseEntity<Property> updateProperty(@PathVariable("propertyId") Long propertyId, @RequestBody @Valid Property property, BindingResult bindingResult) throws BindException {
+	public ResponseEntity<Property> updateProperty(@PathVariable("propertyId") Long propertyId, @RequestBody @Valid @JsonView(View.ExtendedBasic.class) Property property, BindingResult bindingResult) throws BindException {
 		
 		if (!property.getId().equals(propertyId)) {
 			throw new ResponseStatusException(BAD_REQUEST,

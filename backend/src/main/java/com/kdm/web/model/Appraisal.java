@@ -21,6 +21,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.kdm.web.util.View;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -71,7 +73,6 @@ public class Appraisal {
 	@Column(name = "updatedAt", precision = 5, scale = 2, updatable = false, nullable = false)
 	private ZonedDateTime updatedAt;
 
-	/* use once createdBy and updatedBy are being populated with user data
 	@JsonProperty(value = "createdBy")
 	@Column(name = "createdBy", insertable = false, updatable = false)
 	private String createdBy;
@@ -79,7 +80,6 @@ public class Appraisal {
 	@JsonProperty(value = "updatedBy")
 	@Column(name = "updatedBy", insertable = false, updatable = false)
 	private String updatedBy;
-	*/
 
 	@PrePersist
 	public void prePersist() {

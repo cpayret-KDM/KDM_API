@@ -20,8 +20,10 @@ import javax.validation.Valid;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.kdm.web.model.view.LatestAppraisalView;
 
+import com.kdm.web.util.View;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,12 +42,14 @@ public class Property {
 	@Column(name = "propertyID")
 	@SequenceGenerator(name="Property_propertyID_seq", sequenceName="Property_propertyID_seq", allocationSize=1)
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "Property_propertyID_seq")
+	@JsonView(View.ExtendedBasic.class)
 	private Long id;
 
 	@JsonProperty
 	@OneToOne
     @JoinColumn(name = "addressID", referencedColumnName = "addressID", nullable = true)
 	@Valid
+	@JsonView(View.Basic.class)
 	private Address address;
 	
 	@JsonIgnore
@@ -59,23 +63,28 @@ public class Property {
 	
 	@JsonProperty
 	@Column(name = "loanID", insertable = false, updatable = false)
+	@JsonView(View.Basic.class)
 	private Long loanId;
 	
 	@JsonProperty
 	@Column(name = "borrowerID", insertable = false, updatable = false)
+	@JsonView(View.Basic.class)
 	private Long borrowerId;
 	
 	@JsonProperty
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "borrowerID", referencedColumnName = "borrowerId", nullable = true)
+	@JsonView(View.Basic.class)
 	private Borrower borrower;
 	
 	@JsonProperty(value = "type")
 	@Enumerated(EnumType.STRING)
 	@Column(name = "type")
+	@JsonView(View.Basic.class)
 	private PropertyType type;
 	
 	@OneToOne(mappedBy="property", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
+	@JsonView(View.Basic.class)
 	private LatestAppraisalView appraisal;
 		
 	/*  use this one for historical, maybe ?
@@ -86,21 +95,23 @@ public class Property {
 
 	@JsonProperty(value = "createdAt")
 	@Column(name = "createdAt", precision = 5, scale = 2, updatable = false, nullable = false)
+	@JsonView(View.ReadOnly.class)
 	private ZonedDateTime createdAt;
 
 	@JsonProperty(value = "updatedAt")
 	@Column(name = "updatedAt", precision = 5, scale = 2, updatable = false, nullable = false)
+	@JsonView(View.ReadOnly.class)
 	private ZonedDateTime updatedAt;
 
-	/* use once createdBy and updatedBy are being populated with user data
 	@JsonProperty(value = "createdBy")
 	@Column(name = "createdBy", insertable = false, updatable = false)
+	@JsonView(View.ReadOnly.class)
 	private String createdBy;
 
 	@JsonProperty(value = "updatedBy")
 	@Column(name = "updatedBy", insertable = false, updatable = false)
+	@JsonView(View.ReadOnly.class)
 	private String updatedBy;
-	*/
 
 	@PrePersist
 	public void prePersist() {

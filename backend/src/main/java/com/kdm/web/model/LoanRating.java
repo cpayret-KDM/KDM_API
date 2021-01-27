@@ -75,7 +75,6 @@ public class LoanRating {
 	@Column(name = "updatedAt", precision = 5, scale = 2, updatable = false, nullable = false)
 	private ZonedDateTime updatedAt;
 
-	/* use once createdBy and updatedBy are being populated with user data
 	@JsonProperty(value = "createdBy")
 	@Column(name = "createdBy", insertable = false, updatable = false)
 	private String createdBy;
@@ -83,7 +82,6 @@ public class LoanRating {
 	@JsonProperty(value = "updatedBy")
 	@Column(name = "updatedBy", insertable = false, updatable = false)
 	private String updatedBy;
-	*/
 
 	@PrePersist
 	public void prePersist() {
