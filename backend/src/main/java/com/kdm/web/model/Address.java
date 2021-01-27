@@ -7,6 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.PreUpdate;
+import javax.persistence.PrePersist;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -21,6 +23,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.ZonedDateTime;
 
 @Entity
 @Table(name="Address", schema = "public")
@@ -72,6 +76,37 @@ public class Address {
 	@Column(name = "name")
 	@Size(max = 256)
 	@JsonView(View.Basic.class)
-	private String name;	
+	private String name;
+
+	@JsonProperty(value = "createdAt")
+	@Column(name = "createdAt", precision = 5, scale = 2, updatable = false, nullable = false)
+	@JsonView(View.Basic.class)
+	private ZonedDateTime createdAt;
+
+	@JsonProperty(value = "updatedAt")
+	@Column(name = "updatedAt", precision = 5, scale = 2, updatable = false, nullable = false)
+	@JsonView(View.Basic.class)
+	private ZonedDateTime updatedAt;
+
+	/* use once createdBy and updatedBy are being populated with user data
+	@JsonProperty(value = "createdBy")
+	@Column(name = "createdBy", insertable = false, updatable = false)
+	private String createdBy;
+
+	@JsonProperty(value = "updatedBy")
+	@Column(name = "updatedBy", insertable = false, updatable = false)
+	private String updatedBy;
+	*/
+
+	@PrePersist
+	public void prePersist() {
+		this.createdAt = ZonedDateTime.now();
+		this.updatedAt = this.createdAt;
+	}
+
+	@PreUpdate
+	public void preUpdate() {
+		this.updatedAt = ZonedDateTime.now();
+	}
 
 }

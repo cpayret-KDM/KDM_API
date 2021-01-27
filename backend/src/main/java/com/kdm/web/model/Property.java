@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.Valid;
@@ -25,6 +27,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.ZonedDateTime;
 
 @Entity
 @Table(name="Property", schema = "public")
@@ -80,6 +84,35 @@ public class Property {
 	private List<LatestAppraisalView> appraisals;
 	*/
 
+	@JsonProperty(value = "createdAt")
+	@Column(name = "createdAt", precision = 5, scale = 2, updatable = false, nullable = false)
+	private ZonedDateTime createdAt;
+
+	@JsonProperty(value = "updatedAt")
+	@Column(name = "updatedAt", precision = 5, scale = 2, updatable = false, nullable = false)
+	private ZonedDateTime updatedAt;
+
+	/* use once createdBy and updatedBy are being populated with user data
+	@JsonProperty(value = "createdBy")
+	@Column(name = "createdBy", insertable = false, updatable = false)
+	private String createdBy;
+
+	@JsonProperty(value = "updatedBy")
+	@Column(name = "updatedBy", insertable = false, updatable = false)
+	private String updatedBy;
+	*/
+
+	@PrePersist
+	public void prePersist() {
+		this.createdAt = ZonedDateTime.now();
+		this.updatedAt = this.createdAt;
+	}
+
+	@PreUpdate
+	public void preUpdate() {
+		this.updatedAt = ZonedDateTime.now();
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -113,6 +146,5 @@ public class Property {
 			return false;
 		return true;
 	}
-
 
 }

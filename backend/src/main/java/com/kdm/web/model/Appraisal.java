@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
@@ -61,10 +62,35 @@ public class Appraisal {
 	@JsonProperty(value = "date")
 	@Column(name = "date", precision = 5, scale = 2, updatable = false, nullable = false)
 	private ZonedDateTime date;
-	
+
+	@JsonProperty(value = "createdAt")
+	@Column(name = "createdAt", precision = 5, scale = 2, updatable = false, nullable = false)
+	private ZonedDateTime createdAt;
+
+	@JsonProperty(value = "updatedAt")
+	@Column(name = "updatedAt", precision = 5, scale = 2, updatable = false, nullable = false)
+	private ZonedDateTime updatedAt;
+
+	/* use once createdBy and updatedBy are being populated with user data
+	@JsonProperty(value = "createdBy")
+	@Column(name = "createdBy", insertable = false, updatable = false)
+	private String createdBy;
+
+	@JsonProperty(value = "updatedBy")
+	@Column(name = "updatedBy", insertable = false, updatable = false)
+	private String updatedBy;
+	*/
+
 	@PrePersist
-    public void prePersist() {
-        this.date = ZonedDateTime.now();
-    }
+	public void prePersist() {
+		this.date = ZonedDateTime.now();
+		this.createdAt = this.date;
+		this.updatedAt = this.date;
+	}
+
+	@PreUpdate
+	public void preUpdate() {
+		this.updatedAt = ZonedDateTime.now();
+	}
 	
 }
