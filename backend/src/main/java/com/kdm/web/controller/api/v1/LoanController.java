@@ -57,6 +57,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
+import net.kaczmarzyk.spring.data.jpa.domain.Null;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 
@@ -97,6 +98,14 @@ public class LoanController {
 					type = "string"
 				),
 				required = false
+			),
+			@Parameter(
+					name = "nullMSN",
+					schema = @Schema(
+						type = "boolean"
+					),
+					required = false,
+					description = "set to true for filtering loans where msn is null or not"
 			),
 			@Parameter(
 				name = "size",
@@ -302,7 +311,8 @@ public class LoanController {
 
 @And({
 	@Spec(path = "dealName", spec = Like.class),
-	@Spec(path = "loanNumber", spec = Like.class)
+	@Spec(path = "loanNumber", spec = Like.class),
+	@Spec(path = "msn", params="nullMSN", spec = Null.class )
 })
 interface LoanSpec extends Specification<Loan> {
 }
