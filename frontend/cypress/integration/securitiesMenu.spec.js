@@ -16,8 +16,11 @@ describe('Security Dashboard', () => {
 
     it('securities drop-down should be visible with dashboard option being clickable', () => {
         cy.contains('Securities').click()
+        cy.get('.mm-active > .side-nav-second-level > :nth-child(1) > .side-nav-link-ref > span')
+        cy.get('.mm-active > .side-nav-second-level > :nth-child(2) > .side-nav-link-ref > span')
+        cy.get('.mm-active > .side-nav-second-level > :nth-child(3) > .side-nav-link-ref > span')
+        cy.get('.mm-active > .side-nav-second-level > :nth-child(4) > .side-nav-link-ref > span')
         cy.get('.mm-active > .side-nav-second-level > :nth-child(1) > .side-nav-link-ref > span').should('be.visible').click()
-        // cy.get('.mm-active > .side-nav-second-level > :nth-child(1) > .side-nav-link-ref > span').click({ force: true })
     })
 
 })
