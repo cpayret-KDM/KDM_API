@@ -4,6 +4,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Locale;
 
 import javax.persistence.EntityManager;
@@ -44,6 +45,7 @@ import com.kdm.web.model.LoanRating;
 import com.kdm.web.model.Rating;
 import com.kdm.web.model.Sponsor;
 import com.kdm.web.model.util.Note;
+import com.kdm.web.model.view.LoanCashFlow;
 import com.kdm.web.service.EntityUtil;
 import com.kdm.web.service.LoanService;
 import com.kdm.web.util.View;
@@ -55,6 +57,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import net.kaczmarzyk.spring.data.jpa.domain.Like;
+import net.kaczmarzyk.spring.data.jpa.domain.Null;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 
@@ -95,6 +98,14 @@ public class LoanController {
 					type = "string"
 				),
 				required = false
+			),
+			@Parameter(
+					name = "nullMSN",
+					schema = @Schema(
+						type = "boolean"
+					),
+					required = false,
+					description = "set to true for filtering loans where msn is null or not"
 			),
 			@Parameter(
 				name = "size",
@@ -282,12 +293,26 @@ public class LoanController {
 		
 		return new ResponseEntity<Void>(OK);
 	}
+	
+
+	@Operation(summary = "Get cashflow", tags = "loan", responses = {
+	@ApiResponse(responseCode = "200", description = "cashflow information"),
+	@ApiResponse(responseCode = "404", description = "data not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
+	@ResponseBody
+	@GetMapping(path = "/cashflow")
+	public ResponseEntity<List<LoanCashFlow>> getCashFlow() {
+		
+		List<LoanCashFlow> results = loanRepository.getCashFlowReport();
+		
+		return new ResponseEntity<List<LoanCashFlow>>(results, OK); 
+	}
 }
 
 
 @And({
 	@Spec(path = "dealName", spec = Like.class),
-	@Spec(path = "loanNumber", spec = Like.class)
+	@Spec(path = "loanNumber", spec = Like.class),
+	@Spec(path = "msn", params="nullMSN", spec = Null.class )
 })
 interface LoanSpec extends Specification<Loan> {
 }

@@ -82,15 +82,17 @@ public class Appraisal {
 	private String updatedBy;
 
 	@PrePersist
-	public void prePersist() {
-		this.date = ZonedDateTime.now();
-		this.createdAt = this.date;
+    public void prePersist() {
+		if (this.date == null) {
+			this.date = ZonedDateTime.now();
+		}
+		this.createdAt = ZonedDateTime.now();
 		this.updatedAt = this.date;
-	}
-
+    }
+	
 	@PreUpdate
 	public void preUpdate() {
 		this.updatedAt = ZonedDateTime.now();
 	}
-	
+
 }

@@ -20,5 +20,5 @@ public class ApiConstants {
 	public static final String RATING_MAPPING = V1 + "/rating";
 	public static final String BORROWER_MAPPING = V1 + "/borrower";
 	public static final String TMO_MAPPING = V1 + "/tmo";
-
+	public static final String CUSIP_MAPPING = V1 + "/cusip";
 }

@@ -8,6 +8,8 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ColumnResult;
+import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -17,16 +19,19 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.kdm.web.model.view.LoanCashFlow;
 import com.kdm.web.model.view.LoanRatingLatestByLoanView;
 import com.kdm.web.util.View;
 
@@ -36,6 +41,34 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@SqlResultSetMapping(
+	    name="cashFlowMapping",
+	    classes={
+	        @ConstructorResult(
+	            targetClass=LoanCashFlow.class,
+	            columns={
+	                @ColumnResult(name="loanNumber", type = String.class),
+	                @ColumnResult(name="principalBalance", type = BigDecimal.class),
+	                @ColumnResult(name="loanRate", type = BigDecimal.class),
+	                @ColumnResult(name="msnRate", type = BigDecimal.class),
+	                @ColumnResult(name="anualRevenue", type = BigDecimal.class),
+	                @ColumnResult(name="monthlyRevenue", type = BigDecimal.class),
+	                @ColumnResult(name="dailyRevenue", type = BigDecimal.class)
+	            }
+	        )
+	    }
+	)
+@NamedNativeQuery(
+		name="getCashFlowReport", 
+		query = "SELECT  l.\"loanNumber\", l.\"principalBalance\", l.\"loanRate\", m.\"noteRate\" as \"msnRate\", " + 
+			"        (l.\"principalBalance\" * l.\"loanRate\") - (l.\"principalBalance\" * m.\"noteRate\") as \"anualRevenue\", " + 
+			"        ((l.\"principalBalance\" * l.\"loanRate\") - (l.\"principalBalance\" * m.\"noteRate\"))/12 as \"monthlyRevenue\", " + 
+			"        ((l.\"principalBalance\" * l.\"loanRate\") - (l.\"principalBalance\" * m.\"noteRate\"))/365 as \"dailyRevenue\" " + 
+			"FROM    \"Loan\" as l " + 
+			"    LEFT JOIN \"MSN\" as m ON l.\"msnID\" = m.\"msnID\" " + 
+			"WHERE   l.\"loanStatus\" IN ('PERFORMING') ",
+		resultSetMapping = "cashFlowMapping"
+		)
 @Entity
 @Table(name="Loan", schema = "public")
 @JsonView
