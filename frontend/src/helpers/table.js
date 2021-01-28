@@ -49,27 +49,29 @@ const defaultSorted = [
   {
     dataField: 'id',
     order: 'asc',
+    // dataField: 'loanStatus',
+    // order: 'Default',
   },
 ];
 
 const currencyFilter = (filterValue, data, key) => {
   if (!filterValue) return data;
-  
+
   return data.filter(loan => {
     if (!loan[key]) return false;
     return loan[key]
       .toString()
       .includes(
         filterValue
-        .replace('$', '')
-        .replace(',', '')
+          .replace('$', '')
+          .replace(',', '')
       );
   });
 };
 
 const percentageFilter = (filterValue, data, key) => {
   if (!filterValue) return data;
-  
+
   return data.filter(loan => {
     if (!loan[key]) return false;
     return formatPercentage(loan[key]).includes(filterValue.replace('%', ''));
