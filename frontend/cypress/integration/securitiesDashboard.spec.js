@@ -30,4 +30,10 @@ describe('Security Dashboard', () => {
         cy.get('tbody > :nth-child(1) > :nth-child(5)')
     })
 
+    it('securities dashboard option should be clickable', () => {
+        cy.contains('Securities').click()
+        cy.get('.mm-active > .side-nav-second-level > :nth-child(1) > .side-nav-link-ref > span')
+        cy.get('.mm-active > .side-nav-second-level > :nth-child(1) > .side-nav-link-ref > span').should('be.visible').click()
+    })
+
 })

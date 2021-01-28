@@ -14,7 +14,7 @@ describe('Security Dashboard', () => {
         cy.contains('Securities').click()
     })
 
-    it('securities drop-down should be visible with dashboard option being clickable', () => {
+    it('securities drop-down options should all be visible with dashboard option being clickable', () => {
         cy.contains('Securities').click()
         cy.get('.mm-active > .side-nav-second-level > :nth-child(1) > .side-nav-link-ref > span')
         cy.get('.mm-active > .side-nav-second-level > :nth-child(2) > .side-nav-link-ref > span')
