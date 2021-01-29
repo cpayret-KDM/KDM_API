@@ -6,8 +6,6 @@ import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstr
 import moment from 'moment';
 
 import PageTitle from '../../components/PageTitle';
-import ModalProperty from './ModalProperty';
-import ModalDeleteProperty from './ModalDeleteProperty';
 import ModalDeleteSecurity from './ModalDeleteSecurity';
 import DatePicker from 'react-datepicker';
 import { getSecurity, createSecurity, editSecurity, deleteSecurity, clearSecurity } from '../../redux/actions';
@@ -27,16 +25,8 @@ const SecurityDetails = (props) => {
     }
   }, [creating, id]);
 
-  const [property, setProperty] = useState({});
-  const [propertyMode, setPropertyMode] = useState('create');
-  const [showPropertyModal, setShowPropertyModal] = useState(false);
-  const [showDeletePropertyModal, setShowDeletePropertyModal] = useState(false);
   const [showDeleteSecurityModal, setShowDeleteSecurityModal] = useState(false);
 
-  // const tradeDate = security.tradeDate
-  // const maturityDate = security.maturityDate
-  // const [tradeDate, setTradeDate] = useState(security.tradeDate, new Date());
-  // const [maturityDate, setMaturityDate] = useState(security.maturityDate, new Date());
   const [tradeDate, setTradeDate] = useState(new Date());
   const [maturityDate, setMaturityDate] = useState(new Date());
   useEffect(() => {
@@ -46,18 +36,11 @@ const SecurityDetails = (props) => {
     setMaturityDate(moment(security.maturityDate).toDate());
   }, [security]);
 
-  // const [maturityDate, setMaturityDate] = useState(new Date());
-  // useEffect(() => {
-  //   setMaturityDate(moment(security.maturityDate).toDate());
-  // }, [security]);
-
   const [isSaving, setIsSaving] = useState(false);
   useEffect(() => {
     if (props.added || props.edited) {
       setIsSaving(false);
     }
-    // setTradeDate(moment(security.tradeDate).toDate());
-    // setMaturityDate(moment(security.maturityDate).toDate());
   }, [props.added, props.edited]);
 
   const breadcrumb = ((mode) => {
@@ -105,31 +88,6 @@ const SecurityDetails = (props) => {
 
   const handleDeleteSecurity = (securityId) => {
     setShowDeleteSecurityModal(true);
-  }
-
-  const handleAddNewProperty = () => {
-    setProperty({});
-    setPropertyMode('create');
-    setShowPropertyModal(true);
-  }
-
-  const handleEditProperty = (property) => {
-    setProperty({ ...property });
-    setPropertyMode('edit');
-    setShowPropertyModal(true);
-  }
-
-  const handleDeleteProperty = (property) => {
-    setProperty({ ...property });
-    setShowDeletePropertyModal(true);
-  }
-
-  const toggleDeletePropertyModal = () => {
-    setShowDeletePropertyModal(!showDeletePropertyModal);
-  }
-
-  const toggleShowPropertyModal = () => {
-    setShowPropertyModal(!showPropertyModal);
   }
 
   const toggleDeleteSecurityModal = () => {
@@ -224,19 +182,6 @@ const SecurityDetails = (props) => {
                           </div>
                         </AvGroup>
                       </Col>
-                      {/* <Col sm={6}>
-                        <AvGroup className="position-relative">
-                          <Label for="originationDate">Maturity Date *</Label>
-                          <div className="input-group">
-                            <HyperDatepicker
-                              hideAddon={true}
-                              dateFormat="MM/dd/yyyy"
-                              selected={originationDate}
-                              onChange={handleDateChange}
-                            />
-                          </div>
-                        </AvGroup>
-                      </Col> */}
                     </Row>
 
                   </CardBody>
@@ -249,19 +194,6 @@ const SecurityDetails = (props) => {
         </Col>
       </Row>
 
-      <ModalProperty
-        isOpen={showPropertyModal}
-        toggle={toggleShowPropertyModal}
-        mode={propertyMode}
-        property={property}
-        securityId={security?.id}
-      />
-      <ModalDeleteProperty
-        isOpen={showDeletePropertyModal}
-        toggle={toggleDeletePropertyModal}
-        propertyId={property.id}
-        securityId={security?.id}
-      />
       <ModalDeleteSecurity
         isOpen={showDeleteSecurityModal}
         toggle={toggleDeleteSecurityModal}

@@ -1,4 +1,4 @@
-describe('Security Dashboard', () => {
+describe('Security Edit', () => {
 
     beforeEach(() => {
         cy.visit('/')

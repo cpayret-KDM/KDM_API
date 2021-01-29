@@ -1,6 +1,6 @@
-describe('Security Dashboard', () => {
+describe('Security Menu', () => {
 
-    before(() => {
+    beforeEach(() => {
         cy.visit('/')
         // cy.request('/account/login')
         cy.get('.btn').click()

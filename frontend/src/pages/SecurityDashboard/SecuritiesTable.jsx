@@ -15,27 +15,6 @@ import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css
 const SecuritiesTable = (props) => {
   const { securities } = props;
 
-  // let propertyTypeOptions = [];
-  // Object.entries(PROPERTY_TYPE_MAP).map((property) => {
-  //   propertyTypeOptions.push({ value: property[0], label: property[1] });
-  // });
-
-  // let securityStatusOptions = [];
-  // Object.entries(SECURITY_STATUS_MAP).map((status) => {
-  //   securityStatusOptions.push({ value: status[0], label: status[1] });
-  // });
-
-  // let formatRatingString = (security) => {
-  //   let rating = '';
-  //   if (security.KDMRating) rating += security.KDMRating
-  //   else rating += '--';
-
-  //   if (security.EJRating) rating += ` / ${security.EJRating}`;
-  //   else rating += ` / --`;
-
-  //   return rating;
-  // }
-
   const columns = [
     {
       dataField: 'id',

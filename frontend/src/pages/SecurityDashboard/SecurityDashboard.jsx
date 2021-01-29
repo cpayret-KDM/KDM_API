@@ -15,18 +15,12 @@ const SecurityDashboard = (props) => {
     if (report === 'list') {
       props.getSecurities();
     }
-    // else if (report === '60-day') {
-    //   props.get60DaySecurities();
-    // }
-
   }, [report]);
 
   const breadcrumb = ((report) => {
     switch (report) {
       case 'list':
         return { label: 'Securities', path: '/securities/list' };
-      // case '60-day':
-      //   return { label: '60 Day Security Report', path: '/securities/60-day' };
     }
   })(props.report);
 
@@ -57,6 +51,5 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   { getSecurities }
-  // { getSecurities, get60DaySecurities }
 )(SecurityDashboard);
 
