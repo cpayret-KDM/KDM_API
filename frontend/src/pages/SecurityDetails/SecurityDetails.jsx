@@ -144,14 +144,13 @@ const SecurityDetails = (props) => {
                           <Label for="tradeDate">Trade Date *</Label>
                           <div className="input-group">
                             <DatePicker
+                              required
                               className="form-control date"
                               dateFormat="MM/dd/yyyy"
                               selected={tradeDate}
                               onChange={date => setTradeDate(date)}
                               required disabled={viewing}
                             />
-                            {/* <AvInput name="tradeDate" id="tradeDate" value={security.tradeDate} required disabled={viewing} />
-                            <AvFeedback tooltip>Trade Date is required</AvFeedback> */}
                           </div>
                         </AvGroup>
                       </Col>
@@ -163,14 +162,10 @@ const SecurityDetails = (props) => {
                             <DatePicker
                               className="form-control date"
                               dateFormat="MM/dd/yyyy"
-                              // value={security.maturityDate}
-                              // value={maturityDate}
                               selected={maturityDate}
                               onChange={date => setMaturityDate(date)}
                               required disabled={viewing}
                             />
-                            {/* <AvInput name="maturityDate" id="maturityDate" value={security.maturityDate} required disabled={viewing} /> */}
-                            <AvFeedback tooltip>Maturity Date is required</AvFeedback>
                           </div>
                         </AvGroup>
                       </Col>
