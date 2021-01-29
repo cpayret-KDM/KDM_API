@@ -132,6 +132,7 @@ const LoansTable = (props) => {
               return (
                 <span key={i}>
                   {PROPERTY_TYPE_MAP[property.type]}
+                  {/* {property.address.name && (<>{property.address.name}<br /></>)} */}
                   {(i + 1) === row.properties.length ? ('') : (<br />)}
                   {' '}<br />
                 </span>
@@ -140,6 +141,7 @@ const LoansTable = (props) => {
           </>
         );
       },
+      // formatter: (cell) => (<>{PROPERTY_TYPE_MAP[cell]}</>),
       footer: '',
     },
     {
