@@ -5,7 +5,6 @@ import { Row, Col } from 'reactstrap';
 import PageTitle from '../../components/PageTitle';
 import SecuritiesTable from './SecuritiesTable';
 import { getSecurities } from '../../redux/actions';
-// import { getSecurities, get60DaySecurities } from '../../redux/actions';
 
 const SecurityDashboard = (props) => {
 
@@ -24,7 +23,6 @@ const SecurityDashboard = (props) => {
     }
   })(props.report);
 
-  // const { securities, report } = props;
   return (
     <>
       <PageTitle

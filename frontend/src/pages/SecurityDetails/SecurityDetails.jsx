@@ -146,16 +146,8 @@ const SecurityDetails = (props) => {
                             <DatePicker
                               className="form-control date"
                               dateFormat="MM/dd/yyyy"
-                              // value={security.tradeDate}
-                              // value={tradeDate}
-                              // defaultValue={tradeDate}
-                              // defaultDate={security.tradeDate}
-                              // openToDate={security.tradeDate}
-                              // placeholderText={security.tradeDate}
                               selected={tradeDate}
-                              // onSelect={tradeDate}
                               onChange={date => setTradeDate(date)}
-                              // placeholderText={security.tradeDate}
                               required disabled={viewing}
                             />
                             {/* <AvInput name="tradeDate" id="tradeDate" value={security.tradeDate} required disabled={viewing} />
