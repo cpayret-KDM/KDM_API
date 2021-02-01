@@ -68,4 +68,35 @@ public class MSN {
 	@JsonView(View.All.class)
 	private Set<MSNRatingLatestByMSNView> ratings;
 
+	@JsonProperty(value = "createdAt")
+	@Column(name = "createdAt", precision = 5, scale = 2, updatable = false, nullable = false)
+	@JsonView(View.ReadOnly.class)
+	private ZonedDateTime createdAt;
+
+	@JsonProperty(value = "updatedAt")
+	@Column(name = "updatedAt", precision = 5, scale = 2, updatable = false, nullable = false)
+	@JsonView(View.ReadOnly.class)
+	private ZonedDateTime updatedAt;
+
+	@JsonProperty(value = "createdBy")
+	@Column(name = "createdBy", insertable = false, updatable = false)
+	@JsonView(View.ReadOnly.class)
+	private String createdBy;
+
+	@JsonProperty(value = "updatedBy")
+	@Column(name = "updatedBy", insertable = false, updatable = false)
+	@JsonView(View.ReadOnly.class)
+	private String updatedBy;
+
+	@PrePersist
+	public void prePersist() {
+		this.createdAt = ZonedDateTime.now();
+		this.updatedAt = this.createdAt;
+	}
+
+	@PreUpdate
+	public void preUpdate() {
+		this.updatedAt = ZonedDateTime.now();
+	}
+
 }
