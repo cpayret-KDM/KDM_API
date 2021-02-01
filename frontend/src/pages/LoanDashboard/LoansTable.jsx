@@ -93,7 +93,8 @@ const LoansTable = (props) => {
             {row.properties.map((property, i) => {
               return (
                 <p key={i}>
-                  {property.address.name && (<>{property.address.name}<br /></>)}
+                  {row.dealName && (<>{row.dealName}<br /></>)}
+                  {/* {property.address.name && (<>{property.address.name}<br /></>)} */}
                   {property.address.street1}
                   {property.address.street2 && (<>{property.address.street2}</>)}, {property.address.city} {property.address.state}, {property.address.zip}
                   {(i + 1) === row.properties.length ? ('') : (<br />)}
@@ -131,6 +132,7 @@ const LoansTable = (props) => {
               return (
                 <span key={i}>
                   {PROPERTY_TYPE_MAP[property.type]}
+                  {/* {property.address.name && (<>{property.address.name}<br /></>)} */}
                   {(i + 1) === row.properties.length ? ('') : (<br />)}
                   {' '}<br />
                 </span>
@@ -139,6 +141,7 @@ const LoansTable = (props) => {
           </>
         );
       },
+      // formatter: (cell) => (<>{PROPERTY_TYPE_MAP[cell]}</>),
       footer: '',
     },
     {
