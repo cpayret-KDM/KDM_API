@@ -4,6 +4,7 @@ auth0:
 server:
   error:
     include-message: always
+  forward-headers-strategy: framework
 spring:
   application:
     name: kdm-api

@@ -4,7 +4,18 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Set;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -67,6 +78,13 @@ public class MSN {
 	@OneToMany(mappedBy="msn", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
 	@JsonView(View.All.class)
 	private Set<MSNRatingLatestByMSNView> ratings;
+	
+	/*
+	@JsonIgnore
+	@OneToMany(mappedBy="msn", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
+	@JsonView(View.All.class)
+	private List<Loan> loans;
+	*/
 
 	@JsonProperty(value = "createdAt")
 	@Column(name = "createdAt", precision = 5, scale = 2, updatable = false, nullable = false)
