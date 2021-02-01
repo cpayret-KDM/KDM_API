@@ -70,7 +70,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "cypress": "^6.2.1",
+    "cypress": "6.4.0",
     "netlify-cli": "^2.71.0",
     "redux-saga-test-plan": "^4.0.0-beta.3"
   }
