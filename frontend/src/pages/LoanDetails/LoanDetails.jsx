@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
-import { Row, Col, Label, Button, InputGroupAddon, Card, CardBody, Spinner, UncontrolledAlert } from 'reactstrap';
+import { Row, Col, Label, Button, InputGroupAddon, Card, CardBody, Spinner, UncontrolledAlert, Table } from 'reactstrap';
 import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 
 import PageTitle from '../../components/PageTitle';
@@ -13,18 +13,18 @@ import ModalDeleteLoan from './ModalDeleteLoan';
 import ModalSponsor from './ModalSponsor';
 import ModalDeleteSponsor from './ModalDeleteSponsor';
 
-import { getLoan, createLoan, editLoan, deleteLoan, clearLoan } from '../../redux/actions';
+import { getLoan, createLoan, editLoan, deleteLoan, clearLoan, getRatings } from '../../redux/actions';
 import { formatCurrency, DATE_FORMAT, EMPTY_LOAN, LOAN_STATUS_MAP, PIPELINE_STATUS_MAP, PROPERTY_TYPE_MAP } from '../../helpers/utils';
 
 const LoanDetails = (props) => {
-  const { loan = {...EMPTY_LOAN}, loaded } = props;
+  const { loan = {...EMPTY_LOAN} } = props;
   const creating = (props.mode === 'create');
   const editing = (props.mode === 'edit');
   const viewing = !editing && !creating;
 
   const { id } = props?.match?.params;
   useEffect(() => {
-    if (!creating) {      
+    if (!creating) {
       props.getLoan(id);
     } else {
       props.clearLoan();
@@ -48,6 +48,7 @@ const LoanDetails = (props) => {
     if (loan?.sponsor?.id) {
       setSponsorId(loan.sponsor.id);
     }
+    props.getRatings();
   }, [loan]);
 
   const [isSaving, setIsSaving] = useState(false);
@@ -166,7 +167,74 @@ const LoanDetails = (props) => {
     setShowSponsorModal(false);
   }
 
-  //console.log(loan)
+  /* Ratings */
+  const [loanRatings, setLoanRatings] = useState([]);
+  useEffect(() => {
+    if (loan.ratings) {
+      setLoanRatings(loan.ratings);
+    }
+  }, [loan]);
+
+  const [agencyRatings, setAgencyRatings] = useState([]);
+  useEffect(() => {
+    if (props.agencyRatings) {
+      let formattedAgencyRatings = [];
+      Object.entries(props.agencyRatings).forEach((rating, i) => {
+        formattedAgencyRatings.push({
+          agency: rating[0],
+          values: rating[1]
+        });
+      });
+      setAgencyRatings(formattedAgencyRatings);
+    }
+  }, [props.agencyRatings]);
+
+  // useEffect(() => {
+  //   console.log('agencyRatings array change', agencyRatings)
+  // }, [agencyRatings]);
+
+
+
+
+
+  const addNewLoanRating = () => {
+    const newLoanRatings = [...loanRatings];
+    newLoanRatings.push({
+      agency: agencyRatings[0].agency,
+      value: agencyRatings[0].values[0],
+      date: '',
+    });
+    setLoanRatings([...newLoanRatings]);
+  }
+  // useEffect(() => {
+  //   console.log('loanRatings array change', loanRatings)
+  // }, [loanRatings]);
+
+  const handleLoanRatingAgencyChange = (e, i) => {
+    const newLoanRatings = [...loanRatings];
+    newLoanRatings[i].agency = e.target.value;
+    agencyRatings.forEach((rating, k) => {
+      if (rating.agency === e.target.value) {
+        newLoanRatings[i].value = rating.values[0].value;
+      }
+    });
+    setLoanRatings([...newLoanRatings]);
+  }
+  const handleLoanRatingValueChange = (e, i) => {
+    const newLoanRatings = [...loanRatings];
+    newLoanRatings[i].value = e.target.value;
+    setLoanRatings([...newLoanRatings]);
+  }
+  const handleLoanRatingDateChange = (date, i) => {
+    const newLoanRatings = [...loanRatings];
+    newLoanRatings[i].date = date;
+    setLoanRatings([...newLoanRatings]);
+  }
+  const handleRemoveLoanRating = (i) => {
+    const newLoanRatings = [...loanRatings];
+    newLoanRatings.splice(i, 1);
+    setLoanRatings([...newLoanRatings]);
+  }
 
   return (
     <>
@@ -180,7 +248,7 @@ const LoanDetails = (props) => {
 
       <Row>
         <Col sm={12}>
-          {!loaded && !creating ? (
+          {!props.loaded && !creating ? (
             <div className="text-center"><Spinner size="lg" color="primary" /></div>
           ) : (
             <AvForm onSubmit={submitLoan}>
@@ -241,7 +309,6 @@ const LoanDetails = (props) => {
                   <Row>
                     <Col sm={6}>
                       <AvGroup className="position-relative">
-                        <Label for="originationDate">Origination Date *</Label>
                         <div className="input-group">
                           <DatePicker
                             className={`form-control date ${viewing ? 'disabled' : ''}`}
@@ -325,25 +392,88 @@ const LoanDetails = (props) => {
 
                   <hr />
                   <h4>Ratings</h4>
-
-                  <Row>
-                    <Col sm={6}>
-                      <AvGroup className="position-relative">
-                        <Label for="KDMRating">KDM Rating *</Label>
-                        <AvInput name="KDMRating" id="KDMRating" value={loan?.KDMRating} required disabled={viewing} />
-                        <AvFeedback tooltip>KDM Rating is required</AvFeedback>
-                      </AvGroup>
-                    </Col>
-
-                    <Col sm={6}>
-                      {/* <AvGroup className="position-relative">
-                        <Label for="EJRating">EJ Rating *</Label>
-                        <AvInput name="EJRating" id="EJRating" value={loan?.EJRating} required disabled={viewing} />
-                        <AvFeedback tooltip>EJ Rating is required</AvFeedback>
-                      </AvGroup> */}
-                    </Col>
-                  </Row>
-                  
+                  <Table className="ratings-list-table table-centered table-nowrap mb-0">
+                    <thead>
+                      <tr>
+                        <th style={{'width': '200px'}}>Agency</th>
+                        <th style={{'width': '50px'}}>Rating</th>
+                        <th style={{'width': '200px'}}>Date</th>
+                        <th style={{'width': '50px'}}>&nbsp;</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {loanRatings?.length === 0 && (
+                        <tr>
+                          <td colSpan="4">No ratings have been added yet. {!editing && (<>Edit this loan to add some.</>)}</td>
+                        </tr>
+                      )}
+                      {viewing && loan?.ratings?.map((rating, i) => (
+                        <tr key={i}>
+                          <td>{rating.agency}</td>
+                          <td>{rating.rating}</td>
+                          <td>{rating.date}</td>
+                          <td></td>
+                        </tr>
+                      ))}
+                      {editing && loanRatings?.map((loanRating, i) => (
+                        <tr key={i}>
+                          <td>
+                            <AvGroup className="position-relative mb-0">
+                              <AvField
+                                name="ratingAgency"
+                                type="select"
+                                value={loanRating.agency}
+                                className="custom-select"
+                                onChange={(e) => handleLoanRatingAgencyChange(e, i)}
+                              >
+                                {agencyRatings.length > 0 && agencyRatings.map((rating, j) => 
+                                  (<option value={rating.agency} key={j}>{rating.agency}</option>)
+                                )}
+                              </AvField>
+                            </AvGroup>
+                          </td>
+                          <td>
+                            <AvGroup className="position-relative mb-0">
+                              <AvField
+                                name="ratingValue"
+                                type="select"
+                                value={loanRating.value}
+                                className="custom-select"
+                                onChange={(e) => handleLoanRatingValueChange(e, i)}
+                              >
+                                {props.agencyRatings && loanRatings.length !== 0 && props.agencyRatings[loanRatings[i].agency].map((val, k) => 
+                                  (<option value={val.value} key={k}>{val.value}</option>)
+                                )}
+                              </AvField>
+                            </AvGroup>
+                          </td>
+                          <td>
+                            <div className="position-relative mb-0">
+                              <DatePicker
+                                className="form-control date"
+                                dateFormat="MM/dd/yyyy" 
+                                value={loanRating.date}
+                                selected={originationDate}
+                                onChange={date => handleLoanRatingDateChange(date, i)}
+                              />
+                            </div>
+                          </td>
+                          <td>
+                            <span className="btn btn-danger" onClick={() => handleRemoveLoanRating(i)}>remove</span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    {editing && agencyRatings.length !== 0 && (
+                    <tfoot>
+                      <tr>
+                        <td colSpan="4">
+                          <span className="btn btn-secondary" onClick={(e) => addNewLoanRating(e)}>Add New Rating</span>
+                        </td>
+                      </tr>
+                    </tfoot>
+                    )}
+                  </Table>
                 </CardBody>
               </Card>
 
@@ -388,7 +518,6 @@ const LoanDetails = (props) => {
                                         {property.appraisal.note && (<em><br />{property.appraisal.note}</em>)}
                                       </>
                                     )}
-                                    
                                   </Col>
                                 </Row>
                               </CardBody>
@@ -536,10 +665,12 @@ const LoanActionButtons = ({ creating, editing, viewing, loanId, handleDeleteLoa
 }
 
 const mapStateToProps = state => {
-  return state.Loan
+  const loan = state.Loan;
+  const agencyRatings = state.Rating.ratings?.ratings;
+  return { ...loan, agencyRatings };
 };
 
 export default connect(
   mapStateToProps,
-  { getLoan, createLoan, editLoan, deleteLoan, clearLoan }
+  { getLoan, createLoan, editLoan, deleteLoan, clearLoan, getRatings }
 )(LoanDetails);

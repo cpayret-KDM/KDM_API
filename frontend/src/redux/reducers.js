@@ -9,6 +9,7 @@ import Loan from './loan/reducers';
 import Property from './property/reducers';
 import Sponsor from './sponsor/reducers';
 import Security from './security/reducers';
+import Rating from './rating/reducers';
 
 export default combineReducers({
     Auth,
@@ -19,4 +20,5 @@ export default combineReducers({
     Property,
     Sponsor,
     Security,
+    Rating,
 });

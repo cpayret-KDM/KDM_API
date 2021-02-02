@@ -17,3 +17,20 @@
     }
   }
 }
+
+.ratings-list-table {
+  thead {
+    th {
+      border: none;
+    }
+  }
+  tbody {
+    td {
+      padding: 8px;
+
+      .form-group {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
