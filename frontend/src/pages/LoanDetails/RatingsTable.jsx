@@ -12,6 +12,7 @@ import UncontrolledAlert from 'reactstrap/lib/UncontrolledAlert';
 const RatingsTable = (props) => {
   const {  
     itemType = 'loan', 
+    item = {}, 
     editing = false,
     viewing = false,
   } = props;
@@ -57,6 +58,7 @@ const RatingsTable = (props) => {
 
   /* State Functions */
   const [showDuplicateAgencyWarning, setShowDuplicateAgencyWarning] = useState(null);
+
   const addNewItemRating = () => {
     const newItemRatings = [...itemRatings];
     newItemRatings.push({

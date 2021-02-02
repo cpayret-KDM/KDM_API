@@ -189,8 +189,6 @@ const LoanDetails = (props) => {
     return formattedRatings;
   }
 
-  //console.log('loan', loan)
-
   return (
     <>
       <PageTitle
