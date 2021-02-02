@@ -25,11 +25,16 @@ import com.kdm.web.data.repository.AppraisalRepository;
 import com.kdm.web.data.repository.BorrowerRepository;
 import com.kdm.web.data.repository.LoanRepository;
 import com.kdm.web.data.repository.PropertyRepository;
+import com.kdm.web.data.repository.SponsorRepository;
 import com.kdm.web.model.Address;
 import com.kdm.web.model.Appraisal;
 import com.kdm.web.model.Borrower;
 import com.kdm.web.model.Loan;
+import com.kdm.web.model.LoanStatus;
 import com.kdm.web.model.Property;
+import com.kdm.web.model.PropertyType;
+import com.kdm.web.model.Sponsor;
+import com.kdm.web.restclient.tmo.model.Funding;
 import com.kdm.web.restclient.tmo.service.TMOLoanService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -61,6 +66,9 @@ public class TMOController {
 	
 	@Autowired
 	private PropertyRepository propertyRepository;
+	
+	@Autowired
+	private SponsorRepository sponsorRepository;
 	
 	@Operation(summary = "runs an integration call to the TMO API", tags = "tmo")
 	@PostMapping
@@ -122,19 +130,56 @@ public class TMOController {
 	private Loan syncLoan(com.kdm.web.restclient.tmo.model.Loan loan) {
 		this.logger.trace(String.format("sync loan %s", loan.getAccount()));
 		BigDecimal ltv = null;
+		
+		//ltv = calculate weighted average
 		if (loan.getProperties() != null && loan.getProperties().size() > 0) {
-			ltv = loan.getProperties().get(0).getLtv();
+			ltv = getWeightedAverage(loan.getProperties());
 		}
+		
+		double fundControl = loan.getFundings().stream().filter(funding -> funding.getFundControl() != null)
+				.map(Funding::getFundControl)
+				.mapToDouble(BigDecimal::doubleValue)
+				.sum();
+		double principalBalance = loan.getFundings().stream().filter(funding -> funding.getPrincipalBalance() != null)
+				.map(Funding::getPrincipalBalance)
+				.mapToDouble(BigDecimal::doubleValue)
+				.sum();
+		
 		Loan newLoan = Loan.builder()
 				.loanNumber(loan.getAccount())
 				.dealName(loan.getSortName())
 				.ltv(ltv)
+				.initialAmount(new BigDecimal(fundControl))
+				.principalBalance(new BigDecimal(principalBalance))
+				.loanStatus(LoanStatus.PERFORMING)
 				.build();
 		Loan savedLoan = saveLoan(newLoan);
 		
 		return savedLoan;
 	}
 	
+	private BigDecimal getWeightedAverage(List<com.kdm.web.restclient.tmo.model.Property> properties) {
+		double sumWeights = properties.stream()
+				.filter( property -> property.getLtv() != null && property.getAppraiserFMV() != null)
+				.map(com.kdm.web.restclient.tmo.model.Property::getAppraiserFMV)
+				.mapToDouble(BigDecimal::doubleValue)
+				.sum();
+		
+		double sumData = properties.stream()
+				.filter( property -> property.getLtv() != null && property.getAppraiserFMV() != null)
+				.mapToDouble(property -> {
+					return property.getLtv().multiply(property.getAppraiserFMV()).doubleValue();
+				})
+				.sum();
+		if (sumData == 0 || sumWeights == 0) {
+			return new BigDecimal( 0 );
+		} else {
+			return new BigDecimal( sumData / sumWeights );
+		}
+	}
+
+
+
 	@Transactional
 	private void syncProperties(Loan loan, com.kdm.web.restclient.tmo.model.Loan tmoLoan) {
 		// List<Property> currentProperties = propertyRepository.findByLoanId(loan.getId());
@@ -162,6 +207,7 @@ public class TMOController {
 		Property newProperty = Property.builder()
 				.address(newAddress)
 				.loan(loan)
+				.type(PropertyType.fromString(tmoProperty.getPropertyType()))
 				.build();
 		
 		newProperty = propertyRepository.saveAndFlush(newProperty);
@@ -204,6 +250,10 @@ public class TMOController {
 			
 			newBorrower = borrowerRepository.saveAndFlush(newBorrower);
 			
+			newProperty.setBorrower(newBorrower);
+			
+			propertyRepository.saveAndFlush(newProperty);
+			
 		}
 		
 	}
@@ -211,9 +261,41 @@ public class TMOController {
 	@Transactional
 	private void syncFunding(Loan syncedLoan, com.kdm.web.restclient.tmo.model.Loan loan) {
 		loan.getFundings().stream()
-		.forEach(funding -> {
-			this.logger.trace(String.format("\t\t funding data: %s", funding.toString()));
+		.forEach(f -> {
+			this.logger.trace(String.format("\t\t funding data: %s", f.toString()));
 		});
+		
+		// Sponsor
+		Funding funding = null;
+		// if more than one funding
+		if (loan.getFundings().size() > 1) {
+			
+			//look for a 100% own
+			BigDecimal hundredPercent = new BigDecimal(100);
+			Optional<Funding> optionalFunding = loan.getFundings().stream()
+				.filter( f -> f.getPctOwn().compareTo(hundredPercent) == 0)
+				.findFirst();
+			
+			if (optionalFunding.isPresent()) {
+				funding = optionalFunding.get();
+			} else {
+				// 100% not found then just take first
+				funding = loan.getFundings().get(0);
+			}
+			
+		} else if (loan.getFundings().size() == 1) {
+			funding = loan.getFundings().get(0);
+		}
+		
+		Sponsor sponsor = sponsorRepository.findByCompany(funding.getLenderName());
+		if (sponsor == null) {
+			sponsor = Sponsor.builder()
+					.company(funding.getLenderName())
+					.build();
+			sponsor = sponsorRepository.saveAndFlush(sponsor);
+		}
+		syncedLoan.setSponsor(sponsor);
+		loanRepository.saveAndFlush(syncedLoan);
 	}
 
 	@Transactional

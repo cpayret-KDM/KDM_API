@@ -22,5 +22,14 @@ public enum PropertyType {
 	public String getLabel() {
 		return this.label;
 	}
+	
+	public static PropertyType fromString(String text) {
+        for (PropertyType pt : PropertyType.values()) {
+            if (pt.label.equalsIgnoreCase(text)) {
+                return pt;
+            }
+        }
+        return null;
+    }
 
 }
