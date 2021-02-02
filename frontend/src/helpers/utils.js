@@ -10,9 +10,9 @@ export const DATE_FORMAT = 'MM/DD/YYYY';
 
 export const LOAN_STATUS_MAP = {
   'PERFORMING': 'Performing',
-  '30_DAYS_LATE': '30 Days Late',
-  '60_DAYS_LATE': '60 Days Late',
-  '90_DAYS_LATE': '90 Days Late',
+  'LATE_30_DAYS': '30 Days Late',
+  'LATE_60_DAYS': '60 Days Late',
+  'LATE_90_DAYS': '90 Days Late',
   'LOCKBOX_TRIGGERED': 'Lockbox Triggered',
   'DEFAULT': 'Default',
   'FORECLOSURE': 'Foreclosure',
@@ -21,9 +21,9 @@ export const LOAN_STATUS_MAP = {
 
 export const SECURITY_STATUS_MAP = {
   'PERFORMING': 'Performing',
-  '30_DAYS_LATE': '30 Days Late',
-  '60_DAYS_LATE': '60 Days Late',
-  '90_DAYS_LATE': '90 Days Late',
+  'LATE_30_DAYS': '30 Days Late',
+  'LATE_60_DAYS': '60 Days Late',
+  'LATE_90_DAYS': '90 Days Late',
   'LOCKBOX_TRIGGERED': 'Lockbox Triggered',
   'DEFAULT': 'Default',
   'FORECLOSURE': 'Foreclosure',
