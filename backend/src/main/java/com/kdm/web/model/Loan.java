@@ -2,7 +2,6 @@ package com.kdm.web.model;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -193,6 +192,7 @@ public class Loan {
 	@JsonView(View.All.class)
 	private Set<LoanRatingLatestByLoanView> ratings;
 	
+	/* TODO: remove this test code
 	public void addProperty(Property property) {
 		if (this.properties == null) {
 			this.properties = new ArrayList<>();
@@ -202,7 +202,7 @@ public class Loan {
 			this.properties.add(property);
 		}
 		
-	}
+	}*/
 	
 	@JsonProperty(value = "spread")
 	@JsonView(View.All.class)

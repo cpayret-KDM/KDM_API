@@ -4,6 +4,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Locale;
 
 import javax.persistence.EntityManager;
@@ -33,8 +34,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.kdm.web.data.repository.LoanRepository;
 import com.kdm.web.data.repository.MSNRatingRepository;
 import com.kdm.web.data.repository.MSNRepository;
+import com.kdm.web.model.Loan;
 import com.kdm.web.model.MSN;
 import com.kdm.web.model.MSNRating;
 import com.kdm.web.model.Rating;
@@ -70,6 +73,9 @@ public class MSNController {
 	
 	@Autowired
 	private MSNRatingRepository msnRatingRepository;
+	
+	@Autowired
+	private LoanRepository loanRepository;
 
 	@Operation(
 		summary = "Get list of security notes according to search criteria and pagination options", 
@@ -137,7 +143,26 @@ public class MSNController {
 
 		MSN msn = entityUtil.tryGetEntity(MSN.class, msnId);
 		
+		//List<Loan> loans = loanRepository.findByMsnId(msn.getId());
+		
+		//msn.setLoans(loans);
+		
 		return new ResponseEntity<MSN>(msn, OK);
+	}
+	
+	@Operation(summary = "Get information of a msn", tags = "msn", responses = {
+			@ApiResponse(responseCode = "200", description = "msn information"),
+			@ApiResponse(responseCode = "404", description = "msn not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
+	@ResponseBody
+	@GetMapping(path = "/{msnId}/loans")
+	public ResponseEntity<List<Loan>> getMSNLoans(
+			@PathVariable("msnId") Long msnId) throws Exception {
+
+		MSN msn = entityUtil.tryGetEntity(MSN.class, msnId);
+		
+		List<Loan> loans = loanRepository.findByMsnId(msn.getId());
+		
+		return new ResponseEntity<List<Loan>>(loans, OK);
 	}
 	
 	@Operation(summary = "Create a MSN", tags = "msn", responses = {
@@ -227,6 +252,31 @@ public class MSNController {
 		msnRepository.delete(msn);
 		
 		return new ResponseEntity<Void>(OK);
+	}
+	
+	@Operation(summary = "assign a loan to a msn", tags = "msn", responses = {
+			@ApiResponse(responseCode = "200", description = "loan assigned"),
+			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+			@ApiResponse(responseCode = "404", description = "loan or msn not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
+	)
+	
+	@ResponseBody
+	@PutMapping(path = "/{msnId}/loan/{loanId}")
+	@Transactional
+	public ResponseEntity<MSN> assignLoan(@PathVariable("msnId") Long msnId, @PathVariable("loanId") Long loanId) throws BindException {
+		Loan loan = entityUtil.tryGetEntity(Loan.class, loanId);
+		
+		MSN msn = entityUtil.tryGetEntity(MSN.class, msnId);
+		
+		if (loan.getMsn() != null) {
+			throw new ResponseStatusException(BAD_REQUEST,
+					messageSource.getMessage("controller.msn.loan_already_have", Arrays.array(loan.getLoanNumber(), msn.getId()), Locale.US));
+		}
+
+		loan.setMsn(msn);
+		loan = loanRepository.saveAndFlush(loan);
+		
+		return new ResponseEntity<MSN>(msn, OK);
 	}
 }
 
