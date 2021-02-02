@@ -46,6 +46,7 @@ import com.kdm.web.model.Rating;
 import com.kdm.web.model.Sponsor;
 import com.kdm.web.model.util.Note;
 import com.kdm.web.model.view.LoanCashFlow;
+import com.kdm.web.model.view.RatingValue;
 import com.kdm.web.service.EntityUtil;
 import com.kdm.web.service.LoanService;
 import com.kdm.web.util.View;
@@ -278,6 +279,38 @@ public class LoanController {
 		//loan = entityManager.find(Loan.class, loanId);
 		return this.getLoan(loanId);
 	}
+	
+	@Operation(summary = "assign a rating to a loan", tags = "loan", responses = {
+			@ApiResponse(responseCode = "200", description = "rating assigned"),
+			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+			@ApiResponse(responseCode = "404", description = "loan or rating not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
+	)
+	@ResponseBody
+	@PutMapping(path = "/{loanId}/rating")
+	@Transactional
+	public ResponseEntity<Void> assignRatings(@PathVariable("loanId") Long loanId, @RequestBody @Valid List<RatingValue> ratings, BindingResult bindingResult) throws Exception {
+		Loan loan = entityUtil.tryGetEntity(Loan.class, loanId);
+		//entityManager.detach(loan);
+		
+		/*Rating rating = entityUtil.tryGetEntity(Rating.class, ratingId);
+		
+		LoanRating lnRtng = LoanRating.builder()
+				.loan(loan)
+				.loanId(loanId)
+				.rating(rating)
+				.ratingId(ratingId)
+				.note(note.toString())
+				.date(ZonedDateTime.now())
+				.build();
+		
+		*/
+		loanService.syncRatings(loan, ratings);
+		//rating.addLoanRating(lnRtng);
+		
+		//loan = entityManager.find(Loan.class, loanId);
+		return new ResponseEntity<Void>(OK);
+	}
+
 	
 	@Operation(summary = "delete a loan", tags = "loan", responses = {
 			@ApiResponse(responseCode = "200", description = "loan deleted"),

@@ -1,8 +1,11 @@
 package com.kdm.web.service;
 
+import java.util.List;
+
 import com.kdm.web.model.Loan;
 import com.kdm.web.model.Property;
 import com.kdm.web.model.Sponsor;
+import com.kdm.web.model.view.RatingValue;
 
 public interface LoanService {
 
@@ -41,4 +44,10 @@ public interface LoanService {
 	 * deletes the given sponsor, and take care of relationship with other entities
 	 */
 	void deleteSponsor(Sponsor sponsor);
+	
+	/**
+	 * sync the ratings values of given loan to match the value of the ratings list parameter
+	 */
+	void syncRatings(Loan loan, List<RatingValue> ratings);
+
 }
