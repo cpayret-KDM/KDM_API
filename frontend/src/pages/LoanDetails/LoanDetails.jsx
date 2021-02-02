@@ -12,8 +12,9 @@ import ModalDeleteProperty from './ModalDeleteProperty';
 import ModalDeleteLoan from './ModalDeleteLoan';
 import ModalSponsor from './ModalSponsor';
 import ModalDeleteSponsor from './ModalDeleteSponsor';
+import RatingsTable from './RatingsTable';
 
-import { getLoan, createLoan, editLoan, deleteLoan, clearLoan, getRatings } from '../../redux/actions';
+import { getLoan, createLoan, editLoan, deleteLoan, clearLoan } from '../../redux/actions';
 import { formatCurrency, DATE_FORMAT, EMPTY_LOAN, LOAN_STATUS_MAP, PIPELINE_STATUS_MAP, PROPERTY_TYPE_MAP } from '../../helpers/utils';
 
 const LoanDetails = (props) => {
@@ -48,7 +49,6 @@ const LoanDetails = (props) => {
     if (loan?.sponsor?.id) {
       setSponsorId(loan.sponsor.id);
     }
-    props.getRatings();
   }, [loan]);
 
   const [isSaving, setIsSaving] = useState(false);
@@ -167,75 +167,6 @@ const LoanDetails = (props) => {
     setShowSponsorModal(false);
   }
 
-  /* Ratings */
-  const [loanRatings, setLoanRatings] = useState([]);
-  useEffect(() => {
-    if (loan.ratings) {
-      setLoanRatings(loan.ratings);
-    }
-  }, [loan]);
-
-  const [agencyRatings, setAgencyRatings] = useState([]);
-  useEffect(() => {
-    if (props.agencyRatings) {
-      let formattedAgencyRatings = [];
-      Object.entries(props.agencyRatings).forEach((rating, i) => {
-        formattedAgencyRatings.push({
-          agency: rating[0],
-          values: rating[1]
-        });
-      });
-      setAgencyRatings(formattedAgencyRatings);
-    }
-  }, [props.agencyRatings]);
-
-  // useEffect(() => {
-  //   console.log('agencyRatings array change', agencyRatings)
-  // }, [agencyRatings]);
-
-
-
-
-
-  const addNewLoanRating = () => {
-    const newLoanRatings = [...loanRatings];
-    newLoanRatings.push({
-      agency: agencyRatings[0].agency,
-      value: agencyRatings[0].values[0],
-      date: '',
-    });
-    setLoanRatings([...newLoanRatings]);
-  }
-  // useEffect(() => {
-  //   console.log('loanRatings array change', loanRatings)
-  // }, [loanRatings]);
-
-  const handleLoanRatingAgencyChange = (e, i) => {
-    const newLoanRatings = [...loanRatings];
-    newLoanRatings[i].agency = e.target.value;
-    agencyRatings.forEach((rating, k) => {
-      if (rating.agency === e.target.value) {
-        newLoanRatings[i].value = rating.values[0].value;
-      }
-    });
-    setLoanRatings([...newLoanRatings]);
-  }
-  const handleLoanRatingValueChange = (e, i) => {
-    const newLoanRatings = [...loanRatings];
-    newLoanRatings[i].value = e.target.value;
-    setLoanRatings([...newLoanRatings]);
-  }
-  const handleLoanRatingDateChange = (date, i) => {
-    const newLoanRatings = [...loanRatings];
-    newLoanRatings[i].date = date;
-    setLoanRatings([...newLoanRatings]);
-  }
-  const handleRemoveLoanRating = (i) => {
-    const newLoanRatings = [...loanRatings];
-    newLoanRatings.splice(i, 1);
-    setLoanRatings([...newLoanRatings]);
-  }
-
   return (
     <>
       <PageTitle
@@ -302,128 +233,165 @@ const LoanDetails = (props) => {
                             <AvInput name="principalBalance" id="principalBalance" value={loan?.principalBalance} required disabled={viewing} />
                             <AvFeedback tooltip>Principal Amount is required</AvFeedback>
                           </div>
-                        </AvGroup>
-                      </Col>
-                    </Row>
+                      </AvGroup>
+                    </Col>
+                  </Row>
 
-                    <Row>
-                      <Col sm={6}>
-                        <AvGroup className="position-relative">
-                          <div className="input-group">
-                            <DatePicker
-                              className={`form-control date ${viewing ? 'disabled' : ''}`}
-                              dateFormat="MM/dd/yyyy"
-                              selected={originationDate}
-                              onChange={date => setOriginationDate(date)}
-                            />
-                          </div>
-                        </AvGroup>
-                      </Col>
+                  <Row>
+                    <Col sm={6}>
+                      <AvGroup className="position-relative">
+                        <div className="input-group">
+                          <DatePicker
+                            className={`form-control date ${viewing ? 'disabled' : ''}`}
+                            dateFormat="MM/dd/yyyy" 
+                            selected={originationDate}
+                            onChange={date => setOriginationDate(date)}
+                          />
+                        </div>
+                      </AvGroup>
+                    </Col>
 
-                      <Col sm={6}>
-                        <AvGroup className="position-relative">
-                          <Label for="loanStatus">Loan Status *</Label>
-                          <AvField
-                            name="loanStatus"
-                            type="select"
-                            required
-                            disabled={viewing}
-                            value={loan?.loanStatus || 'PERFORMING'}
-                            className="custom-select"
-                          >
-                            {Object.entries(LOAN_STATUS_MAP).map((status, i) =>
-                              (<option value={status[0]} key={i}>{status[1]}</option>)
-                            )}
-                          </AvField>
-                          <AvFeedback tooltip>Loan Status is required</AvFeedback>
-                        </AvGroup>
-                      </Col>
-                    </Row>
+                    <Col sm={6}>
+                      <AvGroup className="position-relative">
+                        <Label for="loanStatus">Loan Status *</Label>
+                        <AvField
+                          name="loanStatus"
+                          type="select"
+                          required
+                          disabled={viewing}
+                          value={loan?.loanStatus || 'PERFORMING'}
+                          className="custom-select"
+                        >
+                          {Object.entries(LOAN_STATUS_MAP).map((status, i) => 
+                            (<option value={status[0]} key={i}>{status[1]}</option>)
+                          )}
+                        </AvField>
+                        <AvFeedback tooltip>Loan Status is required</AvFeedback>
+                      </AvGroup>
+                    </Col>
+                  </Row>
 
-                    <Row>
-                      <Col sm={6}>
-                        <AvGroup className="position-relative">
-                          <Label for="loanRate">Loan Rate *</Label>
-                          <div className="input-group">
-                            <AvInput name="loanRate" id="loanRate" value={loan?.loanRate} required disabled={viewing} />
-                            <AvFeedback tooltip>Loan Rate is required</AvFeedback>
-                            <InputGroupAddon addonType="append">%</InputGroupAddon>
-                          </div>
-                        </AvGroup>
-                      </Col>
+                  <Row>
+                    <Col sm={6}>
+                      <AvGroup className="position-relative">
+                        <Label for="loanRate">Loan Rate *</Label>
+                        <div className="input-group">
+                          <AvInput name="loanRate" id="loanRate" value={loan?.loanRate} required disabled={viewing} />
+                          <AvFeedback tooltip>Loan Rate is required</AvFeedback>
+                          <InputGroupAddon addonType="append">%</InputGroupAddon>
+                        </div>
+                      </AvGroup>
+                    </Col>
 
-                      <Col sm={6}>
-                        <AvGroup className="position-relative">
-                          <Label for="pipelineStatus">Pipeline Status *</Label>
-                          <AvField
-                            name="pipelineStatus"
-                            type="select"
-                            required
-                            disabled={viewing}
-                            value={loan?.pipelineStatus || 'NEW'}
-                            className="custom-select"
-                          >
-                            {Object.entries(PIPELINE_STATUS_MAP).map((status, i) =>
-                              (<option value={status[0]} key={i}>{status[1]}</option>)
-                            )}
-                          </AvField>
-                          <AvFeedback tooltip>Pipeline Status is required</AvFeedback>
-                        </AvGroup>
-                      </Col>
-                    </Row>
+                    <Col sm={6}>
+                      <AvGroup className="position-relative">
+                        <Label for="pipelineStatus">Pipeline Status *</Label>
+                        <AvField
+                          name="pipelineStatus"
+                          type="select"
+                          required
+                          disabled={viewing}
+                          value={loan?.pipelineStatus || 'NEW'}
+                          className="custom-select"
+                        >
+                          {Object.entries(PIPELINE_STATUS_MAP).map((status, i) => 
+                            (<option value={status[0]} key={i}>{status[1]}</option>)
+                          )}
+                        </AvField>
+                        <AvFeedback tooltip>Pipeline Status is required</AvFeedback>
+                      </AvGroup>
+                    </Col>
+                  </Row>
 
-                    <Row>
-                      <Col sm={6}>
-                        <AvGroup className="position-relative">
-                          <Label for="loanTermMonths">Loan Term (months) *</Label>
-                          <AvInput type="number" name="loanTermMonths" id="loanTermMonths" value={loan?.loanTermMonths} required disabled={viewing} />
-                          <AvFeedback tooltip>Loan Term is required</AvFeedback>
-                        </AvGroup>
-                      </Col>
+                  <Row>
+                    <Col sm={6}>
+                      <AvGroup className="position-relative">
+                        <Label for="loanTermMonths">Loan Term (months) *</Label>
+                        <AvInput type="number" name="loanTermMonths" id="loanTermMonths" value={loan?.loanTermMonths} required disabled={viewing} />
+                        <AvFeedback tooltip>Loan Term is required</AvFeedback>
+                      </AvGroup>
+                    </Col>
 
-                      <Col sm={6}>
-                        <AvGroup className="position-relative">
-                          <Label for="prepayMonths">Prepay (months) *</Label>
-                          <AvInput type="number" name="prepayMonths" id="prepayMonths" value={loan?.prepayMonths} required disabled={viewing} />
-                          <AvFeedback tooltip>Prepay is required</AvFeedback>
-                        </AvGroup>
-                      </Col>
-                    </Row>
+                    <Col sm={6}>
+                      <AvGroup className="position-relative">
+                        <Label for="prepayMonths">Prepay (months) *</Label>
+                        <AvInput type="number" name="prepayMonths" id="prepayMonths" value={loan?.prepayMonths} required disabled={viewing} />
+                        <AvFeedback tooltip>Prepay is required</AvFeedback>
+                      </AvGroup>
+                    </Col>
+                  </Row>
 
-                    <Row>
-                      <Col sm={6}>
-                        <AvGroup className="position-relative">
-                          <Label for="borrower">Borrower *</Label>
-                          <AvInput name="borrower" id="borrower" value={loan?.borrower} required disabled={viewing} />
-                          <AvFeedback tooltip>Borrower is required</AvFeedback>
-                        </AvGroup>
-                      </Col>
-                    </Row>
+                  <Row>
+                    <Col sm={6}>
+                      <AvGroup className="position-relative">
+                        <Label for="borrower">Borrower *</Label>
+                        <AvInput name="borrower" id="borrower" value={loan?.borrower} required disabled={viewing} />
+                        <AvFeedback tooltip>Borrower is required</AvFeedback>
+                      </AvGroup>
+                    </Col>
+                  </Row>
 
-                    <hr />
-                    <h4>Ratings</h4>
-                    <Table className="ratings-list-table table-centered table-nowrap mb-0">
-                      <thead>
-                        <tr>
-                          <th style={{ 'width': '200px' }}>Agency</th>
-                          <th style={{ 'width': '50px' }}>Rating</th>
-                          <th style={{ 'width': '200px' }}>Date</th>
-                          <th style={{ 'width': '50px' }}>&nbsp;</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {loanRatings?.length === 0 && (
-                          <tr>
-                            <td colSpan="4">No ratings have been added yet. {!editing && (<>Edit this loan to add some.</>)}</td>
-                          </tr>
-                        )}
-                        {viewing && loan?.ratings?.map((rating, i) => (
-                          <tr key={i}>
-                            <td>{rating.agency}</td>
-                            <td>{rating.rating}</td>
-                            <td>{rating.date}</td>
-                            <td></td>
-                          </tr>
+                  <hr />
+                  <h4>Ratings</h4>
+                  <RatingsTable 
+                    item={loan}
+                    itemType="loan"
+                    editing={editing}
+                    viewing={viewing}
+                    update={(newLoanRatings) => {
+                      console.log('new loan ratings...', newLoanRatings);
+                    }}
+                  />
+                </CardBody>
+              </Card>
+
+              {loan && loan.id && (<>
+                <Card>
+                  <CardBody>
+                    <div className="d-flex justify-content-between">
+                      <h4>Properties</h4>
+                      <div className="">
+                        <Button className="btn btn-secondary" onClick={() => handleAddNewPropertyModal()}>Add New Property</Button>
+                      </div>
+                    </div>
+
+                    {loan?.properties?.length === 0 ? (
+                      <p>No properties exists for this loan. <strong><a href="/" onClick={(e) => handleAddNewPropertyModal(e)}>Add one &raquo;</a></strong></p>
+                    ) : (
+                      <Row>
+                        {loan?.properties?.map((property, i) => (
+                          <Col sm={4} key={i}>
+                            <Card>
+                              <CardBody>
+                                <Row>
+                                  <Col sm={6}>
+                                    <p>
+                                      {property.address.name && (<strong>{property.address.name}<br /></strong>)}
+                                      {property.address.street1}<br />
+                                      {property.address.street2 && (<>{property.address.street2}<br /></>)}
+                                      {property.address.city}, <span className="text-uppercase">{property.address.state}</span> {property.address.zip}<br />
+                                      <i>{PROPERTY_TYPE_MAP[property.type]}</i>
+                                    </p>
+                                    <p className="mb-0">
+                                      <Button className="btn btn-secondary mr-2" onClick={() => handleEditPropertyModal(property.id)}>Edit</Button>
+                                      <Button className="btn btn-danger" onClick={() => handleDeletePropertyModal(property.id)}>Delete</Button>
+                                    </p>
+                                  </Col>
+                                  <Col sm={6}>
+                                    {!property.appraisal ? (
+                                      <em>No appraisal for this property.</em>
+                                    ) : (
+                                      <>
+                                        <strong>Appraised for ${formatCurrency(property.appraisal.value)} on {moment(property.appraisal.date).format(DATE_FORMAT)}.</strong>
+                                        {property.appraisal.note && (<em><br />{property.appraisal.note}</em>)}
+                                      </>
+                                    )}
+                                  </Col>
+                                </Row>
+                              </CardBody>
+                            </Card>
+                          </Col>
+>>>>>>> Moving Ratings table into its own component.
                         ))}
                         {editing && loanRatings?.map((loanRating, i) => (
                           <tr key={i}>
@@ -682,5 +650,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { getLoan, createLoan, editLoan, deleteLoan, clearLoan, getRatings }
+  { getLoan, createLoan, editLoan, deleteLoan, clearLoan }
 )(LoanDetails);
