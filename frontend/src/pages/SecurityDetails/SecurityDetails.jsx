@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Row, Col, Label, Button, InputGroupAddon, InputGroupText, Card, CardBody, Spinner } from 'reactstrap';
+import { Row, Col, Label, Button, InputGroupAddon, Table, Card, CardBody, Spinner } from 'reactstrap';
 import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 import moment from 'moment';
 
@@ -10,7 +10,7 @@ import ModalProperty from './ModalProperty';
 import ModalDeleteProperty from './ModalDeleteProperty';
 import ModalDeleteSecurity from './ModalDeleteSecurity';
 import DatePicker from 'react-datepicker';
-import { getSecurity, createSecurity, editSecurity, deleteSecurity, clearSecurity } from '../../redux/actions';
+import { getSecurity, createSecurity, editSecurity, deleteSecurity, clearSecurity, getRatings } from '../../redux/actions';
 
 const SecurityDetails = (props) => {
   const { security = {}, loaded } = props;
@@ -40,6 +40,7 @@ const SecurityDetails = (props) => {
   const [tradeDate, setTradeDate] = useState(new Date());
   const [maturityDate, setMaturityDate] = useState(new Date());
   useEffect(() => {
+    props.getRatings();
     if (!security.tradeDate) return;
     if (!security.maturityDate) return;
     setTradeDate(moment(security.tradeDate).toDate());
@@ -60,6 +61,7 @@ const SecurityDetails = (props) => {
     // setMaturityDate(moment(security.maturityDate).toDate());
   }, [props.added, props.edited]);
 
+  /* UI */
   const breadcrumb = ((mode) => {
     switch (mode) {
       case 'create':
@@ -82,6 +84,7 @@ const SecurityDetails = (props) => {
     }
   })(props.mode);
 
+  /* Security */
   const submitSecurity = (e, errors, values) => {
     if (errors.length !== 0) return;
 
@@ -135,6 +138,67 @@ const SecurityDetails = (props) => {
   const toggleDeleteSecurityModal = () => {
     setShowDeleteSecurityModal(!showDeleteSecurityModal);
   }
+
+    /* Ratings */
+    const [securityRatings, setsecurityRatings] = useState([]);
+    useEffect(() => {
+      if (security.ratings) {
+        setsecurityRatings(security.ratings);
+      }
+    }, [security]);
+  
+    const [agencyRatings, setAgencyRatings] = useState([]);
+    useEffect(() => {
+      if (props.agencyRatings) {
+        let formattedAgencyRatings = [];
+        Object.entries(props.agencyRatings).forEach((rating, i) => {
+          formattedAgencyRatings.push({
+            agency: rating[0],
+            values: rating[1]
+          });
+        });
+        setAgencyRatings(formattedAgencyRatings);
+      }
+    }, [props.agencyRatings]);
+  
+    const addNewsecurityRating = () => {
+      const newsecurityRatings = [...securityRatings];
+      newsecurityRatings.push({
+        agency: agencyRatings[0].agency,
+        value: agencyRatings[0].values[0],
+        date: '',
+      });
+      setsecurityRatings([...newsecurityRatings]);
+    }
+    // useEffect(() => {
+    //   console.log('securityRatings array change', securityRatings)
+    // }, [securityRatings]);
+  
+    const handlesecurityRatingAgencyChange = (e, i) => {
+      const newsecurityRatings = [...securityRatings];
+      newsecurityRatings[i].agency = e.target.value;
+      agencyRatings.forEach((rating, k) => {
+        if (rating.agency === e.target.value) {
+          newsecurityRatings[i].value = rating.values[0].value;
+        }
+      });
+      setsecurityRatings([...newsecurityRatings]);
+    }
+    const handlesecurityRatingValueChange = (e, i) => {
+      const newsecurityRatings = [...securityRatings];
+      newsecurityRatings[i].value = e.target.value;
+      setsecurityRatings([...newsecurityRatings]);
+    }
+    const handlesecurityRatingDateChange = (date, i) => {
+      const newsecurityRatings = [...securityRatings];
+      newsecurityRatings[i].date = date;
+      setsecurityRatings([...newsecurityRatings]);
+    }
+    const handleRemovesecurityRating = (i) => {
+      const newsecurityRatings = [...securityRatings];
+      newsecurityRatings.splice(i, 1);
+      setsecurityRatings([...newsecurityRatings]);
+    }
 
   return (
     <>
@@ -239,6 +303,90 @@ const SecurityDetails = (props) => {
                       </Col> */}
                     </Row>
 
+                    <hr />
+                    <h4>Ratings</h4>
+                    <Table className="ratings-list-table table-centered table-nowrap mb-0">
+                      <thead>
+                        <tr>
+                          <th style={{'width': '200px'}}>Agency</th>
+                          <th style={{'width': '50px'}}>Rating</th>
+                          <th style={{'width': '200px'}}>Date</th>
+                          <th style={{'width': '50px'}}>&nbsp;</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {securityRatings?.length === 0 && (
+                          <tr>
+                            <td colSpan="4">No ratings have been added yet. {!editing && (<>Edit this security to add some.</>)}</td>
+                          </tr>
+                        )}
+                        {viewing && security?.ratings?.map((rating, i) => (
+                          <tr key={i}>
+                            <td>{rating.agency}</td>
+                            <td>{rating.rating}</td>
+                            <td>{rating.date}</td>
+                            <td></td>
+                          </tr>
+                        ))}
+                        {editing && securityRatings?.map((securityRating, i) => (
+                          <tr key={i}>
+                            <td>
+                              <AvGroup className="position-relative mb-0">
+                                <AvField
+                                  name="ratingAgency"
+                                  type="select"
+                                  value={securityRating.agency}
+                                  className="custom-select"
+                                  onChange={(e) => handlesecurityRatingAgencyChange(e, i)}
+                                >
+                                  {agencyRatings.length > 0 && agencyRatings.map((rating, j) => 
+                                    (<option value={rating.agency} key={j}>{rating.agency}</option>)
+                                  )}
+                                </AvField>
+                              </AvGroup>
+                            </td>
+                            <td>
+                              <AvGroup className="position-relative mb-0">
+                                <AvField
+                                  name="ratingValue"
+                                  type="select"
+                                  value={securityRating.value}
+                                  className="custom-select"
+                                  onChange={(e) => handlesecurityRatingValueChange(e, i)}
+                                >
+                                  {props.agencyRatings && securityRatings.length !== 0 && props.agencyRatings[securityRatings[i].agency].map((val, k) => 
+                                    (<option value={val.value} key={k}>{val.value}</option>)
+                                  )}
+                                </AvField>
+                              </AvGroup>
+                            </td>
+                            <td>
+                              <div className="position-relative mb-0">
+                                <DatePicker
+                                  className="form-control date"
+                                  dateFormat="MM/dd/yyyy" 
+                                  selected={securityRating.date}
+                                  onChange={date => handlesecurityRatingDateChange(date, i)}
+                                />
+                              </div>
+                            </td>
+                            <td>
+                              <span className="btn btn-danger" onClick={() => handleRemovesecurityRating(i)}>remove</span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                      {editing && agencyRatings.length !== 0 && (
+                      <tfoot>
+                        <tr>
+                          <td colSpan="4">
+                            <span className="btn btn-secondary" onClick={(e) => addNewsecurityRating(e)}>Add New Rating</span>
+                          </td>
+                        </tr>
+                      </tfoot>
+                      )}
+                    </Table>
+
                   </CardBody>
                 </Card>
 
@@ -310,10 +458,12 @@ const SecurityActionButtons = ({ creating, editing, viewing, securityId, handleD
 }
 
 const mapStateToProps = state => {
-  return state.Security;
+  const security = state.Security;;
+  const agencyRatings = state.Rating.ratings?.ratings;
+  return { ...security, agencyRatings };
 };
 
 export default connect(
   mapStateToProps,
-  { getSecurity, createSecurity, editSecurity, deleteSecurity, clearSecurity }
+  { getSecurity, createSecurity, editSecurity, deleteSecurity, clearSecurity, getRatings }
 )(SecurityDetails);

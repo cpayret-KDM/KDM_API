@@ -7,6 +7,7 @@ import loanSaga from './loan/saga';
 import propertySaga from './property/saga';
 import sponsorSaga from './sponsor/saga';
 import securitySaga from './security/saga';
+import ratingSaga from './rating/saga';
 
 export default function* rootSaga(getState: any): any {
   yield all([
@@ -18,5 +19,6 @@ export default function* rootSaga(getState: any): any {
     propertySaga(),
     sponsorSaga(),
     securitySaga(),
+    ratingSaga(),
   ]);
 }
