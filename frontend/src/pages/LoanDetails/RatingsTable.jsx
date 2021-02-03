@@ -1,30 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
-import { Row, Col, Label, Button, InputGroupAddon, Card, CardBody, Spinner, UncontrolledAlert, Table } from 'reactstrap';
-import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
+import { Table } from 'reactstrap';
+import { AvField, AvGroup, AvInput } from 'availity-reactstrap-validation';
 
 import { getRatings } from '../../redux/actions';
 
 const RatingsTable = (props) => {
   const {  
     itemType = 'loan', 
-    item = {}, 
     editing = false,
     viewing = false,
   } = props;
 
-  /* Ratings */
-  const [itemRatings, setItemRatings] = useState([]);
+  /* Get list of Agency Ratings onPageLoad*/
   useEffect(() => {
-    if (item.ratings) {
-      setItemRatings(item.ratings);
-    }
     props.getRatings();
-  }, [item]);
+  }, []);
 
+  /* Set Agency Ratings onPageLoad */
   const [agencyRatings, setAgencyRatings] = useState([]);
   useEffect(() => {
     if (props.agencyRatings) {
@@ -39,28 +34,67 @@ const RatingsTable = (props) => {
     }
   }, [props.agencyRatings]);
 
+  /* Set Item Ratings onPageLoad */
+  const [itemRatings, setItemRatings] = useState([]);
   // useEffect(() => {
-  //   console.log('agencyRatings array change', agencyRatings)
-  // }, [agencyRatings]);
+  //   if (props.item.ratings) {
+  //     const formattedRatings = [];
+  //     props.item.ratings.forEach(rating => {
+  //       formattedRatings.push({
+  //         agency: rating.agency,
+  //         value: rating.ratingId,
+  //         date: moment(rating.date).toDate(),
+  //         note: rating.note,
+  //       });
+  //     });
+  //     setItemRatings(formattedRatings);
+  //   }
+  // }, [props.item]);
+  useEffect(() => {
+    if (props.item.ratings && agencyRatings.length > 0) {
+      console.log('item ratings',props.item.ratings)
+      console.log('agencyRatings',agencyRatings)
+      const formattedRatings = [];
+      props.item.ratings.forEach(rating => {
+        let ratingValue = null;
+        agencyRatings.forEach(agencyRating => {
+          if (agencyRating.agency === rating.agency) {
+            agencyRating.values.forEach(val => {
+              if (val.value === rating.rating) {
+                ratingValue = val.id;
+                return;
+              }
+            });
+          }
+        });
 
 
+        formattedRatings.push({
+          agency: rating.agency,
+          value: ratingValue,
+          date: moment(rating.date).toDate(),
+          note: rating.note,
+        });
+      });
+      setItemRatings(formattedRatings);
+    }
+  }, [props.item, agencyRatings]);
+  useEffect(() => {
+    //console.log('item ratings changed', itemRatings)
+  }, [itemRatings])
 
 
-
+  /* State Functions */
   const addNewItemRating = () => {
     const newItemRatings = [...itemRatings];
     newItemRatings.push({
       agency: agencyRatings[0].agency,
-      value: agencyRatings[0].values[0].value,
+      value: agencyRatings[0].values[0].id,
       date: '',
+      note: '',
     });
     setItemRatings([...newItemRatings]);
   }
-  useEffect(() => {
-    //console.log('itemRatings array change', itemRatings)
-    props.update(itemRatings);
-  }, [itemRatings]);
-
   const handleItemRatingAgencyChange = (e, i) => {
     const newItemRatings = [...itemRatings];
     newItemRatings[i].agency = e.target.value;
@@ -73,7 +107,12 @@ const RatingsTable = (props) => {
   }
   const handleItemRatingValueChange = (e, i) => {
     const newItemRatings = [...itemRatings];
-    newItemRatings[i].value = e.target.value;
+    newItemRatings[i].value = Number(e.target.value);
+    setItemRatings([...newItemRatings]);
+  }
+  const handleItemRatingNoteChange = (e, i) => {
+    const newItemRatings = [...itemRatings];
+    newItemRatings[i].note = e.target.value;
     setItemRatings([...newItemRatings]);
   }
   const handleItemRatingDateChange = (date, i) => {
@@ -86,6 +125,9 @@ const RatingsTable = (props) => {
     newItemRatings.splice(i, 1);
     setItemRatings([...newItemRatings]);
   }
+  useEffect(() => {
+    props.update(itemRatings);
+  }, [itemRatings]);
 
   return (
     <>
@@ -95,18 +137,20 @@ const RatingsTable = (props) => {
         <Table className="ratings-list-table table-centered table-nowrap mb-0">
           <thead>
             <tr>
-              <th style={{'width': '200px'}}>Agency</th>
-              <th style={{'width': '50px'}}>Rating</th>
-              <th style={{'width': '200px'}}>Date</th>
+              <th style={{'width': '100px'}}>Agency</th>
+              <th style={{'width': '100px'}}>Rating</th>
+              <th style={{'width': '100px'}}>Date</th>
+              <th style={{'width': '200px'}}>Note</th>
               <th style={{'width': '50px'}}>&nbsp;</th>
             </tr>
           </thead>
           <tbody>
-            {viewing && item?.ratings?.map((rating, i) => (
+            {viewing && itemRatings?.map((rating, i) => (
               <tr key={i}>
                 <td>{rating.agency}</td>
                 <td>{rating.rating}</td>
                 <td>{rating.date}</td>
+                <td>{rating.note}</td>
                 <td></td>
               </tr>
             ))}
@@ -136,8 +180,8 @@ const RatingsTable = (props) => {
                       className="custom-select"
                       onChange={(e) => handleItemRatingValueChange(e, i)}
                     >
-                      {props.agencyRatings && itemRatings.length !== 0 && props.agencyRatings[itemRatings[i].agency].map((val, k) => 
-                        (<option value={val.value} key={k}>{val.value}</option>)
+                      {itemRatings.length !== 0 && props.agencyRatings[itemRatings[i].agency].map((val, k) =>
+                        (<option value={val.id} key={k}>{val.value}</option>)
                       )}
                     </AvField>
                   </AvGroup>
@@ -151,6 +195,11 @@ const RatingsTable = (props) => {
                       onChange={date => handleItemRatingDateChange(date, i)}
                     />
                   </div>
+                </td>
+                <td>
+                  <AvGroup className="position-relative">
+                    <AvInput name="ratingNote" id="ratingNote" value={itemRating.note} onChange={e => handleItemRatingNoteChange(e, i)} />
+                  </AvGroup>
                 </td>
                 <td>
                   <span className="btn btn-danger" onClick={() => handleRemoveItemRating(i)}>remove</span>

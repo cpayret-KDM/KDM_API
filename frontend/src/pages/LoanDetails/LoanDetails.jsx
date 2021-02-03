@@ -88,6 +88,7 @@ const LoanDetails = (props) => {
     const newLoan = {
       ...loan,
       ...values,
+      ratings: formatRatings(loanRatings),
       originationDate: originationDate,
     };
 
@@ -166,6 +167,27 @@ const LoanDetails = (props) => {
     setShowDeleteSponsorModal(false);
     setShowSponsorModal(false);
   }
+
+  /* Ratings */
+  const [loanRatings, setLoanRatings] = useState([]);
+  const handleEditLoanRatings = (ratings) => {
+    const newLoanRatings = [...ratings];
+    setLoanRatings([...newLoanRatings]);
+  }
+
+  const formatRatings = (ratings) => {
+    const formattedRatings = [];
+    ratings.forEach(rating => {
+      formattedRatings.push({
+        ratingId: rating.value,
+        note: rating.note,
+        date: rating.date,
+      });
+    });
+    return formattedRatings;
+  }
+
+  //console.log('loan', loan)
 
   return (
     <>
@@ -338,9 +360,7 @@ const LoanDetails = (props) => {
                     itemType="loan"
                     editing={editing}
                     viewing={viewing}
-                    update={(newLoanRatings) => {
-                      console.log('new loan ratings...', newLoanRatings);
-                    }}
+                    update={(newLoanRatings) => handleEditLoanRatings(newLoanRatings)}
                   />
                 </CardBody>
               </Card>
