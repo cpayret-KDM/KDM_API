@@ -43,6 +43,7 @@ import com.kdm.web.model.MSNRating;
 import com.kdm.web.model.Rating;
 import com.kdm.web.model.util.Note;
 import com.kdm.web.service.EntityUtil;
+import com.kdm.web.service.MSNService;
 import com.kdm.web.util.View;
 import com.kdm.web.util.error.ErrorResponse;
 
@@ -76,6 +77,9 @@ public class MSNController {
 	
 	@Autowired
 	private LoanRepository loanRepository;
+	
+	@Autowired
+	private MSNService msnService;
 
 	@Operation(
 		summary = "Get list of security notes according to search criteria and pagination options", 
@@ -277,6 +281,28 @@ public class MSNController {
 		loan = loanRepository.saveAndFlush(loan);
 		
 		return new ResponseEntity<MSN>(msn, OK);
+	}
+	
+	@Operation(summary = "assign multiple loans to a msn", tags = "msn", responses = {
+			@ApiResponse(responseCode = "200", description = "loans assigned"),
+			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+			@ApiResponse(responseCode = "404", description = "loans or msn not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
+	)
+	
+	@ResponseBody
+	@PutMapping(path = "/{msnId}/loan")
+	@Transactional
+	public ResponseEntity<Void> assignLoans(@PathVariable("msnId") Long msnId, @RequestBody @Valid List<Long> loanIds, BindingResult bindingResult) throws BindException {
+		
+		MSN msn = entityUtil.tryGetEntity(MSN.class, msnId);
+		
+		if (bindingResult.hasErrors()) {
+			throw new BindException(bindingResult);
+		}
+
+		msnService.syncLoans(msn, loanIds);
+		
+		return new ResponseEntity<Void>(OK);
 	}
 }
 
