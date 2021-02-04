@@ -32,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.kdm.web.model.view.LoanCashFlow;
 import com.kdm.web.model.view.LoanRatingLatestByLoanView;
+import com.kdm.web.security.SecurityUtil;
 import com.kdm.web.util.View;
 
 import lombok.AllArgsConstructor;
@@ -191,19 +192,7 @@ public class Loan {
 	@OneToMany(mappedBy="loan", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
 	@JsonView(View.All.class)
 	private Set<LoanRatingLatestByLoanView> ratings;
-	
-	/* TODO: remove this test code
-	public void addProperty(Property property) {
-		if (this.properties == null) {
-			this.properties = new ArrayList<>();
-		}
 		
-		if (!this.properties.contains(property)) {
-			this.properties.add(property);
-		}
-		
-	}*/
-	
 	@JsonProperty(value = "spread")
 	@JsonView(View.All.class)
 	public BigDecimal getSpread() {
@@ -239,11 +228,14 @@ public class Loan {
 	public void prePersist() {
 		this.createdAt = ZonedDateTime.now();
 		this.updatedAt = this.createdAt;
+		this.createdBy = SecurityUtil.getSystemOrLoggedInUserName();
+		this.updatedBy = this.createdBy;
 	}
 
 	@PreUpdate
 	public void preUpdate() {
 		this.updatedAt = ZonedDateTime.now();
+		this.updatedBy = SecurityUtil.getSystemOrLoggedInUserName();
 	}
 
 	@Override

@@ -19,6 +19,7 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.kdm.web.security.SecurityUtil;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -87,11 +88,14 @@ public class MSNRating {
 	public void prePersist() {
 		this.createdAt = ZonedDateTime.now();
 		this.updatedAt = this.createdAt;
+		this.createdBy = SecurityUtil.getSystemOrLoggedInUserName();
+		this.updatedBy = this.createdBy;
 	}
 
 	@PreUpdate
 	public void preUpdate() {
 		this.updatedAt = ZonedDateTime.now();
+		this.updatedBy = SecurityUtil.getSystemOrLoggedInUserName();
 	}
 
 }
