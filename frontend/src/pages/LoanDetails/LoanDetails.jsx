@@ -390,6 +390,7 @@ const LoanDetails = (props) => {
                       </Col>
                     </Row>
 
+                    {/* Ryan - temp as I move to Properties Modal
                     <Row>
                       <Col sm={6}>
                         <AvGroup className="position-relative">
@@ -398,7 +399,7 @@ const LoanDetails = (props) => {
                           <AvFeedback tooltip>Borrower is required</AvFeedback>
                         </AvGroup>
                       </Col>
-                    </Row>
+                    </Row> */}
 
                     <hr />
                     <h4>Ratings</h4>
