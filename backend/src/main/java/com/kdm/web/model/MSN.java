@@ -11,8 +11,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -20,7 +18,6 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.kdm.web.model.view.MSNRatingLatestByMSNView;
@@ -45,15 +42,11 @@ public class MSN {
 	@JsonView(View.ExtendedBasic.class)
 	private Long id;
 
-	@JsonIgnore
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "cusipID", referencedColumnName = "cusipID", nullable = true)
-	private Cusip cusip;
-
 	@JsonProperty
-	@Column(name = "cusipID", insertable = false, updatable = false)
-	@JsonView(View.All.class)
-	private Long cusipID;
+	@Column(length = 256)
+	@Size(max = 256)
+	@JsonView(View.Basic.class)
+	private String cusip;
 
 	@JsonProperty
 	@Column(length = 256)
