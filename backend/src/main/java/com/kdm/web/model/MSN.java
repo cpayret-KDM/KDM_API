@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.kdm.web.model.view.MSNRatingLatestByMSNView;
+import com.kdm.web.security.SecurityUtil;
 import com.kdm.web.util.View;
 
 import lombok.AllArgsConstructor;
@@ -112,11 +113,14 @@ public class MSN {
 	public void prePersist() {
 		this.createdAt = ZonedDateTime.now();
 		this.updatedAt = this.createdAt;
+		this.createdBy = SecurityUtil.getSystemOrLoggedInUserName();
+		this.updatedBy = this.createdBy;
 	}
 
 	@PreUpdate
 	public void preUpdate() {
 		this.updatedAt = ZonedDateTime.now();
+		this.updatedBy = SecurityUtil.getSystemOrLoggedInUserName();
 	}
 
 }

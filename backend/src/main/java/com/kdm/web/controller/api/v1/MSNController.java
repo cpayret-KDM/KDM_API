@@ -133,7 +133,8 @@ public class MSNController {
 			@Parameter(hidden = true) MSNSpec msnSpec, 
 			@PageableDefault(size = 25) @Parameter(hidden = true) Pageable pageable) {
 		
-		Page<MSN> page = msnRepository.findAll(msnSpec, pageable); 
+		Page<MSN> page = msnRepository.findAll(msnSpec, pageable);
+		
 		return new ResponseEntity<Page<MSN>>(page, OK);
 	}
 	

@@ -39,6 +39,9 @@ import com.kdm.web.controller.CustomHttp403ForbiddenEntryPoint;
 @Profile("!no_kdm_security")
 public class WebSecurity extends WebSecurityConfigurerAdapter {
 	
+	@Value("${auth0.claimPrefix}")
+	private String claimPrefix;
+	
 	@Value("${auth0.audience}")
     private String audience;
 	
@@ -74,7 +77,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     }
 	
 	JwtAuthenticationConverter jwtAuthenticationConverter() {
-        CustomAuthoritiesConverter customAuthoritiesConverter = new CustomAuthoritiesConverter();
+        CustomAuthoritiesConverter customAuthoritiesConverter = new CustomAuthoritiesConverter(claimPrefix);
         JwtAuthenticationConverter authenticationConverter = new JwtAuthenticationConverter();
         authenticationConverter.setJwtGrantedAuthoritiesConverter(customAuthoritiesConverter);
         return authenticationConverter;
@@ -90,14 +93,17 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 		return new CustomHttp403ForbiddenEntryPoint();
 	}
 	
-	static class CustomAuthoritiesConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
+	class CustomAuthoritiesConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
+		
+		private Map<String, String> CLAIMS_TO_AUTHORITY_PREFIX_MAP = new HashMap<String, String>();
+        
+		public CustomAuthoritiesConverter(String claimPrefix) {
+			this.CLAIMS_TO_AUTHORITY_PREFIX_MAP.put(claimPrefix.concat("/roles"), "ROLE_");
+			this.CLAIMS_TO_AUTHORITY_PREFIX_MAP.put(claimPrefix.concat("/groups"), "GROUP_");
+			this.CLAIMS_TO_AUTHORITY_PREFIX_MAP.put(claimPrefix.concat("/permissions"), "PERMISSION_");
+		}
         // extract authorities from "scope", "https://example.com/role", "https://example.com/group", and "permissions" claims.
-        private static final Map<String, String> CLAIMS_TO_AUTHORITY_PREFIX_MAP = new HashMap<String, String>() {{
-            //put("scope", "SCOPE_");
-            put("http://kdm.com/role", "ROLE_");
-            put("http://kdm.com/group", "GROUP_");
-            put("http://kdm.com/permissions", "PERMISSION_");
-        }};
+        
 
         @Override
         public Collection<GrantedAuthority> convert(Jwt jwt) {

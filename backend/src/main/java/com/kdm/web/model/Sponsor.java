@@ -1,5 +1,7 @@
 package com.kdm.web.model;
 
+import java.time.ZonedDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,16 +18,15 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import com.fasterxml.jackson.annotation.JsonView;
+import com.kdm.web.security.SecurityUtil;
 import com.kdm.web.util.View;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.ZonedDateTime;
 
 @Entity
 @Table(name="Sponsor", schema = "public")
@@ -111,11 +112,14 @@ public class Sponsor {
 	public void prePersist() {
 		this.createdAt = ZonedDateTime.now();
 		this.updatedAt = this.createdAt;
+		this.createdBy = SecurityUtil.getSystemOrLoggedInUserName();
+		this.updatedBy = this.createdBy;
 	}
 
 	@PreUpdate
 	public void preUpdate() {
 		this.updatedAt = ZonedDateTime.now();
+		this.updatedBy = SecurityUtil.getSystemOrLoggedInUserName();
 	}
 
 }

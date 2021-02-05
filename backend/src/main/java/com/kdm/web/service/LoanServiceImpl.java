@@ -1,7 +1,6 @@
 package com.kdm.web.service;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
@@ -185,31 +184,23 @@ public class LoanServiceImpl implements LoanService {
 		
 		// list to update
 		for (RatingValue ratingValue: ratings) {
-			LoanRating loanRating = loanRatingRepository.findByLoanIdAndRatingId(loan.getId(), ratingValue.getRatingId());
-			if (Objects.nonNull(loanRating)) {
-				loanRating.setNote(ratingValue.getNote());
-				loanRating.setDate(ratingValue.getDate());
-			} else {
-				//add rating
-				Rating rating = entityUtil.tryGetEntity(Rating.class, ratingValue.getRatingId());
-				
-				LoanRating lnRtng = LoanRating.builder()
-						.loan(loan)
-						.loanId(loan.getId())
-						.rating(rating)
-						.ratingId(rating.getId())
-						.note(ratingValue.getNote())
-						.date(ratingValue.getDate())
-						.build();
-				
-				
-				lnRtng = loanRatingRepository.saveAndFlush(lnRtng);
-				rating.addLoanRating(lnRtng);
-				
-				ratingRepository.saveAndFlush(rating);
-			}
+			//add rating
+			Rating rating = entityUtil.tryGetEntity(Rating.class, ratingValue.getRatingId());
+			
+			LoanRating lnRtng = LoanRating.builder()
+					.loan(loan)
+					.loanId(loan.getId())
+					.rating(rating)
+					.ratingId(rating.getId())
+					.note(ratingValue.getNote())
+					.date(ratingValue.getDate())
+					.build();
+			
+			
+			lnRtng = loanRatingRepository.saveAndFlush(lnRtng);
+			rating.addLoanRating(lnRtng);
+			
+			ratingRepository.saveAndFlush(rating);
 		}
 	}
-
-	
 }
