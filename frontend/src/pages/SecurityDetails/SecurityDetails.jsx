@@ -238,8 +238,8 @@ const SecurityDetails = (props) => {
                     <Row>
                       <Col sm={6}>
                         <AvGroup className="position-relative">
-                          <Label for="cusipID">CUSIP *</Label>
-                          <AvInput name="cusipID" id="cusipID" value={security.cusipID} required disabled={viewing} />
+                          <Label for="cusip">CUSIP *</Label>
+                          <AvInput name="cusip" id="cusip" value={security.cusip} required disabled={viewing} />
                           <AvFeedback tooltip>CUSIP is required</AvFeedback>
                         </AvGroup>
                       </Col>
