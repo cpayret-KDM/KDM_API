@@ -14,6 +14,9 @@ import {
   ASSIGN_APPRAISAL,
   ASSIGN_APPRAISAL_SUCCESS,
   ASSIGN_APPRAISAL_FAILURE,
+  ASSIGN_BORROWER,
+  ASSIGN_BORROWER_SUCCESS,
+  ASSIGN_BORROWER_FAILURE,
   CLEAR_PROPERTY,
 } from './constants';
 
@@ -32,8 +35,8 @@ const property = (state: State = {}, action: Action) => {
         error: null,
       };
     case GET_PROPERTY_SUCCESS:
-      return { 
-        ...state, 
+      return {
+        ...state,
         property: action.payload,
         added: false,
         edited: false,
@@ -41,7 +44,7 @@ const property = (state: State = {}, action: Action) => {
         error: null,
       };
     case GET_PROPERTY_FAILURE:
-      return { 
+      return {
         ...state,
         property: undefined,
         added: false,
@@ -60,8 +63,8 @@ const property = (state: State = {}, action: Action) => {
         error: null,
       };
     case CREATE_PROPERTY_SUCCESS:
-      return { 
-        ...state, 
+      return {
+        ...state,
         property: action.payload,
         added: true,
         edited: false,
@@ -69,7 +72,7 @@ const property = (state: State = {}, action: Action) => {
         error: null,
       };
     case CREATE_PROPERTY_FAILURE:
-      return { 
+      return {
         ...state,
         property: undefined,
         added: false,
@@ -88,8 +91,8 @@ const property = (state: State = {}, action: Action) => {
         error: null,
       };
     case EDIT_PROPERTY_SUCCESS:
-      return { 
-        ...state, 
+      return {
+        ...state,
         property: action.payload,
         added: false,
         edited: true,
@@ -97,7 +100,7 @@ const property = (state: State = {}, action: Action) => {
         error: null,
       };
     case EDIT_PROPERTY_FAILURE:
-      return { 
+      return {
         ...state,
         property: undefined,
         added: false,
@@ -116,8 +119,8 @@ const property = (state: State = {}, action: Action) => {
         error: null,
       };
     case DELETE_PROPERTY_SUCCESS:
-      return { 
-        ...state, 
+      return {
+        ...state,
         property: action.payload,
         added: false,
         edited: false,
@@ -125,7 +128,7 @@ const property = (state: State = {}, action: Action) => {
         error: null,
       };
     case DELETE_PROPERTY_FAILURE:
-      return { 
+      return {
         ...state,
         property: undefined,
         added: false,
@@ -139,11 +142,24 @@ const property = (state: State = {}, action: Action) => {
         ...state,
       };
     case ASSIGN_APPRAISAL_SUCCESS:
-      return { 
-        ...state, 
+      return {
+        ...state,
       };
     case ASSIGN_APPRAISAL_FAILURE:
-      return { 
+      return {
+        ...state,
+      };
+
+    case ASSIGN_BORROWER:
+      return {
+        ...state,
+      };
+    case ASSIGN_BORROWER_SUCCESS:
+      return {
+        ...state,
+      };
+    case ASSIGN_BORROWER_FAILURE:
+      return {
         ...state,
       };
 

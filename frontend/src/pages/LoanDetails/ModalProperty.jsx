@@ -79,6 +79,22 @@ const ModalProperty = (props) => {
         date: moment(appraisalDate).utc().format(),
         note: values.appraisalNote,
       };
+      // Ry - testing
+      // newProperty.borrower = {
+      //   company: values.borrowerCompany,
+      //   firstName: values.borrowerFirstName,
+      //   lastName: values.borrowerLastName,
+      //   phone: values.borrowerPhone,
+      //   email: values.borrowerEmail,
+      // };
+      // newProperty.borrower.address = {
+      //   street1: values.borrowerStreet1,
+      //   street2: values.borrowerStreet2,
+      //   city: values.borrowerCity,
+      //   state: values.borrowerState,
+      //   zip: values.borrowerZip,
+      // };
+      // Ry - end testing
       props.editProperty(newProperty);
     }
     return true;
