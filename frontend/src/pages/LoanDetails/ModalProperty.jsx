@@ -80,19 +80,20 @@ const ModalProperty = (props) => {
         note: values.appraisalNote,
       };
       // Ry - testing
-      // newProperty.borrower = {
-      //   company: values.borrowerCompany,
-      //   firstName: values.borrowerFirstName,
-      //   lastName: values.borrowerLastName,
-      //   phone: values.borrowerPhone,
-      //   email: values.borrowerEmail,
-      // };
       // newProperty.borrower.address = {
       //   street1: values.borrowerStreet1,
       //   street2: values.borrowerStreet2,
       //   city: values.borrowerCity,
       //   state: values.borrowerState,
       //   zip: values.borrowerZip,
+      //   name: 'NA',
+      // };
+      // newProperty.borrower = {
+      //   company: values.borrowerCompany,
+      //   firstName: values.borrowerFirstName,
+      //   lastName: values.borrowerLastName,
+      //   phone: values.borrowerPhone,
+      //   email: values.borrowerEmail,
       // };
       // Ry - end testing
       props.editProperty(newProperty);
