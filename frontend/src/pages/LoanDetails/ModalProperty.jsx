@@ -86,7 +86,8 @@ const ModalProperty = (props) => {
           city: values.borrowerCity,
           state: values.borrowerState,
           zip: values.borrowerZip,
-          name: 'NA',
+          // name: 'NA',
+          name: values.name,
         },
         company: values.borrowerCompany,
         firstName: values.borrowerFirstName,
@@ -94,8 +95,8 @@ const ModalProperty = (props) => {
         phone: values.borrowerPhone,
         email: values.borrowerEmail,
       };
-      // Ry - testing
       // newProperty = {
+      //   ...property,
       //   appraisal: {
       //     value: Number(values.appraisalValue),
       //     date: moment(appraisalDate).utc().format(),
@@ -117,7 +118,6 @@ const ModalProperty = (props) => {
       //     email: values.borrowerEmail,
       //   },
       // }
-      // Ry - end testing
       props.editProperty(newProperty);
     }
     return true;
@@ -245,6 +245,7 @@ const ModalProperty = (props) => {
                       </Col>
                     </Row>
 
+                    {/* Ry - commenting out for now */}
                     <hr />
                     <Label>Borrower</Label>
                     <Row>
@@ -310,7 +311,6 @@ const ModalProperty = (props) => {
                           <AvFeedback tooltip>City is required</AvFeedback>
                         </AvGroup>
                       </Col>
-                      {/* Ry - state not working, is updating property state instead */}
                       <Col sm={4}>
                         <AvGroup className="position-relative">
                           <Label for="borrowerState">State *</Label>
