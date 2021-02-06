@@ -137,6 +137,7 @@ function* deleteProperty({ payload: { propertyId, loanId } }) {
   }
 }
 
+
 // Assign Appraisal
 function* assignAppraisal(propertyId, loanId, appraisal) {
   const options = {
@@ -166,6 +167,7 @@ function* assignAppraisal(propertyId, loanId, appraisal) {
 }
 
 // Assign Borrower
+// function* assignBorrower({ payload: { propertyId, loanId, borrower } }) {
 function* assignBorrower(propertyId, loanId, borrower) {
   const options = {
     method: 'PUT',

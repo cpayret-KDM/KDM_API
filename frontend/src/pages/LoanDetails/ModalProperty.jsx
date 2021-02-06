@@ -79,22 +79,44 @@ const ModalProperty = (props) => {
         date: moment(appraisalDate).utc().format(),
         note: values.appraisalNote,
       };
+      newProperty.borrower = {
+        address: {
+          street1: values.borrowerStreet1,
+          street2: values.borrowerStreet2,
+          city: values.borrowerCity,
+          state: values.borrowerState,
+          zip: values.borrowerZip,
+          name: 'NA',
+        },
+        company: values.borrowerCompany,
+        firstName: values.borrowerFirstName,
+        lastName: values.borrowerLastName,
+        phone: values.borrowerPhone,
+        email: values.borrowerEmail,
+      };
       // Ry - testing
-      // newProperty.borrower.address = {
-      //   street1: values.borrowerStreet1,
-      //   street2: values.borrowerStreet2,
-      //   city: values.borrowerCity,
-      //   state: values.borrowerState,
-      //   zip: values.borrowerZip,
-      //   name: 'NA',
-      // };
-      // newProperty.borrower = {
-      //   company: values.borrowerCompany,
-      //   firstName: values.borrowerFirstName,
-      //   lastName: values.borrowerLastName,
-      //   phone: values.borrowerPhone,
-      //   email: values.borrowerEmail,
-      // };
+      // newProperty = {
+      //   appraisal: {
+      //     value: Number(values.appraisalValue),
+      //     date: moment(appraisalDate).utc().format(),
+      //     note: values.appraisalNote,
+      //   },
+      //   borrower: {
+      //     address: {
+      //       street1: values.borrowerStreet1,
+      //       street2: values.borrowerStreet2,
+      //       city: values.borrowerCity,
+      //       state: values.borrowerState,
+      //       zip: values.borrowerZip,
+      //       name: 'NA',
+      //     },
+      //     company: values.borrowerCompany,
+      //     firstName: values.borrowerFirstName,
+      //     lastName: values.borrowerLastName,
+      //     phone: values.borrowerPhone,
+      //     email: values.borrowerEmail,
+      //   },
+      // }
       // Ry - end testing
       props.editProperty(newProperty);
     }
