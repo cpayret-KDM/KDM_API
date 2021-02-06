@@ -211,23 +211,23 @@ const ModalProperty = (props) => {
                     <Row>
                       <Col sm={12}>
                         <AvGroup className="position-relative">
-                          <Label for="company">Company</Label>
-                          <AvInput name="company" id="company" value={property?.borrower?.company} />
+                          <Label for="borrowerCompany">Company</Label>
+                          <AvInput name="borrowerCompany" id="borrowerCompany" value={property?.borrower?.company} />
                         </AvGroup>
                       </Col>
                     </Row>
                     <Row>
                       <Col sm={6}>
                         <AvGroup className="position-relative">
-                          <Label for="firstName">First Name *</Label>
-                          <AvInput name="firstName" id="firstName" value={property?.borrower?.firstName || ' '} required />
+                          <Label for="borrowerFirstName">First Name *</Label>
+                          <AvInput name="borrowerFirstName" id="borrowerFirstName" value={property?.borrower?.firstName || ' '} required />
                           <AvFeedback tooltip>First Name is required</AvFeedback>
                         </AvGroup>
                       </Col>
                       <Col sm={6}>
                         <AvGroup className="position-relative">
-                          <Label for="lastName">Last Name *</Label>
-                          <AvInput name="lastName" id="lastName" value={property?.borrower?.lastName || ' '} required />
+                          <Label for="borrowerLastName">Last Name *</Label>
+                          <AvInput name="borrowerLastName" id="borrowerLastName" value={property?.borrower?.lastName || ' '} required />
                           <AvFeedback tooltip>Last Name is required</AvFeedback>
                         </AvGroup>
                       </Col>
@@ -235,15 +235,15 @@ const ModalProperty = (props) => {
                     <Row>
                       <Col sm={6}>
                         <AvGroup className="position-relative">
-                          <Label for="phone">Phone Number *</Label>
-                          <AvInput name="phone" id="phone" value={property?.borrower?.phone || ' '} required />
+                          <Label for="borrowerPhone">Phone Number *</Label>
+                          <AvInput name="borrowerPhone" id="borrowerPhone" value={property?.borrower?.phone || ' '} required />
                           <AvFeedback tooltip>Phone Number is required</AvFeedback>
                         </AvGroup>
                       </Col>
                       <Col sm={6}>
                         <AvGroup className="position-relative">
-                          <Label for="email">Email *</Label>
-                          <AvInput name="email" id="email" value={property?.borrower?.email || ' '} required />
+                          <Label for="borrowerEmail">Email *</Label>
+                          <AvInput name="borrowerEmail" id="borrowerEmail" value={property?.borrower?.email || ' '} required />
                           <AvFeedback tooltip>Email is required</AvFeedback>
                         </AvGroup>
                       </Col>
@@ -251,37 +251,37 @@ const ModalProperty = (props) => {
                     <Row>
                       <Col sm={6}>
                         <AvGroup className="position-relative">
-                          <Label for="street1">Street Address *</Label>
-                          <AvInput name="street1" id="street1" value={property?.borrower?.address.street1 || ' '} required />
+                          <Label for="borrowerStreet1">Street Address *</Label>
+                          <AvInput name="borrowerStreet1" id="borrowerStreet1" value={property?.borrower?.address.street1 || ' '} required />
                           <AvFeedback tooltip>Street Address is required</AvFeedback>
                         </AvGroup>
                       </Col>
                       <Col sm={6}>
                         <AvGroup className="position-relative">
-                          <Label for="street2">Street Address 2</Label>
-                          <AvInput name="street2" id="street2" value={property?.borrower?.address.street2} />
+                          <Label for="borrowerStreet2">Street Address 2</Label>
+                          <AvInput name="borrowerStreet2" id="borrowerStreet2" value={property?.borrower?.address.street2} />
                         </AvGroup>
                       </Col>
                     </Row>
                     <Row>
                       <Col sm={4}>
                         <AvGroup className="position-relative">
-                          <Label for="city">City *</Label>
-                          <AvInput name="city" id="city" value={property?.borrower?.address.city} required />
+                          <Label for="borrowerCity">City *</Label>
+                          <AvInput name="borrowerCity" id="borrowerCity" value={property?.borrower?.address.city} required />
                           <AvFeedback tooltip>City is required</AvFeedback>
                         </AvGroup>
                       </Col>
+                      {/* Ry - state not working, is updating property state instead */}
                       <Col sm={4}>
                         <AvGroup className="position-relative">
-                          <Label for="state">State *</Label>
+                          <Label for="borrowerState">State *</Label>
                           <AvField
-                            name="state"
+                            name="borrowerState"
                             type="select"
                             required
                             value={property?.borrower?.address.state || 'AL'}
                             className="custom-select"
                           >
-                            {/* Ry - state not working, is updating property state instead */}
                             {Object.entries(US_STATES_MAP).map((location, i) =>
                               (<option value={location[0]} key={i}>{location[1]}</option>)
                             )}
@@ -291,8 +291,8 @@ const ModalProperty = (props) => {
                       </Col>
                       <Col sm={4}>
                         <AvGroup className="position-relative">
-                          <Label for="zip">Zip Code *</Label>
-                          <AvInput name="zip" id="zip" value={property?.borrower?.address.zip} required />
+                          <Label for="borrowerZip">Zip Code *</Label>
+                          <AvInput name="borrowerZip" id="borrowerZip" value={property?.borrower?.address.zip} required />
                           <AvFeedback tooltip>Zip Code is required</AvFeedback>
                         </AvGroup>
                       </Col>
