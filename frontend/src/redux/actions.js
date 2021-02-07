@@ -8,4 +8,4 @@ export * from './property/actions';
 export * from './sponsor/actions';
 export * from './security/actions';
 export * from './rating/actions';
-export * from './borrower/actions';
+// export * from './borrower/actions';

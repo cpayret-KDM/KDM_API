@@ -92,8 +92,8 @@ function* editProperty({ payload: { property } }) {
   const response = yield call(fetchJSON, `${SERVER_URL}/property/${property.id}`, options);
   if (!response.status || response.status === 200) {
     yield put(editPropertySuccess(response));
-    yield assignAppraisal(property.id, property.loanId, property.appraisal);
-    yield assignBorrower(property.id, property.loanId, property.borrower);
+    yield assignAppraisal(property.id, property.loanId, property.appraisal, property.borrower);
+    // yield assignBorrower(property.id, property.loanId, property.borrower);
   } else {
     let message;
     switch (response.status) {
@@ -139,7 +139,7 @@ function* deleteProperty({ payload: { propertyId, loanId } }) {
 
 
 // Assign Appraisal
-function* assignAppraisal(propertyId, loanId, appraisal) {
+function* assignAppraisal(propertyId, loanId, appraisal, borrower) {
   const options = {
     method: 'PUT',
     body: JSON.stringify(appraisal),
@@ -149,7 +149,8 @@ function* assignAppraisal(propertyId, loanId, appraisal) {
   const response = yield call(fetchJSON, `${SERVER_URL}/property/${propertyId}/appraisal`, options);
   if (!response.status || response.status === 200) {
     yield put(assignAppraisalSuccess(response));
-    yield put(getLoan(loanId));
+    yield assignBorrower(propertyId, loanId, borrower);
+    // yield put(getLoan(loanId));
   } else {
     let message;
     switch (response.status) {
