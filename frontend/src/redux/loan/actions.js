@@ -5,7 +5,9 @@ import {
   GET_60_DAY_LOANS,
   GET_60_DAY_LOANS_SUCCESS,
   GET_60_DAY_LOANS_FAILURE,
-
+  GET_CASH_FLOW_LOANS,
+  GET_CASH_FLOW_LOANS_SUCCESS,
+  GET_CASH_FLOW_LOANS_FAILURE,
   GET_LOAN,
   GET_LOAN_SUCCESS,
   GET_LOAN_FAILURE,
@@ -54,6 +56,22 @@ export const get60DayLoansFailure = (err: Object): LoanAction => ({
   type: GET_60_DAY_LOANS_FAILURE,
   payload: err,
 });
+
+//Get Cash Flow Report
+export const getCashFlowLoans = () => ({
+  type: GET_CASH_FLOW_LOANS,
+  payload: { }
+})
+
+export const getCashFlowLoansSuccess = (loan) => ({
+  type: GET_CASH_FLOW_LOANS_SUCCESS,
+  payload: loan
+})
+
+export const getCashFlowLoansFailure = (err) => ({
+  type: GET_CASH_FLOW_LOANS_FAILURE,
+  payload: err
+})
 
 // Get Loan
 export const getLoan = (loanId: String): LoanAction => ({

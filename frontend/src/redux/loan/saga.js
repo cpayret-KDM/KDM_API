@@ -4,10 +4,11 @@ import { fetchJSON } from '../../helpers/api';
 import {
   GET_LOANS,
   GET_60_DAY_LOANS,
+  GET_CASH_FLOW_LOANS,
   GET_LOAN,
   CREATE_LOAN,
   EDIT_LOAN,
-  DELETE_LOAN,
+  DELETE_LOAN
 } from './constants';
 
 import {
@@ -15,7 +16,8 @@ import {
   getLoansFailure,
   get60DayLoansSuccess,
   get60DayLoansFailure,
-  
+  getCashFlowLoansSuccess,
+  getCashFlowLoansFailure,
   getLoanSuccess,
   getLoanFailure,
   createLoanSuccess,
@@ -23,7 +25,7 @@ import {
   editLoanSuccess,
   editLoanFailure,
   deleteLoanSuccess,
-  deleteLoanFailure,
+  deleteLoanFailure
 } from './actions';
 
 const SERVER_URL = process.env.REACT_APP_KDM_API_ENDPOINT;
@@ -77,6 +79,36 @@ function* get60DayLoans({ payload: { loanNumber, size, page, sort } }) {
         message = response.message;
     }
     yield put(get60DayLoansFailure(message));
+  }
+}
+
+//generator for get Cash Flow Loans
+function* getCashFlowLoans() {
+  const options = {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  };
+
+  const response = yield call(fetchJSON, `${SERVER_URL}/loan/cashflow`, options);
+  if (!response.status || response.status === 200) {
+    //FIXME: Hack to make cash flow report match 60 Day Loan Response
+    const wrapper = {
+      content: response
+    };
+    yield put(getCashFlowLoansSuccess(wrapper));
+  } else {
+    let message;
+    switch (response.status) {
+      case 500:
+        message = 'Internal Server Error';
+        break;
+      case 401:
+        message = 'Invalid credentials';
+        break;
+      default:
+        message = response.message;
+    }
+    yield put(getCashFlowLoansFailure(message));
   }
 }
 
@@ -198,6 +230,10 @@ export function* watchGet60DayLoans(): any {
   yield takeEvery(GET_60_DAY_LOANS, get60DayLoans);
 }
 
+export function* watchGetCashFlowLoans() {
+  yield takeEvery(GET_CASH_FLOW_LOANS, getCashFlowLoans);
+}
+
 export function* watchGetLoan(): any {
   yield takeEvery(GET_LOAN, getLoan);
 }
@@ -218,6 +254,7 @@ function* LoanSaga(): any {
   yield all([
     fork(watchGetLoans),
     fork(watchGet60DayLoans),
+    fork(watchGetCashFlowLoans),
     fork(watchGetLoan),
     fork(watchCreateLoan),
     fork(watchEditLoan),

@@ -77,6 +77,14 @@ const loanRoutes = {
       exact: true,
     },
     {
+      path: '/loans/cash-flow',
+      name: 'Cash Flow Report',
+      component: (props) => <LoanDashboard {...props} report="cash-flow" />,
+      route: PrivateRoute,
+      roles: ['user', 'admin'],
+      exact: true
+    },
+    {
       path: '/loans/create',
       name: 'Create Loan',
       component: (props) => <LoanDetails {...props} mode="create" />,
