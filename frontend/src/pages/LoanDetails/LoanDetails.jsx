@@ -18,7 +18,7 @@ import { getLoan, createLoan, editLoan, deleteLoan, clearLoan } from '../../redu
 import { formatCurrency, DATE_FORMAT, EMPTY_LOAN, LOAN_STATUS_MAP, PIPELINE_STATUS_MAP, PROPERTY_TYPE_MAP } from '../../helpers/utils';
 
 const LoanDetails = (props) => {
-  const { loan = { ...EMPTY_LOAN } } = props;
+  const { loan = {...EMPTY_LOAN} } = props;
   const creating = (props.mode === 'create');
   const editing = (props.mode === 'edit');
   const viewing = !editing && !creating;
@@ -43,7 +43,7 @@ const LoanDetails = (props) => {
   }, [loan]);
 
   const [showSponsorModal, setShowSponsorModal] = useState(false);
-
+  
   const [sponsorId, setSponsorId] = useState(null);
   useEffect(() => {
     if (loan?.sponsor?.id) {
@@ -170,7 +170,9 @@ const LoanDetails = (props) => {
 
   /* Ratings */
   const [loanRatings, setLoanRatings] = useState([]);
-  const handleEditLoanRatings = (ratings) => {
+  const [hasRatingsError, setHasRatingsError] = useState(false);
+  const handleEditLoanRatings = (ratings, hasError) => {
+    if (hasError) setHasRatingsError(true)
     const newLoanRatings = [...ratings];
     setLoanRatings([...newLoanRatings]);
   }
@@ -194,7 +196,7 @@ const LoanDetails = (props) => {
       <PageTitle
         breadCrumbItems={[
           { label: 'Loans', path: '/loans/list' },
-          { ...breadcrumb },
+          {...breadcrumb},
         ]}
         title={title}
       />
@@ -204,52 +206,52 @@ const LoanDetails = (props) => {
           {!props.loaded && !creating ? (
             <div className="text-center"><Spinner size="lg" color="primary" /></div>
           ) : (
-              <AvForm onSubmit={submitLoan}>
-                <LoanActionButtons creating={creating} editing={editing} viewing={viewing} loanId={loan.id} handleDeleteLoan={handleDeleteLoan} isSaving={isSaving} />
-                <Card>
-                  <CardBody>
-                    <h4>Details</h4>
+            <AvForm onSubmit={submitLoan}>
+              <LoanActionButtons creating={creating} editing={editing} viewing={viewing} loanId={loan.id} handleDeleteLoan={handleDeleteLoan} isSaving={isSaving} hasRatingsError={hasRatingsError} />
+              <Card>
+                <CardBody>
+                  <h4>Details</h4>
 
-                    {props.added || props.edited && (
-                      <UncontrolledAlert color="success">
-                        {props.added && (<>Loan has been created.</>)}
-                        {props.edited && (<>Changes have been saved.</>)}
-                      </UncontrolledAlert>
-                    )}
+                  {props.added || props.edited && (
+                    <UncontrolledAlert color="success">
+                      {props.added && (<>Loan has been created.</>)}
+                      {props.edited && (<>Changes have been saved.</>)}
+                    </UncontrolledAlert>
+                  )}
 
-                    <Row>
-                      <Col sm={6}>
-                        <AvGroup className="position-relative">
-                          <Label for="loanNumber">Loan Number *</Label>
+                  <Row>
+                    <Col sm={6}>
+                      <AvGroup className="position-relative">
+                        <Label for="loanNumber">Loan Number *</Label>
                           <AvInput name="loanNumber" id="loanNumber" value={loan?.loanNumber} required disabled={viewing} />
                           <AvFeedback tooltip>Loan Number is required</AvFeedback>
-                        </AvGroup>
-                      </Col>
+                      </AvGroup>
+                    </Col>
 
-                      <Col sm={6}>
-                        <AvGroup className="position-relative">
-                          <Label for="initialAmount">Initial Amount *</Label>
+                    <Col sm={6}>
+                      <AvGroup className="position-relative">
+                        <Label for="initialAmount">Initial Amount *</Label>
                           <div className="input-group">
                             <InputGroupAddon addonType="prepend">$</InputGroupAddon>
                             <AvInput name="initialAmount" id="initialAmount" value={loan?.initialAmount} required disabled={viewing} />
                             <AvFeedback tooltip>Initial Amount is required</AvFeedback>
                           </div>
-                        </AvGroup>
-                      </Col>
-                    </Row>
+                      </AvGroup>
+                    </Col>
+                  </Row>
 
-                    <Row>
-                      <Col sm={6}>
-                        <AvGroup className="position-relative">
-                          <Label for="dealName">Deal Name *</Label>
-                          <AvInput name="dealName" id="dealName" value={loan?.dealName} required disabled={viewing} />
-                          <AvFeedback tooltip>Deal Name is required</AvFeedback>
-                        </AvGroup>
-                      </Col>
+                  <Row>
+                    <Col sm={6}>
+                      <AvGroup className="position-relative">
+                        <Label for="dealName">Deal Name *</Label>
+                        <AvInput name="dealName" id="dealName" value={loan?.dealName} required disabled={viewing} />
+                        <AvFeedback tooltip>Deal Name is required</AvFeedback>
+                      </AvGroup>
+                    </Col>
 
-                      <Col sm={6}>
-                        <AvGroup className="position-relative">
-                          <Label for="principalBalance">Principal Amount *</Label>
+                    <Col sm={6}>
+                    <AvGroup className="position-relative">
+                        <Label for="principalBalance">Principal Amount *</Label>
                           <div className="input-group">
                             <InputGroupAddon addonType="prepend">$</InputGroupAddon>
                             <AvInput name="principalBalance" id="principalBalance" value={loan?.principalBalance} required disabled={viewing} />
@@ -343,16 +345,6 @@ const LoanDetails = (props) => {
                     </Col>
                   </Row>
 
-                  <Row>
-                    <Col sm={6}>
-                      <AvGroup className="position-relative">
-                        <Label for="borrower">Borrower *</Label>
-                        <AvInput name="borrower" id="borrower" value={loan?.borrower} required disabled={viewing} />
-                        <AvFeedback tooltip>Borrower is required</AvFeedback>
-                      </AvGroup>
-                    </Col>
-                  </Row>
-
                   <hr />
                   <h4>Ratings</h4>
                   <RatingsTable 
@@ -360,7 +352,7 @@ const LoanDetails = (props) => {
                     itemType="loan"
                     editing={editing}
                     viewing={viewing}
-                    update={(newLoanRatings) => handleEditLoanRatings(newLoanRatings)}
+                    update={handleEditLoanRatings}
                   />
                 </CardBody>
               </Card>
@@ -411,193 +403,83 @@ const LoanDetails = (props) => {
                               </CardBody>
                             </Card>
                           </Col>
->>>>>>> Moving Ratings table into its own component.
                         ))}
-                        {editing && loanRatings?.map((loanRating, i) => (
-                          <tr key={i}>
-                            <td>
-                              <AvGroup className="position-relative mb-0">
-                                <AvField
-                                  name="ratingAgency"
-                                  type="select"
-                                  value={loanRating.agency}
-                                  className="custom-select"
-                                  onChange={(e) => handleLoanRatingAgencyChange(e, i)}
-                                >
-                                  {agencyRatings.length > 0 && agencyRatings.map((rating, j) =>
-                                    (<option value={rating.agency} key={j}>{rating.agency}</option>)
-                                  )}
-                                </AvField>
-                              </AvGroup>
-                            </td>
-                            <td>
-                              <AvGroup className="position-relative mb-0">
-                                <AvField
-                                  name="ratingValue"
-                                  type="select"
-                                  value={loanRating.value}
-                                  className="custom-select"
-                                  onChange={(e) => handleLoanRatingValueChange(e, i)}
-                                >
-                                  {props.agencyRatings && loanRatings.length !== 0 && props.agencyRatings[loanRatings[i].agency].map((val, k) =>
-                                    (<option value={val.value} key={k}>{val.value}</option>)
-                                  )}
-                                </AvField>
-                              </AvGroup>
-                            </td>
-                            <td>
-                              <div className="position-relative mb-0">
-                                <DatePicker
-                                  className="form-control date"
-                                  dateFormat="MM/dd/yyyy"
-                                  value={loanRating.date}
-                                  selected={originationDate}
-                                  onChange={date => handleLoanRatingDateChange(date, i)}
-                                />
-                              </div>
-                            </td>
-                            <td>
-                              <span className="btn btn-danger" onClick={() => handleRemoveLoanRating(i)}>remove</span>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                      {editing && agencyRatings.length !== 0 && (
-                        <tfoot>
-                          <tr>
-                            <td colSpan="4">
-                              <span className="btn btn-secondary" onClick={(e) => addNewLoanRating(e)}>Add New Rating</span>
-                            </td>
-                          </tr>
-                        </tfoot>
-                      )}
-                    </Table>
+                      </Row>
+                    )}
+                    
+                    {/* <PropertyMap /> */}
                   </CardBody>
                 </Card>
 
-                {loan && loan.id && (<>
-                  <Card>
-                    <CardBody>
-                      <div className="d-flex justify-content-between">
-                        <h4>Properties</h4>
-                        <div className="">
-                          <Button className="btn btn-secondary" onClick={() => handleAddNewPropertyModal()}>Add New Property</Button>
+                <Card>
+                  <CardBody>
+                    <div className="d-flex justify-content-between">
+                      <h4>Sponsor</h4>
+                      {!loan?.sponsor?.id && (
+                        <div>
+                          <Button className="btn btn-secondary" onClick={() => handleAddSponsorModal()}>Add Sponsor</Button>
                         </div>
-                      </div>
+                      )}
+                    </div>
 
-                      {loan?.properties?.length === 0 ? (
-                        <p>No properties exists for this loan. <strong><a href="/" onClick={(e) => handleAddNewPropertyModal(e)}>Add one &raquo;</a></strong></p>
-                      ) : (
-                          <Row>
-                            {loan?.properties?.map((property, i) => (
-                              <Col sm={4} key={i}>
-                                <Card>
-                                  <CardBody>
-                                    <Row>
-                                      <Col sm={6}>
-                                        <p>
-                                          {property.address.name && (<strong>{property.address.name}<br /></strong>)}
-                                          {property.address.street1}<br />
-                                          {property.address.street2 && (<>{property.address.street2}<br /></>)}
-                                          {property.address.city}, <span className="text-uppercase">{property.address.state}</span> {property.address.zip}<br />
-                                          <i>{PROPERTY_TYPE_MAP[property.type]}</i>
-                                        </p>
-                                        <p className="mb-0">
-                                          <Button className="btn btn-secondary mr-2" onClick={() => handleEditPropertyModal(property.id)}>Edit</Button>
-                                          <Button className="btn btn-danger" onClick={() => handleDeletePropertyModal(property.id)}>Delete</Button>
-                                        </p>
-                                      </Col>
-                                      <Col sm={6}>
-                                        {!property.appraisal ? (
-                                          <em>No appraisal for this property.</em>
-                                        ) : (
-                                            <>
-                                              <strong>Appraised for ${formatCurrency(property.appraisal.value)} on {moment(property.appraisal.date).format(DATE_FORMAT)}.</strong>
-                                              {property.appraisal.note && (<em><br />{property.appraisal.note}</em>)}
-                                            </>
-                                          )}
-                                      </Col>
-                                    </Row>
-                                  </CardBody>
-                                </Card>
-                              </Col>
-                            ))}
-                          </Row>
-                        )}
-
-                      {/* <PropertyMap /> */}
-                    </CardBody>
-                  </Card>
-
-                  <Card>
-                    <CardBody>
-                      <div className="d-flex justify-content-between">
-                        <h4>Sponsor</h4>
-                        {!loan?.sponsor?.id && (
-                          <div>
-                            <Button className="btn btn-secondary" onClick={() => handleAddSponsorModal()}>Add Sponsor</Button>
-                          </div>
-                        )}
-                      </div>
-
-                      {!loan?.sponsor?.id ? (
-                        <p>No sponsor exists for this loan. <strong><a href="/" onClick={(e) => handleAddSponsorModal(e)}>Add one &raquo;</a></strong></p>
-                      ) : (
-                          <Row>
-                            <Col sm={4}>
-                              <Card>
-                                <CardBody>
-                                  <Row>
-                                    <Col sm={6}>
-                                      <strong>{loan?.sponsor?.company}</strong><br />
-                                      {loan?.sponsor?.firstName} {loan?.sponsor?.lastName}<br />
-                                      {loan?.sponsor?.phone}<br />
-                                      {loan?.sponsor?.email}<br />
-
-                                    </Col>
-                                    <Col sm={6}>
-                                      {loan?.sponsor?.address?.street1}<br />
-                                      {loan?.sponsor?.address?.street2 && (<>{loan?.sponsor?.address?.street2}<br /></>)}
-                                      {loan?.sponsor?.address?.city}, <span className="text-uppercase">{loan?.sponsor?.address?.state}</span> {loan?.sponsor?.address?.zip}<br />
-                                      <i>Registered in {loan?.sponsor?.registrationState}</i>
-                                    </Col>
-                                  </Row>
-
-                                  <p className="mb-0 mt-3">
-                                    <Button className="btn btn-secondary mr-2" onClick={() => handleEditSponsorModal(loan.sponsor.id)}>Edit</Button>
-                                    <Button className="btn btn-danger" onClick={() => handleDeleteSponsorModal(loan.sponsor.id)}>Delete</Button>
-                                  </p>
-                                </CardBody>
-                              </Card>
-                            </Col>
-                          </Row>
-                        )}
-                    </CardBody>
-                  </Card>
-                </>)}
-                <LoanActionButtons creating={creating} editing={editing} viewing={viewing} loanId={loan.id} handleDeleteLoan={handleDeleteLoan} isSaving={isSaving} />
-              </AvForm>
-            )}
+                    {!loan?.sponsor?.id ? (
+                      <p>No sponsor exists for this loan. <strong><a href="/" onClick={(e) => handleAddSponsorModal(e)}>Add one &raquo;</a></strong></p>
+                    ) : (
+                      <Row>
+                        <Col sm={4}>
+                          <Card>
+                            <CardBody>
+                              <Row>
+                                <Col sm={6}>
+                                  <strong>{loan?.sponsor?.company}</strong><br />
+                                  {loan?.sponsor?.firstName} {loan?.sponsor?.lastName}<br />
+                                  {loan?.sponsor?.phone}<br />
+                                  {loan?.sponsor?.email}<br />
+                                  
+                                </Col>
+                                <Col sm={6}>
+                                  {loan?.sponsor?.address?.street1}<br />
+                                  {loan?.sponsor?.address?.street2 && (<>{loan?.sponsor?.address?.street2}<br /></>)}
+                                  {loan?.sponsor?.address?.city}, <span className="text-uppercase">{loan?.sponsor?.address?.state}</span> {loan?.sponsor?.address?.zip}<br />
+                                  <i>Registered in {loan?.sponsor?.registrationState}</i>
+                                </Col>
+                              </Row>
+                              
+                              <p className="mb-0 mt-3">
+                                <Button className="btn btn-secondary mr-2" onClick={() => handleEditSponsorModal(loan.sponsor.id)}>Edit</Button>
+                                <Button className="btn btn-danger" onClick={() => handleDeleteSponsorModal(loan.sponsor.id)}>Delete</Button>
+                              </p>
+                            </CardBody>
+                          </Card>
+                        </Col>
+                      </Row>
+                    )}
+                  </CardBody>
+                </Card>
+              </>)}
+              <LoanActionButtons creating={creating} editing={editing} viewing={viewing} loanId={loan.id} handleDeleteLoan={handleDeleteLoan} isSaving={isSaving} hasRatingsError={hasRatingsError} />
+            </AvForm>
+          )}
         </Col>
       </Row>
 
 
       <ModalDeleteLoan
-        isOpen={showDeleteLoanModal}
+        isOpen={showDeleteLoanModal} 
         toggle={toggleDeleteLoanModal}
         loanId={loan?.id}
       />
       {propertyId && (
         <>
-          <ModalProperty
-            isOpen={showPropertyModal}
+          <ModalProperty 
+            isOpen={showPropertyModal} 
             toggle={toggleShowPropertyModal}
             mode={propertyMode}
             propertyId={propertyId}
             loanId={loan?.id}
           />
-          <ModalDeleteProperty
-            isOpen={showDeletePropertyModal}
+          <ModalDeleteProperty 
+            isOpen={showDeletePropertyModal} 
             toggle={toggleDeletePropertyModal}
             propertyId={propertyId}
             loanId={loan?.id}
@@ -607,14 +489,14 @@ const LoanDetails = (props) => {
       {sponsorId && (
         <>
           <ModalSponsor
-            isOpen={showSponsorModal}
+            isOpen={showSponsorModal} 
             toggle={toggleSponsorModal}
             mode={sponsorMode}
             sponsorId={sponsorId}
             loanId={loan?.id}
           />
           <ModalDeleteSponsor
-            isOpen={showDeleteSponsorModal}
+            isOpen={showDeleteSponsorModal} 
             toggle={toggleDeleteSponsorModal}
             sponsorId={sponsorId}
             loanId={loan?.id}
@@ -625,15 +507,15 @@ const LoanDetails = (props) => {
   );
 };
 
-const LoanActionButtons = ({ creating, editing, viewing, loanId, handleDeleteLoan, isSaving }) => {
+const LoanActionButtons = ({ creating, editing, viewing, loanId, handleDeleteLoan, isSaving, hasRatingsError }) => {
   return (
     <div className="d-flex justify-content-end mb-3">
       {creating && (
         <>
           <Link to="/loans/list" className="btn btn-secondary mr-2">Cancel</Link>
           <Button type="submit" className="btn btn-primary">
-            {isSaving
-              ? (<Spinner size="sm" color="primary" />)
+            {isSaving 
+              ? (<Spinner size="sm" color="primary" />) 
               : (<>Save New Loan</>)
             }
           </Button>
@@ -643,9 +525,9 @@ const LoanActionButtons = ({ creating, editing, viewing, loanId, handleDeleteLoa
       {editing && (
         <>
           <Link to={`/loans/${loanId}`} className="btn btn-secondary mr-2">Cancel</Link>
-          <Button type="submit" className="btn btn-primary">
-            {isSaving
-              ? (<Spinner size="sm" color="primary" />)
+          <Button type="submit" className="btn btn-primary" disabled={hasRatingsError}>
+            {isSaving 
+              ? (<Spinner size="sm" color="primary" />) 
               : (<>Save Changes</>)
             }
           </Button>

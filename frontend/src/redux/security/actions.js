@@ -19,6 +19,9 @@ import {
   DELETE_SECURITY_SUCCESS,
   DELETE_SECURITY_FAILURE,
   CLEAR_SECURITY,
+  EDIT_SECURITY_RATINGS,
+  EDIT_SECURITY_RATINGS_SUCCESS,
+  EDIT_SECURITY_RATINGS_FAILURE,
 } from './constants';
 
 type SecurityAction = { type: String, payload: {} | String };
@@ -38,22 +41,6 @@ export const getSecuritiesFailure = (err: Object): SecurityAction => ({
   type: GET_SECURITIES_FAILURE,
   payload: err,
 });
-
-// // Get 60-Day Securities
-// export const get60DaySecurities = (): SecurityAction => ({
-//   type: GET_60_DAY_SECURITIES,
-//   payload: {},
-// });
-
-// export const get60DaySecuritiesSuccess = (security: Object): SecurityAction => ({
-//   type: GET_60_DAY_SECURITIES_SUCCESS,
-//   payload: security,
-// });
-
-// export const get60DaySecuritiesFailure = (err: Object): SecurityAction => ({
-//   type: GET_60_DAY_SECURITIES_FAILURE,
-//   payload: err,
-// });
 
 // Get Security
 export const getSecurity = (securityId: String): SecurityAction => ({
@@ -123,4 +110,20 @@ export const deleteSecurityFailure = (err: Object): SecurityAction => ({
 export const clearSecurity = (): SecurityAction => ({
   type: CLEAR_SECURITY,
   payload: {},
+});
+
+// Edit Security Ratings
+export const editSecurityRatings = (ratings: Array = [], securityId: String = ''): LoanAction => ({
+  type: EDIT_SECURITY_RATINGS,
+  payload: { ratings, securityId },
+});
+
+export const editSecurityRatingsSuccess = (ratings: Object): LoanAction => ({
+  type: EDIT_SECURITY_RATINGS_SUCCESS,
+  payload: ratings,
+});
+
+export const editSecurityRatingsFailure = (err: Object): LoanAction => ({
+  type: EDIT_SECURITY_RATINGS_FAILURE,
+  payload: err,
 });

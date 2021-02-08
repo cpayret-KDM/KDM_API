@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import DatePicker from 'react-datepicker';
 import { Row, Col, Label, Button, InputGroupAddon, Table, Card, CardBody, Spinner } from 'reactstrap';
 import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 import moment from 'moment';
 
 import PageTitle from '../../components/PageTitle';
 import ModalDeleteSecurity from './ModalDeleteSecurity';
-import DatePicker from 'react-datepicker';
-import { getSecurity, createSecurity, editSecurity, deleteSecurity, clearSecurity, getRatings } from '../../redux/actions';
+import RatingsTable from '../LoanDetails/RatingsTable';
+import { getSecurity, createSecurity, editSecurity, deleteSecurity, clearSecurity } from '../../redux/actions';
 
 const SecurityDetails = (props) => {
   const { security = {}, loaded } = props;
@@ -30,7 +31,6 @@ const SecurityDetails = (props) => {
   const [tradeDate, setTradeDate] = useState(new Date());
   const [maturityDate, setMaturityDate] = useState(new Date());
   useEffect(() => {
-    props.getRatings();
     if (!security.tradeDate) return;
     if (!security.maturityDate) return;
     setTradeDate(moment(security.tradeDate).toDate());
@@ -75,6 +75,7 @@ const SecurityDetails = (props) => {
       ...security,
       ...values,
       tradeDate: tradeDate,
+      ratings: formatRatings(securityRatings),
       maturityDate: maturityDate,
     };
 
@@ -97,66 +98,26 @@ const SecurityDetails = (props) => {
     setShowDeleteSecurityModal(!showDeleteSecurityModal);
   }
 
-  /* Ratings */
-  const [securityRatings, setsecurityRatings] = useState([]);
-  useEffect(() => {
-    if (security.ratings) {
-      setsecurityRatings(security.ratings);
-    }
-  }, [security]);
+ /* Ratings */
+ const [securityRatings, setSecurityRatings] = useState([]);
+ const [hasRatingsError, setHasRatingsError] = useState(false);
+ const handleEditSecurityRatings = (ratings, hasError) => {
+   if (hasError) setHasRatingsError(true)
+   const newSecurityRatings = [...ratings];
+   setSecurityRatings([...newSecurityRatings]);
+ }
 
-  const [agencyRatings, setAgencyRatings] = useState([]);
-  useEffect(() => {
-    if (props.agencyRatings) {
-      let formattedAgencyRatings = [];
-      Object.entries(props.agencyRatings).forEach((rating, i) => {
-        formattedAgencyRatings.push({
-          agency: rating[0],
-          values: rating[1]
-        });
-      });
-      setAgencyRatings(formattedAgencyRatings);
-    }
-  }, [props.agencyRatings]);
-
-  const addNewsecurityRating = () => {
-    const newsecurityRatings = [...securityRatings];
-    newsecurityRatings.push({
-      agency: agencyRatings[0].agency,
-      value: agencyRatings[0].values[0],
-      date: '',
-    });
-    setsecurityRatings([...newsecurityRatings]);
-  }
-  // useEffect(() => {
-  //   console.log('securityRatings array change', securityRatings)
-  // }, [securityRatings]);
-
-  const handlesecurityRatingAgencyChange = (e, i) => {
-    const newsecurityRatings = [...securityRatings];
-    newsecurityRatings[i].agency = e.target.value;
-    agencyRatings.forEach((rating, k) => {
-      if (rating.agency === e.target.value) {
-        newsecurityRatings[i].value = rating.values[0].value;
-      }
-    });
-    setsecurityRatings([...newsecurityRatings]);
-  }
-  const handlesecurityRatingValueChange = (e, i) => {
-    const newsecurityRatings = [...securityRatings];
-    newsecurityRatings[i].value = e.target.value;
-    setsecurityRatings([...newsecurityRatings]);
-  }
-  const handlesecurityRatingDateChange = (date, i) => {
-    const newsecurityRatings = [...securityRatings];
-    newsecurityRatings[i].date = date;
-    setsecurityRatings([...newsecurityRatings]);
-  }
-  const handleRemovesecurityRating = (i) => {
-    const newsecurityRatings = [...securityRatings];
-    newsecurityRatings.splice(i, 1);
-    setsecurityRatings([...newsecurityRatings]);
-  }
+ const formatRatings = (ratings) => {
+   const formattedRatings = [];
+   ratings.forEach(rating => {
+     formattedRatings.push({
+       ratingId: rating.value,
+       note: rating.note,
+       date: rating.date,
+     });
+   });
+   return formattedRatings;
+ }
 
   return (
     <>
@@ -174,7 +135,7 @@ const SecurityDetails = (props) => {
             <div className="text-center"><Spinner size="lg" color="primary" /></div>
           ) : (
               <AvForm onSubmit={submitSecurity}>
-                <SecurityActionButtons creating={creating} editing={editing} viewing={viewing} securityId={security.id} handleDeleteSecurity={handleDeleteSecurity} isSaving={isSaving} />
+                <SecurityActionButtons creating={creating} editing={editing} viewing={viewing} securityId={security.id} handleDeleteSecurity={handleDeleteSecurity} isSaving={isSaving} hasRatingsError={hasRatingsError} />
                 <Card>
                   <CardBody>
                     <h4>Details</h4>
@@ -247,93 +208,17 @@ const SecurityDetails = (props) => {
 
                     <hr />
                     <h4>Ratings</h4>
-                    <Table className="ratings-list-table table-centered table-nowrap mb-0">
-                      <thead>
-                        <tr>
-                          <th style={{ 'width': '200px' }}>Agency</th>
-                          <th style={{ 'width': '50px' }}>Rating</th>
-                          <th style={{ 'width': '200px' }}>Date</th>
-                          <th style={{ 'width': '50px' }}>&nbsp;</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {securityRatings?.length === 0 && (
-                          <tr>
-                            <td colSpan="4">No ratings have been added yet. {!editing && (<>Edit this security to add some.</>)}</td>
-                          </tr>
-                        )}
-                        {viewing && security?.ratings?.map((rating, i) => (
-                          <tr key={i}>
-                            <td>{rating.agency}</td>
-                            <td>{rating.rating}</td>
-                            <td>{rating.date}</td>
-                            <td></td>
-                          </tr>
-                        ))}
-                        {editing && securityRatings?.map((securityRating, i) => (
-                          <tr key={i}>
-                            <td>
-                              <AvGroup className="position-relative mb-0">
-                                <AvField
-                                  name="ratingAgency"
-                                  type="select"
-                                  value={securityRating.agency}
-                                  className="custom-select"
-                                  onChange={(e) => handlesecurityRatingAgencyChange(e, i)}
-                                >
-                                  {agencyRatings.length > 0 && agencyRatings.map((rating, j) =>
-                                    (<option value={rating.agency} key={j}>{rating.agency}</option>)
-                                  )}
-                                </AvField>
-                              </AvGroup>
-                            </td>
-                            <td>
-                              <AvGroup className="position-relative mb-0">
-                                <AvField
-                                  name="ratingValue"
-                                  type="select"
-                                  value={securityRating.value}
-                                  className="custom-select"
-                                  onChange={(e) => handlesecurityRatingValueChange(e, i)}
-                                >
-                                  {props.agencyRatings && securityRatings.length !== 0 && props.agencyRatings[securityRatings[i].agency].map((val, k) =>
-                                    (<option value={val.value} key={k}>{val.value}</option>)
-                                  )}
-                                </AvField>
-                              </AvGroup>
-                            </td>
-                            <td>
-                              <div className="position-relative mb-0">
-                                <DatePicker
-                                  className="form-control date"
-                                  dateFormat="MM/dd/yyyy"
-                                  selected={securityRating.date}
-                                  onChange={date => handlesecurityRatingDateChange(date, i)}
-                                />
-                              </div>
-                            </td>
-                            <td>
-                              <span className="btn btn-danger" onClick={() => handleRemovesecurityRating(i)}>remove</span>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                      {editing && agencyRatings.length !== 0 && (
-                        <tfoot>
-                          <tr>
-                            <td colSpan="4">
-                              <span className="btn btn-secondary" onClick={(e) => addNewsecurityRating(e)}>Add New Rating</span>
-                            </td>
-                          </tr>
-                        </tfoot>
-                      )}
-                    </Table>
-
+                    <RatingsTable 
+                      item={security}
+                      itemType="security"
+                      editing={editing}
+                      viewing={viewing}
+                      update={handleEditSecurityRatings}
+                    />
                   </CardBody>
                 </Card>
 
-                {/* verified to work in KDM-97-update-delete-new-security*/}
-                <SecurityActionButtons creating={creating} editing={editing} viewing={viewing} securityId={security.id} handleDeleteSecurity={handleDeleteSecurity} isSaving={isSaving} />
+                <SecurityActionButtons creating={creating} editing={editing} viewing={viewing} securityId={security.id} handleDeleteSecurity={handleDeleteSecurity} isSaving={isSaving} hasRatingsError={hasRatingsError} />
               </AvForm>
             )}
         </Col>
@@ -348,51 +233,43 @@ const SecurityDetails = (props) => {
   );
 };
 
-const SecurityActionButtons = ({ creating, editing, viewing, securityId, handleDeleteSecurity, isSaving }) => {
+const SecurityActionButtons = ({ creating, editing, viewing, securityId, handleDeleteSecurity, isSaving, hasRatingsError }) => {
   return (
     <div className="d-flex justify-content-end mb-3">
       {creating && (
         <>
           <Link to="/securities/list" className="btn btn-secondary mr-2">Cancel</Link>
-          <Button type="submit" className="btn btn-primary">
+          <Button type="submit" className="btn btn-primary" disabled={hasRatingsError}>
             {isSaving
               ? (<Spinner size="sm" color="primary" />)
               : (<>Save New Security</>)
             }
           </Button>
         </>
-      )
-      }
+      )}
 
-      {/* verified to work in KDM-97-update-delete-new-security*/}
-      {
-        editing && (
-          <>
-            <Link to={`/securities/${securityId}`} className="btn btn-secondary mr-2">Cancel</Link>
-            <Button type="submit" className="btn btn-primary">Save Changes</Button>
-          </>
-        )
-      }
+      {editing && (
+        <>
+          <Link to={`/securities/${securityId}`} className="btn btn-secondary mr-2">Cancel</Link>
+          <Button type="submit" className="btn btn-primary">Save Changes</Button>
+        </>
+      )}
 
-      {
-        viewing && (
-          <>
-            <Button className="btn btn-danger mr-2" onClick={(e) => handleDeleteSecurity(securityId)}>Delete Security</Button>
-            <Link to={`/securities/${securityId}/edit`} className="btn btn-primary">Edit Security</Link>
-          </>
-        )
-      }
-    </div >
+      {viewing && (
+        <>
+          <Button className="btn btn-danger mr-2" onClick={(e) => handleDeleteSecurity(securityId)}>Delete Security</Button>
+          <Link to={`/securities/${securityId}/edit`} className="btn btn-primary">Edit Security</Link>
+        </>
+      )}
+    </div>
   );
 }
 
 const mapStateToProps = state => {
-  const security = state.Security;;
-  const agencyRatings = state.Rating.ratings?.ratings;
-  return { ...security, agencyRatings };
+  return state.Security;
 };
 
 export default connect(
   mapStateToProps,
-  { getSecurity, createSecurity, editSecurity, deleteSecurity, clearSecurity, getRatings }
+  { getSecurity, createSecurity, editSecurity, deleteSecurity, clearSecurity }
 )(SecurityDetails);
