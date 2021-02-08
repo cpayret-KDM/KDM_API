@@ -13,8 +13,13 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import com.kdm.web.data.repository.LoanRepository;
+import com.kdm.web.data.repository.MSNRatingRepository;
+import com.kdm.web.data.repository.RatingRepository;
 import com.kdm.web.model.Loan;
 import com.kdm.web.model.MSN;
+import com.kdm.web.model.MSNRating;
+import com.kdm.web.model.Rating;
+import com.kdm.web.model.view.RatingValue;
 
 @Service
 public class MSNServiceImpl implements MSNService {
@@ -30,6 +35,12 @@ public class MSNServiceImpl implements MSNService {
 	
 	@Autowired
 	private EntityUtil entityUtil;
+	
+	@Autowired
+	private MSNRatingRepository msnRatingRepository;
+	
+	@Autowired
+	private RatingRepository ratingRepository;
 	
 	@Override
 	@Transactional
@@ -61,6 +72,32 @@ public class MSNServiceImpl implements MSNService {
 			Loan loan = entityUtil.tryGetEntity(Loan.class, loanID);
 			loan.setMsn(msn);
 			loanRepository.save(loan);
+		}
+	}
+	
+	@Override
+	@Transactional
+	public void syncRatings(MSN msn, List<RatingValue> ratings) {
+		
+		// list to update
+		for (RatingValue ratingValue: ratings) {
+			//add rating
+			Rating rating = entityUtil.tryGetEntity(Rating.class, ratingValue.getRatingId());
+			
+			MSNRating msnRtng = MSNRating.builder()
+					.msn(msn)
+					.msnId(msn.getId())
+					.rating(rating)
+					.ratingId(rating.getId())
+					.note(ratingValue.getNote())
+					.date(ratingValue.getDate())
+					.build();
+			
+			
+			msnRtng = msnRatingRepository.saveAndFlush(msnRtng);
+			rating.addMSNRating(msnRtng);
+			
+			ratingRepository.saveAndFlush(rating);
 		}
 	}
 
