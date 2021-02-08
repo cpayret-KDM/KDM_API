@@ -40,7 +40,7 @@ const SecuritiesTable = (props) => {
       footer: '',
     },
     {
-      dataField: 'cusipID',
+      dataField: 'cusip',
       text: 'CUSIP',
       sort: true,
       style: { width: '50px' },
