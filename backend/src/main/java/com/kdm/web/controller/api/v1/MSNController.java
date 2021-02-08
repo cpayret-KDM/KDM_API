@@ -42,6 +42,7 @@ import com.kdm.web.model.MSN;
 import com.kdm.web.model.MSNRating;
 import com.kdm.web.model.Rating;
 import com.kdm.web.model.util.Note;
+import com.kdm.web.model.view.RatingValue;
 import com.kdm.web.service.EntityUtil;
 import com.kdm.web.service.MSNService;
 import com.kdm.web.util.View;
@@ -242,6 +243,22 @@ public class MSNController {
 		msnRtng = msnRatingRepository.saveAndFlush(msnRtng);
 
 		return this.getMSN(msnId);
+	}
+	
+	@Operation(summary = "assign a rating to a msn", tags = "msn", responses = {
+			@ApiResponse(responseCode = "200", description = "rating assigned"),
+			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+			@ApiResponse(responseCode = "404", description = "msn or rating not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
+	)
+	@ResponseBody
+	@PutMapping(path = "/{msnId}/rating")
+	@Transactional
+	public ResponseEntity<Void> assignRatings(@PathVariable("msnId") Long msnId, @RequestBody @Valid List<RatingValue> ratings, BindingResult bindingResult) throws Exception {
+		MSN msn = entityUtil.tryGetEntity(MSN.class, msnId);
+		
+		msnService.syncRatings(msn, ratings);
+		
+		return new ResponseEntity<Void>(OK);
 	}
 	
 	@Operation(summary = "delete a msn", tags = "msn", responses = {
