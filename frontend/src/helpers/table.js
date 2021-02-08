@@ -49,8 +49,6 @@ const defaultSorted = [
   {
     dataField: 'id',
     order: 'asc',
-    // dataField: 'loanStatus',
-    // order: 'Default',
   },
 ];
 
