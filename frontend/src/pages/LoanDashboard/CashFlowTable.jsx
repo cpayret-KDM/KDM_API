@@ -5,6 +5,7 @@ import { AvForm, AvField, AvGroup } from 'availity-reactstrap-validation';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory, { Comparator, textFilter, dateFilter, selectFilter } from 'react-bootstrap-table2-filter';
+import { formatCurrency, formatPercentage } from '../../helpers/utils';
 
 import { paginationOptions, defaultSorted, percentageFilter, currencyFilter } from '../../helpers/table';
 
@@ -24,8 +25,9 @@ const CashFlowTable = (props) => {
     const handleReportChange = (e, value) => {
         if (props.report === value) return;
         else if (value === '60-day') window.location.href = "/loans/60-day";
+        else if (value === 'cash-flow') window.location.href = "/loans/cash-flow";
         else window.location.href = "/loans/list";
-      }
+    }
 
     const columns = [
         {
@@ -46,7 +48,10 @@ const CashFlowTable = (props) => {
             filter: textFilter({
                 placeholder: ' ',
             }),
-            footer: ''
+            formatter: (cell) => (cell)
+                ? (<>${formatCurrency(cell)}</>)
+                : (<></>),
+            footer: (columnData, column, columnIndex) => `$${formatCurrency(columnData.reduce((acc, item) => acc + item, 0))}`,
         },
         {
             dataField: 'loanRate',
@@ -56,7 +61,10 @@ const CashFlowTable = (props) => {
             filter: textFilter({
                 placeholder: ' ',
             }),
-            footer: ''
+            formatter: (cell, row) => (cell)
+                ? (<>{formatPercentage(cell)}%</>)
+                : (<></>),
+            footer: (columnData, column, columnIndex) => `${formatPercentage(columnData.reduce((acc, item) => acc + item, 0) / (!!columnData.length ? columnData.length : 1))}%`,
         },
         {
             dataField: 'msnRate',
@@ -66,17 +74,21 @@ const CashFlowTable = (props) => {
             filter: textFilter({
                 placeholder: ' ',
             }),
-            footer: ''
+            formatter: (cell, row) => (cell)
+                ? (<>{formatPercentage(cell)}%</>)
+                : (<></>),
+            footer: (columnData, column, columnIndex) => `${formatPercentage(columnData.reduce((acc, item) => acc + item, 0) / (!!columnData.length ? columnData.length : 1))}%`,
         },
         {
-            dataField: 'annualRevenue',
+            dataField: 'anualRevenue',
             text: 'Annual Revenue',
             sort: true,
             style: { width: '140px' },
             filter: textFilter({
                 placeholder: ' ',
             }),
-            footer: ''
+            formatter: (cell) => (<>${formatCurrency(cell)}</>),
+            footer: (columnData, column, columnIndex) => `$${formatCurrency(columnData.reduce((acc, item) => acc + item, 0))}`,
         },
         {
             dataField: 'monthlyRevenue',
@@ -86,7 +98,8 @@ const CashFlowTable = (props) => {
             filter: textFilter({
                 placeholder: ' ',
             }),
-            footer: ''
+            formatter: (cell) => (<>${formatCurrency(cell)}</>),
+            footer: (columnData, column, columnIndex) => `$${formatCurrency(columnData.reduce((acc, item) => acc + item, 0))}`,
         },
         {
             dataField: 'dailyRevenue',
@@ -96,7 +109,8 @@ const CashFlowTable = (props) => {
             filter: textFilter({
                 placeholder: ' ',
             }),
-            footer: ''
+            formatter: (cell) => (<>${formatCurrency(cell)}</>),
+            footer: (columnData, column, columnIndex) => `$${formatCurrency(columnData.reduce((acc, item) => acc + item, 0))}`,
         }
     ];
 
@@ -128,6 +142,7 @@ const CashFlowTable = (props) => {
                             >
                             <option value="list">All Loans</option>
                             <option value="60-day">60 Day Report</option>
+                            <option value="cash-flow">Cash Flow Report</option>
                             </AvField>
                         </AvGroup>
                         </AvForm>
