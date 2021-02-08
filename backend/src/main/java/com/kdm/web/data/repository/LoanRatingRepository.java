@@ -8,4 +8,5 @@ import com.kdm.web.model.LoanRating;
 @Repository
 public interface LoanRatingRepository extends JpaRepository<LoanRating, Long> {
 
+	LoanRating findByLoanIdAndRatingId(Long loanId, Long ratingId);
 }

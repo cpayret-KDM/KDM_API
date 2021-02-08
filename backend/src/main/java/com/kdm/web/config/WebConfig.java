@@ -72,5 +72,4 @@ public class WebConfig implements WebMvcConfigurer {
 				.defaultHeader("Database", this.databaseName)
 				.build();
     }
-
 }

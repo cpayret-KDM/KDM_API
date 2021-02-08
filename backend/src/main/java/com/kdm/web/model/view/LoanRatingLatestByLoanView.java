@@ -60,4 +60,8 @@ public class LoanRatingLatestByLoanView {
 	@Size(max = 8)
 	@NotBlank
 	private String rating;
+	
+	@JsonProperty
+	@Column(name = "ratingID", insertable = false, updatable = false)
+	private Long ratingId;
 }

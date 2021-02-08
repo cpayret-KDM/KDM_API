@@ -35,4 +35,6 @@ public interface LoanRepository extends JpaRepository<Loan, Long>, JpaSpecificat
 	@Query(nativeQuery=true, name="getCashFlowReport")
 	List<LoanCashFlow> getCashFlowReport();
 	
+	List<Loan> findByMsnId(Long msnID);
+	
 }

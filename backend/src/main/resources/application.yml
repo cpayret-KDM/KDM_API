@@ -1,9 +1,11 @@
 ## Spring boot and dependencies properties - start here
 auth0:
   audience: http://localhost:8080/api/
+  claimPrefix: http://korthdirect.com
 server:
   error:
     include-message: always
+  forward-headers-strategy: framework
 spring:
   application:
     name: kdm-api

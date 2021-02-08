@@ -2,7 +2,6 @@ package com.kdm.web.model;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -21,6 +20,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
@@ -31,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.kdm.web.model.view.LoanCashFlow;
 import com.kdm.web.model.view.LoanRatingLatestByLoanView;
+import com.kdm.web.security.SecurityUtil;
 import com.kdm.web.util.View;
 
 import lombok.AllArgsConstructor;
@@ -190,18 +192,7 @@ public class Loan {
 	@OneToMany(mappedBy="loan", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
 	@JsonView(View.All.class)
 	private Set<LoanRatingLatestByLoanView> ratings;
-	
-	public void addProperty(Property property) {
-		if (this.properties == null) {
-			this.properties = new ArrayList<>();
-		}
 		
-		if (!this.properties.contains(property)) {
-			this.properties.add(property);
-		}
-		
-	}
-	
 	@JsonProperty(value = "spread")
 	@JsonView(View.All.class)
 	public BigDecimal getSpread() {
@@ -211,6 +202,40 @@ public class Loan {
 		
 		BigDecimal spread = this.loanRate.subtract(this.msn.getNoteRate()); 
 		return spread;
+	}
+
+	@JsonProperty(value = "createdAt")
+	@Column(name = "createdAt", precision = 5, scale = 2, updatable = false, nullable = false)
+	@JsonView(View.ReadOnly.class)
+	private ZonedDateTime createdAt;
+
+	@JsonProperty(value = "updatedAt")
+	@Column(name = "updatedAt", precision = 5, scale = 2, updatable = false, nullable = false)
+	@JsonView(View.ReadOnly.class)
+	private ZonedDateTime updatedAt;
+
+	@JsonProperty(value = "createdBy")
+	@Column(name = "createdBy", insertable = false, updatable = false)
+	@JsonView(View.ReadOnly.class)
+	private String createdBy;
+
+	@JsonProperty(value = "updatedBy")
+	@Column(name = "updatedBy", insertable = false, updatable = false)
+	@JsonView(View.ReadOnly.class)
+	private String updatedBy;
+
+	@PrePersist
+	public void prePersist() {
+		this.createdAt = ZonedDateTime.now();
+		this.updatedAt = this.createdAt;
+		this.createdBy = SecurityUtil.getSystemOrLoggedInUserName();
+		this.updatedBy = this.createdBy;
+	}
+
+	@PreUpdate
+	public void preUpdate() {
+		this.updatedAt = ZonedDateTime.now();
+		this.updatedBy = SecurityUtil.getSystemOrLoggedInUserName();
 	}
 
 	@Override

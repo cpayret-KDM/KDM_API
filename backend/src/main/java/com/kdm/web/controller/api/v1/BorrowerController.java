@@ -188,7 +188,7 @@ public class BorrowerController {
 	@ResponseBody
 	@PutMapping(path = "/{borrowerId}")
 	@Transactional
-	public ResponseEntity<Borrower> updateBorrower(@PathVariable("borrowerId") Long borrowerId, @RequestBody @Valid Borrower borrower, BindingResult bindingResult) throws BindException {
+	public ResponseEntity<Borrower> updateBorrower(@PathVariable("borrowerId") Long borrowerId, @RequestBody @Valid @JsonView(View.ExtendedBasic.class) Borrower borrower, BindingResult bindingResult) throws BindException {
 		
 		if (!Objects.equals(borrowerId,borrower.getId())) {
 			throw new ResponseStatusException(BAD_REQUEST,

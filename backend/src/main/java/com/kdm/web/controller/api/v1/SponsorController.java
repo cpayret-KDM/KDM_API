@@ -11,6 +11,8 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.kdm.web.util.View;
 import org.apache.commons.lang3.ObjectUtils;
 import org.assertj.core.util.Arrays;
 import org.slf4j.Logger;
@@ -189,7 +191,7 @@ public class SponsorController {
 	@ResponseBody
 	@PutMapping(path = "/{sponsorId}")
 	@Transactional
-	public ResponseEntity<Sponsor> updateSponsor(@PathVariable("sponsorId") Long sponsorId, @RequestBody @Valid Sponsor sponsor, BindingResult bindingResult) throws BindException {
+	public ResponseEntity<Sponsor> updateSponsor(@PathVariable("sponsorId") Long sponsorId, @RequestBody @Valid @JsonView(View.ExtendedBasic.class) Sponsor sponsor, BindingResult bindingResult) throws BindException {
 		
 		if (!sponsor.getId().equals(sponsorId)) {
 			throw new ResponseStatusException(BAD_REQUEST,
