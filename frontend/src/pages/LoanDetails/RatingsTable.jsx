@@ -58,7 +58,6 @@ const RatingsTable = (props) => {
 
   /* State Functions */
   const [showDuplicateAgencyWarning, setShowDuplicateAgencyWarning] = useState(null);
-
   const addNewItemRating = () => {
     const newItemRatings = [...itemRatings];
     newItemRatings.push({
