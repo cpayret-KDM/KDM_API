@@ -14,10 +14,7 @@ import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css
 var inc = 0;
 
 const CashFlowTable = (props) => {
-    console.log("render", ++inc)
     const { loans } = props;
-
-    console.log(props);
 
     const title = "Cash Flow Report";
    
