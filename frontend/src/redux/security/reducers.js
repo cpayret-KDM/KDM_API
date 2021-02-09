@@ -2,9 +2,6 @@ import {
   GET_SECURITIES,
   GET_SECURITIES_SUCCESS,
   GET_SECURITIES_FAILURE,
-  // GET_60_DAY_SECURITIES,
-  // GET_60_DAY_SECURITIES_SUCCESS,
-  // GET_60_DAY_SECURITIES_FAILURE,
 
   GET_SECURITY,
   GET_SECURITY_SUCCESS,
@@ -22,29 +19,15 @@ import {
   EDIT_SECURITY_RATINGS,
   EDIT_SECURITY_RATINGS_SUCCESS,
   EDIT_SECURITY_RATINGS_FAILURE,
+  GET_SECURITY_LOANS,
+  GET_SECURITY_LOANS_SUCCESS,
+  GET_SECURITY_LOANS_FAILURE,
 } from './constants';
 
 type Action = { type: string, payload: {} };
 type State = { +value: boolean };
 
 const Security = (state: State = {}, action: Action) => {
-
-  // type State = {
-  //   securities: Array<{}>,
-  //   security: {},
-  //   loaded: boolean,
-  //   deleted: boolean
-  // };
-
-  // const initialState = {
-  //   securities: [],
-  //   security: {},
-  //   loaded: false,
-  //   deleted: false
-  // };
-
-  // const Security = (state: State = initialState, action: Action) => {
-
   switch (action.type) {
     /* Securities */
     case GET_SECURITIES:
@@ -62,22 +45,6 @@ const Security = (state: State = {}, action: Action) => {
         ...state,
         securities: action.payload,
       };
-
-    // case GET_60_DAY_SECURITIES:
-    //   return {
-    //     ...state,
-    //     securities: null,
-    //   };
-    // case GET_60_DAY_SECURITIES_SUCCESS:
-    //   return {
-    //     ...state,
-    //     securities: action.payload,
-    //   };
-    // case GET_60_DAY_SECURITIES_FAILURE:
-    //   return {
-    //     ...state,
-    //     securities: action.payload,
-    //   };
 
     /* Security */
     case GET_SECURITY:
@@ -168,6 +135,31 @@ const Security = (state: State = {}, action: Action) => {
         ...state,
         edited: false,
         error: action.payload,
+      };
+
+    case GET_SECURITY_LOANS:
+      return {
+        ...state,
+      };
+    case GET_SECURITY_LOANS_SUCCESS:
+      return {
+        ...state,
+        security: {
+          ...state.security,
+          loans: action.payload
+        },
+        error: false,
+        loaded: true,
+      };
+    case GET_SECURITY_LOANS_FAILURE:
+      return {
+        ...state,
+        security: {
+          ...state.security,
+          loans: null
+        },
+        error: true,
+        loaded: true,
       };
 
     default:

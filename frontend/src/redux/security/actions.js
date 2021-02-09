@@ -22,6 +22,9 @@ import {
   EDIT_SECURITY_RATINGS,
   EDIT_SECURITY_RATINGS_SUCCESS,
   EDIT_SECURITY_RATINGS_FAILURE,
+  GET_SECURITY_LOANS,
+  GET_SECURITY_LOANS_SUCCESS,
+  GET_SECURITY_LOANS_FAILURE,
 } from './constants';
 
 type SecurityAction = { type: String, payload: {} | String };
@@ -125,5 +128,21 @@ export const editSecurityRatingsSuccess = (ratings: Object): LoanAction => ({
 
 export const editSecurityRatingsFailure = (err: Object): LoanAction => ({
   type: EDIT_SECURITY_RATINGS_FAILURE,
+  payload: err,
+});
+
+// Get Security
+export const getSecurityLoans = (securityId: String): SecurityAction => ({
+  type: GET_SECURITY_LOANS,
+  payload: { securityId },
+});
+
+export const getSecurityLoansSuccess = (loans: Array): SecurityAction => ({
+  type: GET_SECURITY_LOANS_SUCCESS,
+  payload: loans,
+});
+
+export const getSecurityLoansFailure = (err: Object): SecurityAction => ({
+  type: GET_SECURITY_LOANS_FAILURE,
   payload: err,
 });

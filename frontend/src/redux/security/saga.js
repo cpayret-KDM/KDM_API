@@ -3,8 +3,8 @@ import { fetchJSON } from '../../helpers/api';
 
 import {
   GET_SECURITIES,
-  // GET_60_DAY_SECURITIES,
   GET_SECURITY,
+  GET_SECURITY_LOANS,
   CREATE_SECURITY,
   EDIT_SECURITY,
   DELETE_SECURITY,
@@ -14,11 +14,10 @@ import {
 import {
   getSecuritiesSuccess,
   getSecuritiesFailure,
-  // get60DaySecuritiesSuccess,
-  // get60DaySecuritiesFailure,
-
   getSecuritySuccess,
   getSecurityFailure,
+  getSecurityLoansSuccess,
+  getSecurityLoansFailure,
   createSecuritySuccess,
   createSecurityFailure,
   editSecuritySuccess,
@@ -88,6 +87,32 @@ function* getSecurity({ payload: { securityId } }) {
         message = error;
     }
     yield put(getSecurityFailure(message));
+  }
+}
+
+// Get Security Loans
+function* getSecurityLoans({ payload: { securityId } }) {
+  const options = {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  };
+
+  try {
+    const response = yield call(fetchJSON, `${SERVER_URL}/msn/${securityId}/loans`, options);
+    yield put(getSecurityLoansSuccess(response));
+  } catch (error) {
+    let message;
+    switch (error.status) {
+      case 500:
+        message = 'Internal Server Error';
+        break;
+      case 401:
+        message = 'Invalid credentials';
+        break;
+      default:
+        message = error;
+    }
+    yield put(getSecurityLoansFailure(message));
   }
 }
 
@@ -207,12 +232,12 @@ export function* watchGetSecurities(): any {
   yield takeEvery(GET_SECURITIES, getSecurities);
 }
 
-// export function* watchGet60DaySecurities(): any {
-//   yield takeEvery(GET_60_DAY_SECURITIES, get60DaySecurities);
-// }
-
 export function* watchGetSecurity(): any {
   yield takeEvery(GET_SECURITY, getSecurity);
+}
+
+export function* watchGetSecurityLoans(): any {
+  yield takeEvery(GET_SECURITY_LOANS, getSecurityLoans);
 }
 
 export function* watchCreateSecurity(): any {
@@ -234,8 +259,8 @@ export function* watchEditSecurityRatings(): any {
 function* SecuritySaga(): any {
   yield all([
     fork(watchGetSecurities),
-    // fork(watchGet60DaySecurities),
     fork(watchGetSecurity),
+    fork(watchGetSecurityLoans),
     fork(watchCreateSecurity),
     fork(watchEditSecurity),
     fork(watchDeleteSecurity),

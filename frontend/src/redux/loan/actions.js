@@ -29,9 +29,9 @@ import {
 type LoanAction = { type: String, payload: {} | String };
 
 // Get Loans
-export const getLoans = (loanNumber: String = '', size: Number, page: Number, sort: String = ''): LoanAction => ({
+export const getLoans = (nullMSN = false): LoanAction => ({
   type: GET_LOANS,
-  payload: { loanNumber, size, page, sort },
+  payload: { nullMSN },
 });
 
 export const getLoansSuccess = (loan: Object): LoanAction => ({

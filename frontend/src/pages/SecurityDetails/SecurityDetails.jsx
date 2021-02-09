@@ -9,6 +9,7 @@ import moment from 'moment';
 import PageTitle from '../../components/PageTitle';
 import ModalDeleteSecurity from './ModalDeleteSecurity';
 import RatingsTable from '../LoanDetails/RatingsTable';
+import LoanTable from './LoanTable';
 import { getSecurity, createSecurity, editSecurity, deleteSecurity, clearSecurity } from '../../redux/actions';
 
 const SecurityDetails = (props) => {
@@ -119,6 +120,13 @@ const SecurityDetails = (props) => {
    return formattedRatings;
  }
 
+ /* Loans */
+ const [securityLoans, setSecurityLoans] = useState([]);
+ const handleEditSecurityLoans = (loans) => {
+   const newSecurityLoans = [...loans];
+   setSecurityLoans([...newSecurityLoans]);
+ }
+
   return (
     <>
       <PageTitle
@@ -215,8 +223,18 @@ const SecurityDetails = (props) => {
                       viewing={viewing}
                       update={handleEditSecurityRatings}
                     />
+
+                    <hr />
+                    <h4>Loans</h4>
+                    <LoanTable 
+                      securityId={security.id}
+                      editing={editing}
+                      viewing={viewing}
+                      update={handleEditSecurityLoans}
+                    />
                   </CardBody>
                 </Card>
+
 
                 <SecurityActionButtons creating={creating} editing={editing} viewing={viewing} securityId={security.id} handleDeleteSecurity={handleDeleteSecurity} isSaving={isSaving} hasRatingsError={hasRatingsError} />
               </AvForm>
