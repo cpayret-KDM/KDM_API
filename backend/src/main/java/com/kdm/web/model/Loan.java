@@ -61,9 +61,9 @@ import lombok.Setter;
 @NamedNativeQuery(
 		name="getCashFlowReport", 
 		query = "SELECT  l.\"loanNumber\", l.\"principalBalance\", l.\"loanRate\", m.\"noteRate\" as \"msnRate\", " + 
-			"        (l.\"principalBalance\" * l.\"loanRate\") - (l.\"principalBalance\" * m.\"noteRate\") as \"anualRevenue\", " + 
-			"        ((l.\"principalBalance\" * l.\"loanRate\") - (l.\"principalBalance\" * m.\"noteRate\"))/12 as \"monthlyRevenue\", " + 
-			"        ((l.\"principalBalance\" * l.\"loanRate\") - (l.\"principalBalance\" * m.\"noteRate\"))/365 as \"dailyRevenue\" " + 
+			"        (l.\"principalBalance\" * m.\"noteRate\") - (l.\"principalBalance\" * l.\"loanRate\") as \"anualRevenue\", " + 
+			"        ((l.\"principalBalance\" * m.\"noteRate\") - (l.\"principalBalance\" * l.\"loanRate\"))/12 as \"monthlyRevenue\", " + 
+			"        ((l.\"principalBalance\" * m.\"noteRate\") - (l.\"principalBalance\" * l.\"loanRate\"))/365 as \"dailyRevenue\" " + 
 			"FROM    \"Loan\" as l " + 
 			"    LEFT JOIN \"MSN\" as m ON l.\"msnID\" = m.\"msnID\" " + 
 			"WHERE   l.\"loanStatus\" IN ('PERFORMING') ",

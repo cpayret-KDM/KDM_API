@@ -5,7 +5,9 @@ import {
   GET_60_DAY_LOANS,
   GET_60_DAY_LOANS_SUCCESS,
   GET_60_DAY_LOANS_FAILURE,
-  
+  GET_CASH_FLOW_LOANS,
+  GET_CASH_FLOW_LOANS_SUCCESS,
+  GET_CASH_FLOW_LOANS_FAILURE,
   GET_LOAN,
   GET_LOAN_SUCCESS,
   GET_LOAN_FAILURE,
@@ -75,6 +77,23 @@ const Loan = (state: State = initialState, action: Action) => {
         ...state,
         loans: undefined,
         error: action.payload,
+      };
+
+    case GET_CASH_FLOW_LOANS:
+      return {
+        ...state,
+        loans: undefined
+      };
+    case GET_CASH_FLOW_LOANS_SUCCESS:
+      return {
+        ...state,
+        loans: action.payload
+      };
+    case GET_CASH_FLOW_LOANS_FAILURE:
+      return {
+        ...state,
+        loans: undefined,
+        error: action.payload
       };
 
     /* Loan */
