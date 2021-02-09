@@ -8,6 +8,7 @@ import {
   CREATE_SECURITY,
   EDIT_SECURITY,
   DELETE_SECURITY,
+  EDIT_SECURITY_RATINGS,
 } from './constants';
 
 import {
@@ -24,6 +25,9 @@ import {
   editSecurityFailure,
   deleteSecuritySuccess,
   deleteSecurityFailure,
+  editSecurityRatings,
+  editSecurityRatingsSuccess,
+  editSecurityRatingsFailure,
 } from './actions';
 
 const SERVER_URL = process.env.REACT_APP_KDM_API_ENDPOINT;
@@ -60,39 +64,6 @@ function* getSecurities({ payload: { securityNumber, size, page, sort } }) {
     yield put(getSecuritiesFailure(message));
   }
 }
-
-// // Get 60 Day Securities
-// function* get60DaySecurities({ payload: { securityNumber, size, page, sort } }) {
-//   const options = {
-//     method: 'GET',
-//     headers: { 'Content-Type': 'application/json' },
-//   };
-//   const params = {
-//     days: 60,
-//     // securityNumber,
-//     // size,
-//     // page,
-//     // sort,
-//   };
-
-//   try {
-//     const response = yield call(fetchJSON, `${SERVER_URL}/security/anniversary?days=60`, options);
-//     yield put(get60DaySecuritiesSuccess(response));
-//   } catch (error) {
-//     let message;
-//     switch (error.status) {
-//       case 500:
-//         message = 'Internal Server Error';
-//         break;
-//       case 401:
-//         message = 'Invalid credentials';
-//         break;
-//       default:
-//         message = error;
-//     }
-//     yield put(get60DaySecuritiesFailure(message));
-//   }
-// }
 
 // Get Security
 function* getSecurity({ payload: { securityId } }) {
@@ -158,6 +129,7 @@ function* editSecurity({ payload: { security } }) {
   try {
     const response = yield call(fetchJSON, `${SERVER_URL}/msn/${security.id}`, options);
     yield put(editSecuritySuccess(response));
+    yield put(editSecurityRatings(security.ratings, security.id));
   } catch (error) {
     let message;
     switch (error.status) {
@@ -200,6 +172,33 @@ function* deleteSecurity({ payload: { securityId } }) {
   }
 }
 
+// Edit Security Ratings
+function* editSecurityRatingsSaga({ payload: { ratings, securityId } }) {
+  const options = {
+    method: 'PUT',
+    body: JSON.stringify(ratings),
+    headers: { 'Content-Type': 'application/json' },
+  };
+
+  const response = yield call(fetchJSON, `${SERVER_URL}/msn/${securityId}/rating`, options);
+  if (!response.status || response.status === 200) {
+    yield put(editSecurityRatingsSuccess(response));
+    yield put(getSecurity(securityId));
+  } else {
+    let message;
+    switch (response.status) {
+      case 500:
+        message = 'Internal Server Error';
+        break;
+      case 401:
+        message = 'Invalid credentials';
+      break;
+      default:
+        message = response.message;
+    }
+    yield put(editSecurityRatingsFailure(message));
+  }
+}
 
 /**
  * Watchers
@@ -228,6 +227,10 @@ export function* watchDeleteSecurity(): any {
   yield takeEvery(DELETE_SECURITY, deleteSecurity);
 }
 
+export function* watchEditSecurityRatings(): any {
+  yield takeEvery(EDIT_SECURITY_RATINGS, editSecurityRatingsSaga);
+}
+
 function* SecuritySaga(): any {
   yield all([
     fork(watchGetSecurities),
@@ -236,6 +239,7 @@ function* SecuritySaga(): any {
     fork(watchCreateSecurity),
     fork(watchEditSecurity),
     fork(watchDeleteSecurity),
+    fork(watchEditSecurityRatings),
   ]);
 }
 

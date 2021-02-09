@@ -21,6 +21,9 @@ import {
   DELETE_LOAN_SUCCESS,
   DELETE_LOAN_FAILURE,
   CLEAR_LOAN,
+  EDIT_LOAN_RATINGS,
+  EDIT_LOAN_RATINGS_SUCCESS,
+  EDIT_LOAN_RATINGS_FAILURE,
 } from './constants';
 
 type LoanAction = { type: String, payload: {} | String };
@@ -141,4 +144,20 @@ export const deleteLoanFailure = (err: Object): LoanAction => ({
 export const clearLoan = (): LoanAction => ({
   type: CLEAR_LOAN,
   payload: {  },
+});
+
+// Edit Loan Ratings
+export const editLoanRatings = (ratings: Array = [], loanId: String = ''): LoanAction => ({
+  type: EDIT_LOAN_RATINGS,
+  payload: { ratings, loanId },
+});
+
+export const editLoanRatingsSuccess = (ratings: Object): LoanAction => ({
+  type: EDIT_LOAN_RATINGS_SUCCESS,
+  payload: ratings,
+});
+
+export const editLoanRatingsFailure = (err: Object): LoanAction => ({
+  type: EDIT_LOAN_RATINGS_FAILURE,
+  payload: err,
 });

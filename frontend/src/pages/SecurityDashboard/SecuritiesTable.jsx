@@ -40,6 +40,16 @@ const SecuritiesTable = (props) => {
       footer: '',
     },
     {
+      dataField: 'cusip',
+      text: 'CUSIP',
+      sort: true,
+      style: { width: '50px' },
+      filter: textFilter({
+        placeholder: ' ',
+      }),
+      footer: '',
+    },
+    {
       dataField: 'noteRate',
       text: 'Note Rate',
       sort: false,

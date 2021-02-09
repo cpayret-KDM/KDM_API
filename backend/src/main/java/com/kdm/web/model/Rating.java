@@ -61,11 +61,22 @@ public class Rating {
 	@OneToMany(mappedBy = "rating", fetch = FetchType.LAZY)
 	private Set<LoanRating> loanRatings;
 	
+	@JsonIgnore
+	@OneToMany(mappedBy = "rating", fetch = FetchType.LAZY)
+	private Set<MSNRating> msnRatings;
+	
 	public void addLoanRating(LoanRating loanRating) {
 		if (this.loanRatings == null) {
 			this.loanRatings = new LinkedHashSet<LoanRating>();
 		}
 		this.loanRatings.add(loanRating);
+	}
+	
+	public void addMSNRating(MSNRating msnRating) {
+		if (this.msnRatings == null) {
+			this.msnRatings = new LinkedHashSet<MSNRating>();
+		}
+		this.msnRatings.add(msnRating);
 	}
 
 	@JsonProperty(value = "createdAt")

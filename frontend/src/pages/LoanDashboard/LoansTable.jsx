@@ -187,11 +187,10 @@ const LoansTable = (props) => {
       dataField: 'loanStatus',
       text: 'Loan Status',
       sort: true,
-      // default: 'Performing',
-      // dataField: 'loanStatus',
       style: { width: '120px' },
       filter: selectFilter({
         options: loanStatusOptions,
+        placeholder: 'All',
         defaultValue: 'PERFORMING',
         style: { color: '#495057' },
         onFilter: (filterValue, data) => {

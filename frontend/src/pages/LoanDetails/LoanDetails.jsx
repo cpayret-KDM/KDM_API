@@ -12,8 +12,9 @@ import ModalDeleteProperty from './ModalDeleteProperty';
 import ModalDeleteLoan from './ModalDeleteLoan';
 import ModalSponsor from './ModalSponsor';
 import ModalDeleteSponsor from './ModalDeleteSponsor';
+import RatingsTable from './RatingsTable';
 
-import { getLoan, createLoan, editLoan, deleteLoan, clearLoan, getRatings } from '../../redux/actions';
+import { getLoan, createLoan, editLoan, deleteLoan, clearLoan } from '../../redux/actions';
 import { formatCurrency, DATE_FORMAT, EMPTY_LOAN, LOAN_STATUS_MAP, PIPELINE_STATUS_MAP, PROPERTY_TYPE_MAP } from '../../helpers/utils';
 
 const LoanDetails = (props) => {
@@ -48,7 +49,6 @@ const LoanDetails = (props) => {
     if (loan?.sponsor?.id) {
       setSponsorId(loan.sponsor.id);
     }
-    props.getRatings();
   }, [loan]);
 
   const [isSaving, setIsSaving] = useState(false);
@@ -88,6 +88,7 @@ const LoanDetails = (props) => {
     const newLoan = {
       ...loan,
       ...values,
+      ratings: formatRatings(loanRatings),
       originationDate: originationDate,
     };
 
@@ -169,72 +170,26 @@ const LoanDetails = (props) => {
 
   /* Ratings */
   const [loanRatings, setLoanRatings] = useState([]);
-  useEffect(() => {
-    if (loan.ratings) {
-      setLoanRatings(loan.ratings);
-    }
-  }, [loan]);
+  const [hasRatingsError, setHasRatingsError] = useState(false);
+  const handleEditLoanRatings = (ratings, hasError) => {
+    if (hasError) setHasRatingsError(true)
+    const newLoanRatings = [...ratings];
+    setLoanRatings([...newLoanRatings]);
+  }
 
-  const [agencyRatings, setAgencyRatings] = useState([]);
-  useEffect(() => {
-    if (props.agencyRatings) {
-      let formattedAgencyRatings = [];
-      Object.entries(props.agencyRatings).forEach((rating, i) => {
-        formattedAgencyRatings.push({
-          agency: rating[0],
-          values: rating[1]
-        });
+  const formatRatings = (ratings) => {
+    const formattedRatings = [];
+    ratings.forEach(rating => {
+      formattedRatings.push({
+        ratingId: rating.value,
+        note: rating.note,
+        date: rating.date,
       });
-      setAgencyRatings(formattedAgencyRatings);
-    }
-  }, [props.agencyRatings]);
-
-  // useEffect(() => {
-  //   console.log('agencyRatings array change', agencyRatings)
-  // }, [agencyRatings]);
-
-
-
-
-
-  const addNewLoanRating = () => {
-    const newLoanRatings = [...loanRatings];
-    newLoanRatings.push({
-      agency: agencyRatings[0].agency,
-      value: agencyRatings[0].values[0],
-      date: '',
     });
-    setLoanRatings([...newLoanRatings]);
+    return formattedRatings;
   }
-  // useEffect(() => {
-  //   console.log('loanRatings array change', loanRatings)
-  // }, [loanRatings]);
 
-  const handleLoanRatingAgencyChange = (e, i) => {
-    const newLoanRatings = [...loanRatings];
-    newLoanRatings[i].agency = e.target.value;
-    agencyRatings.forEach((rating, k) => {
-      if (rating.agency === e.target.value) {
-        newLoanRatings[i].value = rating.values[0].value;
-      }
-    });
-    setLoanRatings([...newLoanRatings]);
-  }
-  const handleLoanRatingValueChange = (e, i) => {
-    const newLoanRatings = [...loanRatings];
-    newLoanRatings[i].value = e.target.value;
-    setLoanRatings([...newLoanRatings]);
-  }
-  const handleLoanRatingDateChange = (date, i) => {
-    const newLoanRatings = [...loanRatings];
-    newLoanRatings[i].date = date;
-    setLoanRatings([...newLoanRatings]);
-  }
-  const handleRemoveLoanRating = (i) => {
-    const newLoanRatings = [...loanRatings];
-    newLoanRatings.splice(i, 1);
-    setLoanRatings([...newLoanRatings]);
-  }
+  //console.log('loan', loan)
 
   return (
     <>
@@ -252,7 +207,7 @@ const LoanDetails = (props) => {
             <div className="text-center"><Spinner size="lg" color="primary" /></div>
           ) : (
             <AvForm onSubmit={submitLoan}>
-              <LoanActionButtons creating={creating} editing={editing} viewing={viewing} loanId={loan.id} handleDeleteLoan={handleDeleteLoan} isSaving={isSaving} />
+              <LoanActionButtons creating={creating} editing={editing} viewing={viewing} loanId={loan.id} handleDeleteLoan={handleDeleteLoan} isSaving={isSaving} hasRatingsError={hasRatingsError} />
               <Card>
                 <CardBody>
                   <h4>Details</h4>
@@ -392,88 +347,13 @@ const LoanDetails = (props) => {
 
                   <hr />
                   <h4>Ratings</h4>
-                  <Table className="ratings-list-table table-centered table-nowrap mb-0">
-                    <thead>
-                      <tr>
-                        <th style={{'width': '200px'}}>Agency</th>
-                        <th style={{'width': '50px'}}>Rating</th>
-                        <th style={{'width': '200px'}}>Date</th>
-                        <th style={{'width': '50px'}}>&nbsp;</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {loanRatings?.length === 0 && (
-                        <tr>
-                          <td colSpan="4">No ratings have been added yet. {!editing && (<>Edit this loan to add some.</>)}</td>
-                        </tr>
-                      )}
-                      {viewing && loan?.ratings?.map((rating, i) => (
-                        <tr key={i}>
-                          <td>{rating.agency}</td>
-                          <td>{rating.rating}</td>
-                          <td>{rating.date}</td>
-                          <td></td>
-                        </tr>
-                      ))}
-                      {editing && loanRatings?.map((loanRating, i) => (
-                        <tr key={i}>
-                          <td>
-                            <AvGroup className="position-relative mb-0">
-                              <AvField
-                                name="ratingAgency"
-                                type="select"
-                                value={loanRating.agency}
-                                className="custom-select"
-                                onChange={(e) => handleLoanRatingAgencyChange(e, i)}
-                              >
-                                {agencyRatings.length > 0 && agencyRatings.map((rating, j) => 
-                                  (<option value={rating.agency} key={j}>{rating.agency}</option>)
-                                )}
-                              </AvField>
-                            </AvGroup>
-                          </td>
-                          <td>
-                            <AvGroup className="position-relative mb-0">
-                              <AvField
-                                name="ratingValue"
-                                type="select"
-                                value={loanRating.value}
-                                className="custom-select"
-                                onChange={(e) => handleLoanRatingValueChange(e, i)}
-                              >
-                                {props.agencyRatings && loanRatings.length !== 0 && props.agencyRatings[loanRatings[i].agency].map((val, k) => 
-                                  (<option value={val.value} key={k}>{val.value}</option>)
-                                )}
-                              </AvField>
-                            </AvGroup>
-                          </td>
-                          <td>
-                            <div className="position-relative mb-0">
-                              <DatePicker
-                                className="form-control date"
-                                dateFormat="MM/dd/yyyy" 
-                                value={loanRating.date}
-                                selected={originationDate}
-                                onChange={date => handleLoanRatingDateChange(date, i)}
-                              />
-                            </div>
-                          </td>
-                          <td>
-                            <span className="btn btn-danger" onClick={() => handleRemoveLoanRating(i)}>remove</span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                    {editing && agencyRatings.length !== 0 && (
-                    <tfoot>
-                      <tr>
-                        <td colSpan="4">
-                          <span className="btn btn-secondary" onClick={(e) => addNewLoanRating(e)}>Add New Rating</span>
-                        </td>
-                      </tr>
-                    </tfoot>
-                    )}
-                  </Table>
+                  <RatingsTable 
+                    item={loan}
+                    itemType="loan"
+                    editing={editing}
+                    viewing={viewing}
+                    update={handleEditLoanRatings}
+                  />
                 </CardBody>
               </Card>
 
@@ -577,7 +457,7 @@ const LoanDetails = (props) => {
                   </CardBody>
                 </Card>
               </>)}
-              <LoanActionButtons creating={creating} editing={editing} viewing={viewing} loanId={loan.id} handleDeleteLoan={handleDeleteLoan} isSaving={isSaving} />
+              <LoanActionButtons creating={creating} editing={editing} viewing={viewing} loanId={loan.id} handleDeleteLoan={handleDeleteLoan} isSaving={isSaving} hasRatingsError={hasRatingsError} />
             </AvForm>
           )}
         </Col>
@@ -627,7 +507,7 @@ const LoanDetails = (props) => {
   );
 };
 
-const LoanActionButtons = ({ creating, editing, viewing, loanId, handleDeleteLoan, isSaving }) => {
+const LoanActionButtons = ({ creating, editing, viewing, loanId, handleDeleteLoan, isSaving, hasRatingsError }) => {
   return (
     <div className="d-flex justify-content-end mb-3">
       {creating && (
@@ -645,7 +525,7 @@ const LoanActionButtons = ({ creating, editing, viewing, loanId, handleDeleteLoa
       {editing && (
         <>
           <Link to={`/loans/${loanId}`} className="btn btn-secondary mr-2">Cancel</Link>
-          <Button type="submit" className="btn btn-primary">
+          <Button type="submit" className="btn btn-primary" disabled={hasRatingsError}>
             {isSaving 
               ? (<Spinner size="sm" color="primary" />) 
               : (<>Save Changes</>)
@@ -672,5 +552,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { getLoan, createLoan, editLoan, deleteLoan, clearLoan, getRatings }
+  { getLoan, createLoan, editLoan, deleteLoan, clearLoan }
 )(LoanDetails);

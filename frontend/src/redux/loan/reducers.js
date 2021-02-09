@@ -21,6 +21,9 @@ import {
   DELETE_LOAN_SUCCESS,
   DELETE_LOAN_FAILURE,
   CLEAR_LOAN,
+  EDIT_LOAN_RATINGS,
+  EDIT_LOAN_RATINGS_SUCCESS,
+  EDIT_LOAN_RATINGS_FAILURE,
 } from './constants';
 
 type Action = { type: string, payload: {} };
@@ -176,6 +179,24 @@ const Loan = (state: State = initialState, action: Action) => {
       return {
         ...state,
         loan: undefined,
+      };
+
+    case EDIT_LOAN_RATINGS:
+      return {
+        ...state,
+        edited: false,
+      };
+    case EDIT_LOAN_RATINGS_SUCCESS:
+      return { 
+        ...state, 
+        loan: action.payload,
+        edited: true,
+      };
+    case EDIT_LOAN_RATINGS_FAILURE:
+      return { 
+        ...state,
+        edited: false,
+        error: action.payload,
       };
 
     default:

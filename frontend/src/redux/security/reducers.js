@@ -19,6 +19,9 @@ import {
   DELETE_SECURITY_SUCCESS,
   DELETE_SECURITY_FAILURE,
   CLEAR_SECURITY,
+  EDIT_SECURITY_RATINGS,
+  EDIT_SECURITY_RATINGS_SUCCESS,
+  EDIT_SECURITY_RATINGS_FAILURE,
 } from './constants';
 
 type Action = { type: string, payload: {} };
@@ -147,6 +150,24 @@ const Security = (state: State = {}, action: Action) => {
       return {
         ...state,
         security: undefined,
+      };
+
+    case EDIT_SECURITY_RATINGS:
+      return {
+        ...state,
+        edited: false,
+      };
+    case EDIT_SECURITY_RATINGS_SUCCESS:
+      return { 
+        ...state, 
+        security: action.payload,
+        edited: true,
+      };
+    case EDIT_SECURITY_RATINGS_FAILURE:
+      return { 
+        ...state,
+        edited: false,
+        error: action.payload,
       };
 
     default:
