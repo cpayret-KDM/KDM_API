@@ -73,15 +73,15 @@ public class LoanRating {
 	private ZonedDateTime createdAt;
 
 	@JsonProperty(value = "updatedAt")
-	@Column(name = "updatedAt", precision = 5, scale = 2, updatable = false, nullable = false)
+	@Column(name = "updatedAt", precision = 5, scale = 2, nullable = false)
 	private ZonedDateTime updatedAt;
 
 	@JsonProperty(value = "createdBy")
-	@Column(name = "createdBy", insertable = false, updatable = false)
+	@Column(name = "createdBy", nullable = false, updatable = false)
 	private String createdBy;
 
 	@JsonProperty(value = "updatedBy")
-	@Column(name = "updatedBy", insertable = false, updatable = false)
+	@Column(name = "updatedBy", nullable = false)
 	private String updatedBy;
 
 	@PrePersist
