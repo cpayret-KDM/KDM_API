@@ -11,9 +11,12 @@ import TopbarSearch from './TopbarSearch';
 import AppsDropdown from './AppsDropdown';
 import { showRightSidebar } from '../redux/actions';
 
-import profilePic from '../assets/images/users/avatar-1.jpg';
+//import profilePic from '../assets/images/users/avatar-1.jpg';
 import logoSm from '../assets/images/logo_sm.png';
 import logo from '../assets/images/logos/K_Direct_Mortgage_transparent.fw.png';
+
+import { getLoggedInUser } from '../helpers/authUtils';
+import jwtDecode from 'jwt-decode';
 
 const Notifications = [
     {
@@ -145,6 +148,15 @@ class Topbar extends Component<TopbarProps> {
         const hideLogo = this.props.hideLogo || false;
         const navCssClasses = this.props.navCssClasses || '';
         const containerCssClasses = !hideLogo ? 'container-fluid' : '';
+        const user = getLoggedInUser();
+        let username = "No-User-Name";
+        let profilePic = "";
+        if (user) {
+            const decoded = jwtDecode(user.id_token);
+            username = decoded.name;
+            profilePic = decoded.picture;
+        }
+    
         return (
             <React.Fragment>
                 <div className={`navbar-custom ${navCssClasses}`}>
@@ -181,8 +193,8 @@ class Topbar extends Component<TopbarProps> {
                                 <ProfileDropdown
                                     profilePic={profilePic}
                                     menuItems={ProfileMenus}
-                                    username={'Holly MacDonald-Korth'}
-                                    userTitle={'President'}
+                                    username={username}
+                                    /*userTitle={'President'}*/
                                 />
                             </li>
                         </ul>

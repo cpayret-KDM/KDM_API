@@ -22,7 +22,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -145,7 +144,7 @@ public class LoanController {
 	)
 	@ResponseBody
 	@GetMapping
-	@PreAuthorize(LoanController.READ_LOAN_PERMISSION)
+	//@PreAuthorize(LoanController.READ_LOAN_PERMISSION)
 	public ResponseEntity<Page<Loan>> getLoans(
 			@Parameter(hidden = true) LoanSpec loanSpec, 
 			@PageableDefault(size = 25) @Parameter(hidden = true) Pageable pageable) {
@@ -174,7 +173,7 @@ public class LoanController {
 			@ApiResponse(responseCode = "404", description = "loan not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
 	@ResponseBody
 	@GetMapping(path = "/{loanId}")
-	@PreAuthorize(LoanController.READ_LOAN_PERMISSION)
+	//@PreAuthorize(LoanController.READ_LOAN_PERMISSION)
 	public ResponseEntity<Loan> getLoan(
 			@PathVariable("loanId") Long loanId) throws Exception {
 
