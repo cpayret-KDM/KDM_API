@@ -12,6 +12,7 @@ import UncontrolledAlert from 'reactstrap/lib/UncontrolledAlert';
 const RatingsTable = (props) => {
   const {  
     itemType = 'loan', 
+    item = {}, 
     editing = false,
     viewing = false,
   } = props;

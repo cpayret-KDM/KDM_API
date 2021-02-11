@@ -9,6 +9,7 @@ import moment from 'moment';
 import PageTitle from '../../components/PageTitle';
 import ModalDeleteSecurity from './ModalDeleteSecurity';
 import RatingsTable from '../LoanDetails/RatingsTable';
+import LoanTable from './LoanTable';
 import { getSecurity, createSecurity, editSecurity, deleteSecurity, clearSecurity } from '../../redux/actions';
 
 const SecurityDetails = (props) => {
@@ -68,14 +69,17 @@ const SecurityDetails = (props) => {
   })(props.mode);
 
   /* Security */
+  const [securityLoans, setSecurityLoans] = useState([]);
   const submitSecurity = (e, errors, values) => {
     if (errors.length !== 0) return;
+    setIsSaving(true);
 
     const newSecurity = {
       ...security,
       ...values,
       tradeDate: tradeDate,
       ratings: formatRatings(securityRatings),
+      loans: formatLoans(securityLoans),
       maturityDate: maturityDate,
     };
 
@@ -119,6 +123,20 @@ const SecurityDetails = (props) => {
    return formattedRatings;
  }
 
+ /* Loans */
+ const handleEditSecurityLoans = (loans) => {
+   const newSecurityLoans = [...loans];
+   setSecurityLoans([...newSecurityLoans]);
+ }
+
+ const formatLoans = (loans) => {
+   let loanIds = [];
+   loans.forEach(loan => {
+     loanIds.push(loan.id);
+  });
+  return loanIds;
+ }
+
   return (
     <>
       <PageTitle
@@ -144,8 +162,7 @@ const SecurityDetails = (props) => {
                       <Col sm={6}>
                         <AvGroup className="position-relative">
                           <Label for="number">Note Number *</Label>
-                          {/* <AvInput name="number" id="number" required disabled={viewing} /> */}
-                          <AvInput name="number" id="number" value={security.number} required disabled={viewing} />
+                          <AvInput name="number" id="number" value={security.number || ''} required disabled={viewing} />
                           <AvFeedback tooltip>Note Number is required</AvFeedback>
                         </AvGroup>
                       </Col>
@@ -154,8 +171,7 @@ const SecurityDetails = (props) => {
                         <AvGroup className="position-relative">
                           <Label for="noteRate">Note Rate *</Label>
                           <div className="input-group">
-                            {/* <AvInput name="noteRate" id="noteRate" required disabled={viewing} /> */}
-                            <AvInput name="noteRate" id="noteRate" value={security.noteRate} required disabled={viewing} />
+                            <AvInput name="noteRate" id="noteRate" value={security.noteRate || ''} required disabled={viewing} />
                             <AvFeedback tooltip>Note Rate is required</AvFeedback>
                             <InputGroupAddon addonType="append">%</InputGroupAddon>
                           </div>
@@ -206,15 +222,28 @@ const SecurityDetails = (props) => {
                       </Col>
                     </Row>
 
-                    <hr />
-                    <h4>Ratings</h4>
-                    <RatingsTable 
-                      item={security}
-                      itemType="security"
-                      editing={editing}
-                      viewing={viewing}
-                      update={handleEditSecurityRatings}
-                    />
+                    {!creating && (
+                      <>
+                        <hr />
+                        <h4>Ratings</h4>
+                        <RatingsTable 
+                          item={security}
+                          itemType="security"
+                          editing={editing}
+                          viewing={viewing}
+                          update={handleEditSecurityRatings}
+                        />
+
+                        <hr />
+                        <h4>Loans</h4>
+                        <LoanTable 
+                          securityId={security.id}
+                          editing={editing}
+                          viewing={viewing}
+                          update={handleEditSecurityLoans}
+                        />
+                      </>
+                    )}
                   </CardBody>
                 </Card>
 
@@ -251,7 +280,12 @@ const SecurityActionButtons = ({ creating, editing, viewing, securityId, handleD
       {editing && (
         <>
           <Link to={`/securities/${securityId}`} className="btn btn-secondary mr-2">Cancel</Link>
-          <Button type="submit" className="btn btn-primary">Save Changes</Button>
+          <Button type="submit" className="btn btn-primary">
+            {isSaving 
+              ? (<Spinner size="sm" color="primary" />) 
+              : (<>Save Changes</>)
+            }
+          </Button>
         </>
       )}
 
