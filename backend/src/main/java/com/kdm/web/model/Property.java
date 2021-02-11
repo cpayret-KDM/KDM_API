@@ -64,18 +64,18 @@ public class Property {
 	
 	@JsonProperty
 	@Column(name = "loanID", insertable = false, updatable = false)
-	@JsonView(View.Basic.class)
+	@JsonView(View.All.class)
 	private Long loanId;
 	
 	@JsonProperty
 	@Column(name = "borrowerID", insertable = false, updatable = false)
-	@JsonView(View.Basic.class)
+	@JsonView(View.All.class)
 	private Long borrowerId;
 	
 	@JsonProperty
 	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "borrowerID", referencedColumnName = "borrowerId", nullable = true)
-	@JsonView(View.Basic.class)
+	@JsonView(View.All.class)
 	private Borrower borrower;
 	
 	@JsonProperty(value = "type")
@@ -85,7 +85,7 @@ public class Property {
 	private PropertyType type;
 	
 	@OneToOne(mappedBy="property", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
-	@JsonView(View.Basic.class)
+	@JsonView(View.All.class)
 	private LatestAppraisalView appraisal;
 		
 	/*  use this one for historical, maybe ?
