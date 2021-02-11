@@ -86,7 +86,6 @@ const loanRoutes = {
     },
     {
       path: '/loans/create',
-      // something
       name: 'Create Loan',
       component: (props) => <LoanDetails {...props} mode="create" />,
       route: PrivateRoute,
