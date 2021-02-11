@@ -2,9 +2,6 @@ import {
   GET_SECURITIES,
   GET_SECURITIES_SUCCESS,
   GET_SECURITIES_FAILURE,
-  // GET_60_DAY_SECURITIES,
-  // GET_60_DAY_SECURITIES_SUCCESS,
-  // GET_60_DAY_SECURITIES_FAILURE,
 
   GET_SECURITY,
   GET_SECURITY_SUCCESS,
@@ -22,9 +19,13 @@ import {
   EDIT_SECURITY_RATINGS,
   EDIT_SECURITY_RATINGS_SUCCESS,
   EDIT_SECURITY_RATINGS_FAILURE,
+
   GET_SECURITY_LOANS,
   GET_SECURITY_LOANS_SUCCESS,
   GET_SECURITY_LOANS_FAILURE,
+  EDIT_SECURITY_LOANS,
+  EDIT_SECURITY_LOANS_SUCCESS,
+  EDIT_SECURITY_LOANS_FAILURE,
 } from './constants';
 
 type SecurityAction = { type: String, payload: {} | String };
@@ -131,7 +132,7 @@ export const editSecurityRatingsFailure = (err: Object): LoanAction => ({
   payload: err,
 });
 
-// Get Security
+// Get Security Loans
 export const getSecurityLoans = (securityId: String): SecurityAction => ({
   type: GET_SECURITY_LOANS,
   payload: { securityId },
@@ -144,5 +145,21 @@ export const getSecurityLoansSuccess = (loans: Array): SecurityAction => ({
 
 export const getSecurityLoansFailure = (err: Object): SecurityAction => ({
   type: GET_SECURITY_LOANS_FAILURE,
+  payload: err,
+});
+
+// Edit Security Loans
+export const editSecurityLoans = (loans: Object, securityId: String): SecurityAction => ({
+  type: EDIT_SECURITY_LOANS,
+  payload: { loans, securityId },
+});
+
+export const editSecurityLoansSuccess = (loans: Object): SecurityAction => ({
+  type: EDIT_SECURITY_LOANS_SUCCESS,
+  payload: loans,
+});
+
+export const editSecurityLoansFailure = (err: Object): SecurityAction => ({
+  type: EDIT_SECURITY_LOANS_FAILURE,
   payload: err,
 });

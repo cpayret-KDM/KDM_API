@@ -3,26 +3,30 @@ import { connect } from 'react-redux';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from 'reactstrap';
 import { AvField, AvGroup } from 'availity-reactstrap-validation';
 
-import { deleteProperty } from '../../redux/actions';
-
 const ModalAddLoan = (props) => {
   const { isOpen, toggle, loans } = props;
   const [isSaving, setIsSaving] = useState(false);
-  const [loanId, setLoanId] = useState();
+  const [loanId, setLoanId] = useState(undefined);
 
   useEffect(() => {
-    if (props.loans?.length > 0) {
-      setLoanId(props.loans[0].id);
+    setIsSaving(false);
+    if (isOpen && loans?.length > 0) {
+      setLoanId(loans[0].id);
     }
-  }, [loans]);
+  }, [isOpen]);
 
   const handleLoanChange = (e) => {
-    setLoanId(e.target.value)
+    const newLoanId = e.target.value;
+    setLoanId(newLoanId);
   }
 
   const handleAddLoan = () => {
     setIsSaving(true);
-    props.addNewLoan(loanId);
+    loans.forEach(loan => {
+      if (loan.id == loanId) {
+        props.addNewLoan(loan);
+      }
+    });
   }
 
   return (
@@ -34,7 +38,7 @@ const ModalAddLoan = (props) => {
             name="ratingAgency"
             type="select"
             className="custom-select"
-            onChange={(e) => handleLoanChange(e)}
+            onChange={handleLoanChange}
           >
             {loans.length > 0 && loans.map((loan, i) => 
               (<option value={loan.id} key={i}>{loan.id} : {loan.loanNumber}</option>)
@@ -56,12 +60,12 @@ const ModalAddLoan = (props) => {
 }
 
 const mapStateToProps = state => {
-  return state.Property;
+  return state.Security;
 };
 
 export default connect(
   mapStateToProps,
   { 
-    deleteProperty,
+    
   }
 )(ModalAddLoan);

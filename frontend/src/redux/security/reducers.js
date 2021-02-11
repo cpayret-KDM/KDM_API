@@ -19,9 +19,13 @@ import {
   EDIT_SECURITY_RATINGS,
   EDIT_SECURITY_RATINGS_SUCCESS,
   EDIT_SECURITY_RATINGS_FAILURE,
+
   GET_SECURITY_LOANS,
   GET_SECURITY_LOANS_SUCCESS,
   GET_SECURITY_LOANS_FAILURE,
+  EDIT_SECURITY_LOANS,
+  EDIT_SECURITY_LOANS_SUCCESS,
+  EDIT_SECURITY_LOANS_FAILURE,
 } from './constants';
 
 type Action = { type: string, payload: {} };
@@ -154,12 +158,24 @@ const Security = (state: State = {}, action: Action) => {
     case GET_SECURITY_LOANS_FAILURE:
       return {
         ...state,
-        security: {
-          ...state.security,
-          loans: null
-        },
         error: true,
         loaded: true,
+      };
+
+    case EDIT_SECURITY_LOANS:
+      return {
+        ...state,
+        edited: false,
+      };
+    case EDIT_SECURITY_LOANS_SUCCESS:
+      return {
+        ...state,
+        edited: true,
+      };
+    case EDIT_SECURITY_LOANS_FAILURE:
+      return {
+        ...state,
+        edited: false,
       };
 
     default:

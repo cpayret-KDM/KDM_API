@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Table } from 'reactstrap';
-import { AvField, AvGroup, AvInput, UncontrolledAlert } from 'availity-reactstrap-validation';
+import { Table, UncontrolledAlert } from 'reactstrap';
 
 import { getSecurityLoans, getLoans } from '../../redux/actions';
 import { DATE_FORMAT, PROPERTY_TYPE_MAP } from '../../helpers/utils';
@@ -23,33 +22,41 @@ const LoanTable = (props) => {
   /* Set Security Loans onPageLoad */
   const [securityLoans, setSecurityLoans] = useState([]);
   const [unassignedLoans, setUnassignedLoans] = useState([]);
+  const [securityLoansLoaded, setSecurityLoansLoaded] = useState(false);
+  const [unassignedLoansLoaded, setUnassignedLoansLoaded] = useState(false);
   useEffect(() => {
-    if (props.security?.loans) {
+    if (props.security?.loans?.length > 0 && securityLoans.length === 0 && !securityLoansLoaded) {
       let newSecurityLoans = [...props.security.loans];
       setSecurityLoans(newSecurityLoans);
+      setSecurityLoansLoaded(true);
     }
-    if (props.loans) {
+    if (props.loans?.length > 0 && unassignedLoans.length === 0 && !unassignedLoansLoaded) {
       let newUnassignedLoans = [...props.loans];
       setUnassignedLoans(newUnassignedLoans);
+      setUnassignedLoansLoaded(true);
     }
   }, [props.security]);
-
-  useEffect(() => {
-    console.log('securityLoans updated', securityLoans)
-  }, [securityLoans]);
-  useEffect(() => {
-    console.log('unassignedLoans updated', unassignedLoans)
-  }, [unassignedLoans]);
 
   /* State Functions */
   const [showAddNewLoanModal, setShowAddNewLoanModal] = useState(false);
   const handleAddNewLoan = (e, i) => {
-    console.log('adding new loan')
     setShowAddNewLoanModal(true);
   }
 
-  const addNewLoan = (loanId) => {
-    console.log('loanId',loanId)
+  const addNewLoan = (loan) => {
+    // Add Loan
+    let newSecurityLoans = [...securityLoans];
+    newSecurityLoans.push(loan);
+    setSecurityLoans(newSecurityLoans);
+
+    // Remove from Unassigned
+    let newUnassignedLoans = [...unassignedLoans];
+    unassignedLoans.forEach((ua, i) => {
+      if (ua.id == loan.id) {
+        newUnassignedLoans.splice(i, 1);
+      }
+    });
+    setUnassignedLoans(newUnassignedLoans);
     setShowAddNewLoanModal(false);
   }
 
@@ -59,13 +66,17 @@ const LoanTable = (props) => {
 
   const handleRemoveLoan = (i) => {
     const newUnasignedLoans = [...unassignedLoans];
-    newUnasignedLoans.push(newSecurityLoans[i]);
+    newUnasignedLoans.push(securityLoans[i]);
     setUnassignedLoans(newUnasignedLoans);
 
     const newSecurityLoans = [...securityLoans];
     newSecurityLoans.splice(i, 1);
     setSecurityLoans(newSecurityLoans);
   }
+
+  useEffect(() => {
+    props.update(securityLoans);
+  }, [securityLoans]);
  
   return (
     <>
@@ -110,8 +121,16 @@ const LoanTable = (props) => {
           </tbody>
         </Table>
       )}
-      {editing && unassignedLoans.length > 0 && (
-        <span className="btn btn-secondary" onClick={(e) => handleAddNewLoan(e)}>Add New Loan</span>
+      {editing && (
+        <>
+          {unassignedLoans.length > 0 ? (
+            <span className="btn btn-secondary" onClick={(e) => handleAddNewLoan(e)}>Add New Loan</span>
+          ) : (
+            <UncontrolledAlert color="success">
+              No unassigned loans remain
+            </UncontrolledAlert>
+          )}
+        </>
       )}
       <ModalAddLoan
         loans={unassignedLoans} 
@@ -125,7 +144,7 @@ const LoanTable = (props) => {
 
 
 const mapStateToProps = state => {
-  const security = {...state.Security};
+  const security = {...state.Security.security};
   const loans = state.Loan.loans;
   return { security, loans };
 };

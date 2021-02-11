@@ -182,7 +182,11 @@ function* editLoanSaga({ payload: { loan } }) {
   const response = yield call(fetchJSON, `${SERVER_URL}/loan/${loan.id}`, options);
   if (!response.status || response.status === 200) {
     yield put(editLoanSuccess(response));
-    yield put(editLoanRatings(loan.ratings, loan.id));
+    if (loan.ratings?.length > 0) {
+      yield put(editLoanRatings(loan.ratings, loan.id));
+    } else {
+      yield put(getLoan(loan.id));
+    }
   } else {
     let message;
     switch (response.status) {
