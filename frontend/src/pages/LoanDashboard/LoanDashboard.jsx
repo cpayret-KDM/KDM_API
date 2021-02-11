@@ -61,7 +61,7 @@ const LoanDashboard = (props) => {
           breadCrumbItems={[
             {...breadcrumb},
           ]}
-          title="Dashboard"
+          title="Loans Dashboard"
         />
 
         <Row>
