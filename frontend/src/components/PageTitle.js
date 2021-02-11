@@ -20,7 +20,7 @@ const PageTitle = (props: PageTitleProps) => {
                     <div className="page-title-right">
                         <Breadcrumb>
                             <BreadcrumbItem>
-                                <Link to="/">Dashboard</Link>
+                                <Link to="/"> { `${props.breadCrumbItems[0].label} Dashboard`}</Link>
                             </BreadcrumbItem>
                             {props.breadCrumbItems.map((item, index) => {
                                 return item.active ? (
