@@ -48,7 +48,7 @@ const LoanDashboard = (props) => {
 
         <Row>
           <Col sm={12}>
-            <CashFlowTable loans={loans?.content} report={report} />
+            <CashFlowTable loans={loans} report={report} />
           </Col>
         </Row>
       </>
@@ -66,7 +66,7 @@ const LoanDashboard = (props) => {
 
         <Row>
           <Col sm={12}>
-            <LoansTable loans={loans?.content} report={report} />
+            <LoansTable loans={loans} report={report} />
           </Col>
         </Row>
       </>
