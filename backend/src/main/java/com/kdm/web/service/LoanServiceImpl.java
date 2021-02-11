@@ -108,8 +108,11 @@ public class LoanServiceImpl implements LoanService {
 				//propertyRepository.save(property);
 			}
 		}
+		
+		entityManager.merge(property);
+		entityManager.detach(property);
 				
-		return entityManager.merge(property);
+		return entityUtil.tryGetEntity(Property.class, property.getId());
 
 	}
 	

@@ -176,7 +176,10 @@ public class PropertyController {
 		
 		Property prevProperty = entityUtil.tryGetEntity(Property.class, propertyId);
 		
+		// keep the following related entities before updating 
 		property.setAppraisal(prevProperty.getAppraisal());
+		property.setBorrower(prevProperty.getBorrower());
+		
 		Property updatedProperty = loanService.updateProperty(property);
 		
 		return new ResponseEntity<Property>(updatedProperty, OK);
