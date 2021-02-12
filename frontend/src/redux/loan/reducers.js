@@ -69,9 +69,10 @@ const Loan = (state: State = initialState, action: Action) => {
         loans: undefined,
       };
     case GET_60_DAY_LOANS_SUCCESS:
+      const loans60day = action.payload?.content;
       return { 
         ...state, 
-        loans: action.payload,
+        loans: loans60day,
       };
     case GET_60_DAY_LOANS_FAILURE:
       return { 
