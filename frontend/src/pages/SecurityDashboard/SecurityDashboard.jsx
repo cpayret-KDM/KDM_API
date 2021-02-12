@@ -29,7 +29,7 @@ const SecurityDashboard = (props) => {
         breadCrumbItems={[
           { ...breadcrumb },
         ]}
-        title="Dashboard"
+        title="Securities Dashboard"
       />
 
       <Row>
