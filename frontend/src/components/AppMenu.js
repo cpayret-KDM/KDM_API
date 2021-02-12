@@ -9,6 +9,8 @@ import MetisMenu from 'metismenujs/dist/metismenujs';
 import { initMenu, changeActiveMenuFromLocation } from '../redux/actions';
 
 const MenuItemWithChildren = ({ item, linkClassNames, subMenuClassNames, activatedMenuItemIds }) => {
+    let slicedMenu = item.children
+    slicedMenu = slicedMenu.slice(0, slicedMenu.length - 2)
     return (
         <li
             className={classNames('side-nav-item', {
@@ -30,8 +32,9 @@ const MenuItemWithChildren = ({ item, linkClassNames, subMenuClassNames, activat
                 className={classNames(subMenuClassNames, 'mm-collapse', {
                     'mm-collapsed mm-show': activatedMenuItemIds.indexOf(item.id) >= 0,
                 })}
-                aria-expanded={activatedMenuItemIds.indexOf(item.id) >= 0}>
-                {item.children.map((child, i) => {
+                aria-expanded={ activatedMenuItemIds.indexOf(item.id) >= 0 }>
+                { slicedMenu.map((child, i) => {
+                // { item.children.map((child, i) => {
                     return (
                         <React.Fragment key={i}>
                             {child.children ? (

@@ -9,6 +9,8 @@ let uuid = 1;
 
 const assignIdAndParent = (menuItems: Array<MenuItem>, parentId?: number) => {
     menuItems = menuItems || [];
+    // let menuItemsStripped = menuItems.splice(-2)
+    // menuItemsStripped.forEach(item => {
     menuItems.forEach(item => {
         const id = item.id || uuid;
         uuid += 1;
