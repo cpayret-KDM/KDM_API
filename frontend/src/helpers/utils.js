@@ -19,17 +19,6 @@ export const LOAN_STATUS_MAP = {
   'PAID_OFF': 'Paid Off',
 };
 
-export const SECURITY_STATUS_MAP = {
-  'PERFORMING': 'Performing',
-  'LATE_30_DAYS': '30 Days Late',
-  'LATE_60_DAYS': '60 Days Late',
-  'LATE_90_DAYS': '90 Days Late',
-  'LOCKBOX_TRIGGERED': 'Lockbox Triggered',
-  'DEFAULT': 'Default',
-  'FORECLOSURE': 'Foreclosure',
-  'PAID_OFF': 'Paid Off',
-};
-
 export const PIPELINE_STATUS_MAP = {
   'NEW': 'New',
   'IN_PROGRESS': 'In Progress',
