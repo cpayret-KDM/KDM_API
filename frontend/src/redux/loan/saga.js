@@ -42,8 +42,9 @@ function* getLoansSaga({ payload: { nullMSN } }) {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   };
+  const nullMSNString = (nullMSN) ? `?nullMSN=${nullMSN}` : '';
 
-  const response = yield call(fetchJSON, `${SERVER_URL}/loan?nullMSN=${nullMSN}`, options);
+  const response = yield call(fetchJSON, `${SERVER_URL}/loan${nullMSNString}`, options);
   if (!response.status || response.status === 200) {
     yield put(getLoansSuccess(response));
   } else {
