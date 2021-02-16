@@ -103,6 +103,10 @@ public class TMOController {
 		loans.stream().forEach(loan -> {
 			
 			try {
+				logger.trace(String.format("GetLoan details for loan account %s", loan.getAccount()) );
+				com.kdm.web.restclient.tmo.model.LoanDetail detail = tmoLoanService.getLoanDetail(loan.getAccount());
+				loan.setLoanDetail(detail);
+				
 				logger.trace(String.format("GetLoanProperties for loan account %s", loan.getAccount()) );
 				List<com.kdm.web.restclient.tmo.model.Property> properties = tmoLoanService.getProperties(loan.getAccount());
 				loan.setProperties(properties);				

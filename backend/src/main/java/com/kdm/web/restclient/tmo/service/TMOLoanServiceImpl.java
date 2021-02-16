@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kdm.web.restclient.tmo.model.Funding;
 import com.kdm.web.restclient.tmo.model.Loan;
+import com.kdm.web.restclient.tmo.model.LoanDetail;
 import com.kdm.web.restclient.tmo.model.Property;
 import com.kdm.web.restclient.tmo.model.RawResponse;
 
@@ -89,6 +90,30 @@ public class TMOLoanServiceImpl implements TMOLoanService {
 		Funding[] results = objectMapper.treeToValue(response.getRawData(), Funding[].class);
 		
 		return Arrays.asList(results);
+	}
+
+	@Override
+	public LoanDetail getLoanDetail(String loanAccount) throws Exception {
+		RawResponse response = tmoWebClient.get()
+				.uri(uriBuilder -> uriBuilder
+					    .path("/TmoAPI/v1/LSS.svc/GetLoan/{Account}")
+					    .build(loanAccount))
+				.exchange()
+				.block()
+				.bodyToMono(RawResponse.class)
+				.block();
+		
+		if (response.getStatus() != 0) {
+			String errorMessage = String.format("Error when calling TMO api, status=%d, errorNumber=%d, errorMessage=%s", response.getStatus(), response.getErrorNumber(), response.getErrorMessage());
+			this.logger.error(errorMessage);
+			throw new Exception(errorMessage);
+		}
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		
+		LoanDetail result = objectMapper.treeToValue(response.getRawData(), LoanDetail.class);
+		
+		return result;
 	}
 
 }
