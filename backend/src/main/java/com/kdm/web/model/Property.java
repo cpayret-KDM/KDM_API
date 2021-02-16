@@ -64,7 +64,7 @@ public class Property {
 	
 	@JsonProperty
 	@Column(name = "loanID", insertable = false, updatable = false)
-	@JsonView(View.All.class)
+	@JsonView(View.Basic.class)
 	private Long loanId;
 	
 	@JsonProperty
