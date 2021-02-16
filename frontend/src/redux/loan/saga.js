@@ -42,9 +42,9 @@ function* getLoansSaga({ payload: { nullMSN } }) {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   };
-  const nullMSNString = (nullMSN) ? `?nullMSN=${nullMSN}` : '';
+  const nullMSNString = (nullMSN) ? `&?nullMSN=${nullMSN}` : '';
 
-  const response = yield call(fetchJSON, `${SERVER_URL}/loan${nullMSNString}`, options);
+  const response = yield call(fetchJSON, `${SERVER_URL}/loan?size=500${nullMSNString}`, options);
   if (!response.status || response.status === 200) {
     yield put(getLoansSuccess(response));
   } else {
