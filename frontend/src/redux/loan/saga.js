@@ -98,11 +98,7 @@ function* getCashFlowLoans() {
 
   const response = yield call(fetchJSON, `${SERVER_URL}/loan/cashflow`, options);
   if (!response.status || response.status === 200) {
-    //FIXME: Hack to make cash flow report match 60 Day Loan Response
-    const wrapper = {
-      content: response
-    };
-    yield put(getCashFlowLoansSuccess(wrapper));
+    yield put(getCashFlowLoansSuccess(response));
   } else {
     let message;
     switch (response.status) {
