@@ -44,7 +44,7 @@ function* getSecurities({ payload: { securityNumber, size, page, sort } }) {
     headers: { 'Content-Type': 'application/json' },
   };
 
-  const response = yield call(fetchJSON, `${SERVER_URL}/msn`, options);
+  const response = yield call(fetchJSON, `${SERVER_URL}/msn?size=500`, options);
   if (!response.status || response.status === 200) {
     yield put(getSecuritiesSuccess(response));
   } else {
