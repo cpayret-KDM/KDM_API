@@ -53,7 +53,8 @@ const ModalProperty = (props) => {
 
   const handleSubmitProperty = (e, errors, values) => {
     if (errors.length > 0) return false;
-    // e.preventDefault();
+    e.preventDefault();
+    // e.persist()
     setIsSaving(true);
 
     let newProperty = {

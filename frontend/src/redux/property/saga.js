@@ -100,7 +100,7 @@ function* editProperty({ payload: { property, borrowerId } }) {
     } else {
       yield assignBorrower(property.id, property.loanId, property.borrower)
     }
-    yield put(getLoan(property.loanId));
+    // yield put(getLoan(property.loanId));
   } else {
     let message;
     switch (response.status) {
@@ -183,6 +183,7 @@ function* assignBorrower(propertyId, loanId, borrower) {
   const response = yield call(fetchJSON, `${SERVER_URL}/property/${propertyId}/borrower/`, options);
   if (!response.status || response.status === 200) {
     yield put(assignBorrowerSuccess(response));
+    // yield put(getLoan(loanId));
   } else {
     let message;
     switch (response.status) {
@@ -210,6 +211,7 @@ function* editBorrower(propertyId, loanId, borrower)  {
   const response = yield call(fetchJSON, `${SERVER_URL}/borrower/${borrower.id}`, options)
   if (!response.status || response.status === 200) {
     yield put(editBorrowerSuccess(response))
+    // yield put(getLoan(loanId));
   } else {
     let message
     switch (response.status) {
