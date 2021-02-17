@@ -17,6 +17,9 @@ import {
   ASSIGN_BORROWER,
   ASSIGN_BORROWER_SUCCESS,
   ASSIGN_BORROWER_FAILURE,
+  EDIT_BORROWER,
+  EDIT_BORROWER_SUCCESS,
+  EDIT_BORROWER_FAILURE,
   CLEAR_PROPERTY,
 } from './constants';
 
@@ -161,6 +164,31 @@ const property = (state: State = {}, action: Action) => {
     case ASSIGN_BORROWER_FAILURE:
       return {
         ...state,
+      };
+    
+    case EDIT_BORROWER:
+      return {
+        ...state,
+        added: false,
+        edited: false,
+        deleted: false,
+        error: null,
+      }
+    case EDIT_BORROWER_SUCCESS:
+      return {
+        ...state,
+        added: false,
+        edited: true,
+        deleted: false,
+        error: null,
+      }
+    case EDIT_BORROWER_FAILURE:
+      return {
+        ...state,
+        added: false,
+        edited: false,
+        deleted: false,
+        error: action.payload,
       };
 
     case CLEAR_PROPERTY:

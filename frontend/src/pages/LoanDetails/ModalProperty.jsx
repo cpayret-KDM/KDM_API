@@ -53,7 +53,7 @@ const ModalProperty = (props) => {
 
   const handleSubmitProperty = (e, errors, values) => {
     if (errors.length > 0) return false;
-    e.preventDefault();
+    // e.preventDefault();
     setIsSaving(true);
 
     let newProperty = {
@@ -80,6 +80,7 @@ const ModalProperty = (props) => {
         note: values.appraisalNote,
       };
       newProperty.borrower = {
+        ...property.borrower,
         address: {
           street1: values.borrowerStreet1,
           street2: values.borrowerStreet2,
@@ -87,7 +88,6 @@ const ModalProperty = (props) => {
           state: values.borrowerState,
           zip: values.borrowerZip,
           name: 'NA',
-          // name: values.name,
         },
         company: values.borrowerCompany,
         firstName: values.borrowerFirstName,
@@ -95,30 +95,7 @@ const ModalProperty = (props) => {
         phone: values.borrowerPhone,
         email: values.borrowerEmail,
       };
-      // newProperty = {
-      //   ...property,
-      //   appraisal: {
-      //     value: Number(values.appraisalValue),
-      //     date: moment(appraisalDate).utc().format(),
-      //     note: values.appraisalNote,
-      //   },
-      //   borrower: {
-      //     address: {
-      //       street1: values.borrowerStreet1,
-      //       street2: values.borrowerStreet2,
-      //       city: values.borrowerCity,
-      //       state: values.borrowerState,
-      //       zip: values.borrowerZip,
-      //       name: 'NA',
-      //     },
-      //     company: values.borrowerCompany,
-      //     firstName: values.borrowerFirstName,
-      //     lastName: values.borrowerLastName,
-      //     phone: values.borrowerPhone,
-      //     email: values.borrowerEmail,
-      //   },
-      // }
-      props.editProperty(newProperty);
+      props.editProperty(newProperty, property.borrower?.id);
     }
     return true;
   }
@@ -260,15 +237,13 @@ const ModalProperty = (props) => {
                       <Col sm={6}>
                         <AvGroup className="position-relative">
                           <Label for="borrowerFirstName">First Name *</Label>
-                          <AvInput name="borrowerFirstName" id="borrowerFirstName" value={property?.borrower?.firstName || ' '} required />
-                          <AvFeedback tooltip>First Name is required</AvFeedback>
+                          <AvInput name="borrowerFirstName" id="borrowerFirstName" value={property?.borrower?.firstName || ' '} />
                         </AvGroup>
                       </Col>
                       <Col sm={6}>
                         <AvGroup className="position-relative">
                           <Label for="borrowerLastName">Last Name *</Label>
-                          <AvInput name="borrowerLastName" id="borrowerLastName" value={property?.borrower?.lastName || ' '} required />
-                          <AvFeedback tooltip>Last Name is required</AvFeedback>
+                          <AvInput name="borrowerLastName" id="borrowerLastName" value={property?.borrower?.lastName || ' '} />
                         </AvGroup>
                       </Col>
                     </Row>
@@ -276,15 +251,13 @@ const ModalProperty = (props) => {
                       <Col sm={6}>
                         <AvGroup className="position-relative">
                           <Label for="borrowerPhone">Phone Number *</Label>
-                          <AvInput name="borrowerPhone" id="borrowerPhone" value={property?.borrower?.phone || ' '} required />
-                          <AvFeedback tooltip>Phone Number is required</AvFeedback>
+                          <AvInput name="borrowerPhone" id="borrowerPhone" value={property?.borrower?.phone || ' '} />
                         </AvGroup>
                       </Col>
                       <Col sm={6}>
                         <AvGroup className="position-relative">
                           <Label for="borrowerEmail">Email *</Label>
-                          <AvInput name="borrowerEmail" id="borrowerEmail" value={property?.borrower?.email || ' '} required />
-                          <AvFeedback tooltip>Email is required</AvFeedback>
+                          <AvInput name="borrowerEmail" id="borrowerEmail" value={property?.borrower?.email || ' '} />
                         </AvGroup>
                       </Col>
                     </Row>
@@ -292,8 +265,7 @@ const ModalProperty = (props) => {
                       <Col sm={6}>
                         <AvGroup className="position-relative">
                           <Label for="borrowerStreet1">Street Address *</Label>
-                          <AvInput name="borrowerStreet1" id="borrowerStreet1" value={property?.borrower?.address.street1 || ' '} required />
-                          <AvFeedback tooltip>Street Address is required</AvFeedback>
+                          <AvInput name="borrowerStreet1" id="borrowerStreet1" value={property?.borrower?.address.street1 || ' '} />
                         </AvGroup>
                       </Col>
                       <Col sm={6}>
@@ -307,8 +279,7 @@ const ModalProperty = (props) => {
                       <Col sm={4}>
                         <AvGroup className="position-relative">
                           <Label for="borrowerCity">City *</Label>
-                          <AvInput name="borrowerCity" id="borrowerCity" value={property?.borrower?.address.city} required />
-                          <AvFeedback tooltip>City is required</AvFeedback>
+                          <AvInput name="borrowerCity" id="borrowerCity" value={property?.borrower?.address.city} />
                         </AvGroup>
                       </Col>
                       <Col sm={4}>
@@ -325,14 +296,12 @@ const ModalProperty = (props) => {
                               (<option value={location[0]} key={i}>{location[1]}</option>)
                             )}
                           </AvField>
-                          <AvFeedback tooltip>State is required</AvFeedback>
                         </AvGroup>
                       </Col>
                       <Col sm={4}>
                         <AvGroup className="position-relative">
                           <Label for="borrowerZip">Zip Code *</Label>
-                          <AvInput name="borrowerZip" id="borrowerZip" value={property?.borrower?.address.zip} required />
-                          <AvFeedback tooltip>Zip Code is required</AvFeedback>
+                          <AvInput name="borrowerZip" id="borrowerZip" value={property?.borrower?.address.zip} />
                         </AvGroup>
                       </Col>
                     </Row>
