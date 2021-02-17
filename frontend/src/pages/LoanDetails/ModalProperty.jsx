@@ -29,8 +29,7 @@ const ModalProperty = (props) => {
     }
   }, [props.property]);
 
-  const [appraisalDate, setAppraisalDate] = useState(null);
-  // const [appraisalDate, setAppraisalDate] = useState(new Date());
+  const [appraisalDate, setAppraisalDate] = useState(new Date());
   useEffect(() => {
     if (!property?.appraisal?.date) return;
     setAppraisalDate(moment(property.appraisal.date).toDate());
@@ -209,11 +208,9 @@ const ModalProperty = (props) => {
                             <DatePicker
                               className="form-control date"
                               dateFormat="MM/dd/yyyy"
-                              // placeholder={ appraisalDate }
-                              // value={appraisalDate}
-                              // onSelect={ date => setAppraisalDate(date)}
                               selected={appraisalDate}
-                              onChange={date => setAppraisalDate(date)}
+                              onChange={ date => setAppraisalDate(date) }
+                              isClearable
                             />
                           </div>
                         </AvGroup>
