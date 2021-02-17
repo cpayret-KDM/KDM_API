@@ -208,7 +208,8 @@ const ModalProperty = (props) => {
                             <DatePicker
                               className="form-control date"
                               dateFormat="MM/dd/yyyy"
-                              selected={appraisalDate}
+                              // value={ property?.appraisal?.date }
+                              selected={ appraisalDate }
                               onChange={ date => setAppraisalDate(date) }
                               isClearable
                             />
