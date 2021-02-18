@@ -87,7 +87,7 @@ const property = (state: State = {}, action: Action) => {
     case EDIT_PROPERTY:
       return {
         ...state,
-        property: undefined,
+        property: action.payload,
         added: false,
         edited: false,
         deleted: false,
@@ -169,6 +169,7 @@ const property = (state: State = {}, action: Action) => {
     case EDIT_BORROWER:
       return {
         ...state,
+        property: action.payload,
         added: false,
         edited: false,
         deleted: false,
@@ -177,6 +178,7 @@ const property = (state: State = {}, action: Action) => {
     case EDIT_BORROWER_SUCCESS:
       return {
         ...state,
+        property: action.payload,
         added: false,
         edited: true,
         deleted: false,
@@ -185,6 +187,7 @@ const property = (state: State = {}, action: Action) => {
     case EDIT_BORROWER_FAILURE:
       return {
         ...state,
+        property: action.payload,
         added: false,
         edited: false,
         deleted: false,

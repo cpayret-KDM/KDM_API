@@ -4,7 +4,7 @@ import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import { Row, Col, Label, Button, InputGroupAddon, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from 'reactstrap';
 import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
-import { getProperty, createProperty, editProperty, clearProperty } from '../../redux/actions';
+import { getProperty, createProperty, editProperty, clearProperty, editBorrower, assignBorrower } from '../../redux/actions';
 import { PROPERTY_TYPE_MAP, US_STATES_MAP } from '../../helpers/utils';
 
 const ModalProperty = (props) => {
@@ -55,6 +55,7 @@ const ModalProperty = (props) => {
     if (errors.length > 0) return false;
     e.preventDefault();
     // e.persist()
+    // e.stopPropagation()
     setIsSaving(true);
 
     let newProperty = {
@@ -96,7 +97,15 @@ const ModalProperty = (props) => {
         phone: values.borrowerPhone,
         email: values.borrowerEmail,
       };
+      // props.editProperty(newProperty);
       props.editProperty(newProperty, property.borrower?.id);
+      // if (newProperty.borrower.id) {
+      //   props.editBorrower(newProperty)
+      // } else {
+      //   props.assignBorrower(newProperty)
+      // }
+      // this.handleCloseModal()
+      // e.stopPropagation()
     }
     return true;
   }
@@ -331,6 +340,6 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    getProperty, createProperty, editProperty, clearProperty,
+    getProperty, createProperty, editProperty, clearProperty, editBorrower, assignBorrower
   }
 )(ModalProperty);
