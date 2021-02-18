@@ -34,7 +34,6 @@ const MenuItemWithChildren = ({ item, linkClassNames, subMenuClassNames, activat
                 })}
                 aria-expanded={ activatedMenuItemIds.indexOf(item.id) >= 0 }>
                 { slicedMenu.map((child, i) => {
-                // { item.children.map((child, i) => {
                     return (
                         <React.Fragment key={i}>
                             {child.children ? (
