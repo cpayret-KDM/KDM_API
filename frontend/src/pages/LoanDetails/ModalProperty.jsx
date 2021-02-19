@@ -234,13 +234,13 @@ const ModalProperty = (props) => {
                     <Row>
                       <Col sm={6}>
                         <AvGroup className="position-relative">
-                          <Label for="borrowerFirstName">First Name *</Label>
+                          <Label for="borrowerFirstName">First Name</Label>
                           <AvInput name="borrowerFirstName" id="borrowerFirstName" value={property?.borrower?.firstName || ' '} />
                         </AvGroup>
                       </Col>
                       <Col sm={6}>
                         <AvGroup className="position-relative">
-                          <Label for="borrowerLastName">Last Name *</Label>
+                          <Label for="borrowerLastName">Last Name</Label>
                           <AvInput name="borrowerLastName" id="borrowerLastName" value={property?.borrower?.lastName || ' '} />
                         </AvGroup>
                       </Col>
@@ -248,13 +248,13 @@ const ModalProperty = (props) => {
                     <Row>
                       <Col sm={6}>
                         <AvGroup className="position-relative">
-                          <Label for="borrowerPhone">Phone Number *</Label>
+                          <Label for="borrowerPhone">Phone Number</Label>
                           <AvInput name="borrowerPhone" id="borrowerPhone" value={property?.borrower?.phone || ' '} />
                         </AvGroup>
                       </Col>
                       <Col sm={6}>
                         <AvGroup className="position-relative">
-                          <Label for="borrowerEmail">Email *</Label>
+                          <Label for="borrowerEmail">Email</Label>
                           <AvInput name="borrowerEmail" id="borrowerEmail" value={property?.borrower?.email || ' '} />
                         </AvGroup>
                       </Col>
@@ -262,7 +262,7 @@ const ModalProperty = (props) => {
                     <Row>
                       <Col sm={6}>
                         <AvGroup className="position-relative">
-                          <Label for="borrowerStreet1">Street Address *</Label>
+                          <Label for="borrowerStreet1">Street Address</Label>
                           <AvInput name="borrowerStreet1" id="borrowerStreet1" value={property?.borrower?.address.street1 || ' '} />
                         </AvGroup>
                       </Col>
@@ -276,13 +276,13 @@ const ModalProperty = (props) => {
                     <Row>
                       <Col sm={4}>
                         <AvGroup className="position-relative">
-                          <Label for="borrowerCity">City *</Label>
+                          <Label for="borrowerCity">City</Label>
                           <AvInput name="borrowerCity" id="borrowerCity" value={property?.borrower?.address.city} />
                         </AvGroup>
                       </Col>
                       <Col sm={4}>
                         <AvGroup className="position-relative">
-                          <Label for="borrowerState">State *</Label>
+                          <Label for="borrowerState">State</Label>
                           <AvField
                             name="borrowerState"
                             type="select"
@@ -298,7 +298,7 @@ const ModalProperty = (props) => {
                       </Col>
                       <Col sm={4}>
                         <AvGroup className="position-relative">
-                          <Label for="borrowerZip">Zip Code *</Label>
+                          <Label for="borrowerZip">Zip Code</Label>
                           <AvInput name="borrowerZip" id="borrowerZip" value={property?.borrower?.address.zip} />
                         </AvGroup>
                       </Col>
