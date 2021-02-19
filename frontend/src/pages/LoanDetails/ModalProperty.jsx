@@ -46,16 +46,12 @@ const ModalProperty = (props) => {
     }
     else if (props.edited) {
       setIsSaving(false);
-      toggle();
       props.getProperty(props.propertyId);
     }
   }, [props.added, props.edited, props.deleted, props.error]);
 
   const handleSubmitProperty = (e, errors, values) => {
     if (errors.length > 0) return false;
-    e.preventDefault();
-    // e.persist()
-    // e.stopPropagation()
     setIsSaving(true);
 
     let newProperty = {
@@ -97,15 +93,8 @@ const ModalProperty = (props) => {
         phone: values.borrowerPhone,
         email: values.borrowerEmail,
       };
-      // props.editProperty(newProperty);
       props.editProperty(newProperty, property.borrower?.id);
-      // if (newProperty.borrower.id) {
-      //   props.editBorrower(newProperty)
-      // } else {
-      //   props.assignBorrower(newProperty)
-      // }
-      // this.handleCloseModal()
-      // e.stopPropagation()
+      toggle()
     }
     return true;
   }
