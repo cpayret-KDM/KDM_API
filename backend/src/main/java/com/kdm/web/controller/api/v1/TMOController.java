@@ -5,7 +5,9 @@ import static org.springframework.http.HttpStatus.OK;
 import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
@@ -35,6 +37,7 @@ import com.kdm.web.model.Property;
 import com.kdm.web.model.PropertyType;
 import com.kdm.web.model.Sponsor;
 import com.kdm.web.restclient.tmo.model.Funding;
+import com.kdm.web.restclient.tmo.model.LoanTerms;
 import com.kdm.web.restclient.tmo.service.TMOLoanService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -140,22 +143,63 @@ public class TMOController {
 			ltv = getWeightedAverage(loan.getProperties());
 		}
 		
-		double fundControl = loan.getFundings().stream().filter(funding -> funding.getFundControl() != null)
-				.map(Funding::getFundControl)
-				.mapToDouble(BigDecimal::doubleValue)
-				.sum();
-		double principalBalance = loan.getFundings().stream().filter(funding -> funding.getPrincipalBalance() != null)
-				.map(Funding::getPrincipalBalance)
-				.mapToDouble(BigDecimal::doubleValue)
-				.sum();
+		LoanTerms terms = loan.getLoanDetail().getTerms();
+		BigDecimal fundControlBD = null;
+		BigDecimal principalBalanceBD = null;
+		BigDecimal loanRate = null;
+		Long prepayMonths = null;
+		ZonedDateTime maturityDate = null;
+		ZonedDateTime closingDate = null;
+		if (Objects.nonNull(terms)) {
+			fundControlBD = terms.getFundControl();
+			principalBalanceBD = terms.getPrincipalBalance();
+			prepayMonths = terms.getPrepayMon();
+			loanRate = terms.getSoldRate();
+			
+			if (Objects.nonNull(terms.getMaturityDate())) {
+				maturityDate = ZonedDateTime.ofInstant(terms.getMaturityDate().toInstant(), ZoneId.systemDefault());
+			}
+			
+			if (Objects.nonNull(terms.getClosingDate())) {
+				closingDate = ZonedDateTime.ofInstant(terms.getClosingDate().toInstant(), ZoneId.systemDefault());
+			}
+			
+		} else {
+			/*
+			 * initialAmount is fundControl from TMO loandetails->terms object
+			 * principalBalance is PrinBal from TMO loandetails->terms object
+			 * but the following commented code is another source (secondary source) for that same info
+			*/
+			double fundControl = loan.getFundings().stream().filter(funding -> funding.getFundControl() != null)
+					.map(Funding::getFundControl)
+					.mapToDouble(BigDecimal::doubleValue)
+					.sum();
+			double principalBalance = loan.getFundings().stream().filter(funding -> funding.getPrincipalBalance() != null)
+					.map(Funding::getPrincipalBalance)
+					.mapToDouble(BigDecimal::doubleValue)
+					.sum();
+			
+			fundControlBD = new BigDecimal(fundControl);
+			principalBalanceBD = new BigDecimal(principalBalance);
+		}
+		
+		Long loanTermMonths = null;
+		if (Objects.nonNull(maturityDate) && Objects.nonNull(closingDate)) {
+			loanTermMonths = closingDate.until(maturityDate, ChronoUnit.MONTHS); 
+		}
 		
 		Loan newLoan = Loan.builder()
 				.loanNumber(loan.getAccount())
 				.dealName(loan.getSortName())
 				.ltv(ltv)
-				.initialAmount(new BigDecimal(fundControl))
-				.principalBalance(new BigDecimal(principalBalance))
+				.initialAmount(fundControlBD)
+				.principalBalance(principalBalanceBD)
+				.prepayMonths(prepayMonths)
 				.loanStatus(LoanStatus.PERFORMING)
+				.loanRate(loanRate)
+				.maturityDate(maturityDate)
+				.originationDate(closingDate)
+				.loanTermMonths(loanTermMonths)
 				.build();
 		Loan savedLoan = saveLoan(newLoan);
 		

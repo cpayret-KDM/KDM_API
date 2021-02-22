@@ -23,6 +23,9 @@ public class TMOLoanServiceImpl implements TMOLoanService {
 	
 	@Autowired
 	private WebClient tmoWebClient;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@Override
 	public List<Loan> getLoans() throws Exception {
@@ -38,8 +41,6 @@ public class TMOLoanServiceImpl implements TMOLoanService {
 			this.logger.error(errorMessage);
 			throw new Exception(errorMessage);
 		}
-		
-		ObjectMapper objectMapper = new ObjectMapper();
 		
 		Loan[] results = objectMapper.treeToValue(response.getRawData(), Loan[].class);
 		
@@ -62,8 +63,6 @@ public class TMOLoanServiceImpl implements TMOLoanService {
 			throw new Exception(errorMessage);
 		}
 		
-		ObjectMapper objectMapper = new ObjectMapper();
-		
 		Property[] results = objectMapper.treeToValue(response.getRawData(), Property[].class);
 		
 		return Arrays.asList(results);	
@@ -84,8 +83,6 @@ public class TMOLoanServiceImpl implements TMOLoanService {
 			this.logger.error(errorMessage);
 			throw new Exception(errorMessage);
 		}
-		
-		ObjectMapper objectMapper = new ObjectMapper();
 		
 		Funding[] results = objectMapper.treeToValue(response.getRawData(), Funding[].class);
 		
@@ -108,8 +105,6 @@ public class TMOLoanServiceImpl implements TMOLoanService {
 			this.logger.error(errorMessage);
 			throw new Exception(errorMessage);
 		}
-		
-		ObjectMapper objectMapper = new ObjectMapper();
 		
 		LoanDetail result = objectMapper.treeToValue(response.getRawData(), LoanDetail.class);
 		
