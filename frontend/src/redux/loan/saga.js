@@ -4,10 +4,12 @@ import { fetchJSON } from '../../helpers/api';
 import {
   GET_LOANS,
   GET_60_DAY_LOANS,
+  GET_CASH_FLOW_LOANS,
   GET_LOAN,
   CREATE_LOAN,
   EDIT_LOAN,
   DELETE_LOAN,
+  EDIT_LOAN_RATINGS,
 } from './constants';
 
 import {
@@ -15,7 +17,10 @@ import {
   getLoansFailure,
   get60DayLoansSuccess,
   get60DayLoansFailure,
+  getCashFlowLoansSuccess,
+  getCashFlowLoansFailure,
   
+  getLoan,
   getLoanSuccess,
   getLoanFailure,
   createLoanSuccess,
@@ -24,18 +29,22 @@ import {
   editLoanFailure,
   deleteLoanSuccess,
   deleteLoanFailure,
+  editLoanRatings,
+  editLoanRatingsSuccess,
+  editLoanRatingsFailure,
 } from './actions';
 
 const SERVER_URL = process.env.REACT_APP_KDM_API_ENDPOINT;
 
 // Get Loans
-function* getLoans({ payload: { loanNumber, size, page, sort } }) {
+function* getLoansSaga({ payload: { nullMSN } }) {
   const options = {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   };
+  const nullMSNString = (nullMSN) ? `&nullMSN=${nullMSN}` : '';
 
-  const response = yield call(fetchJSON, `${SERVER_URL}/loan`, options);
+  const response = yield call(fetchJSON, `${SERVER_URL}/loan?size=500${nullMSNString}`, options);
   if (!response.status || response.status === 200) {
     yield put(getLoansSuccess(response));
   } else {
@@ -55,7 +64,7 @@ function* getLoans({ payload: { loanNumber, size, page, sort } }) {
 }
 
 // Get 60 Day Loans
-function* get60DayLoans({ payload: { loanNumber, size, page, sort } }) {
+function* get60DayLoansSaga({ payload: {} }) {
   const options = {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
@@ -80,8 +89,34 @@ function* get60DayLoans({ payload: { loanNumber, size, page, sort } }) {
   }
 }
 
+//generator for get Cash Flow Loans
+function* getCashFlowLoans() {
+  const options = {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  };
+
+  const response = yield call(fetchJSON, `${SERVER_URL}/loan/cashflow`, options);
+  if (!response.status || response.status === 200) {
+    yield put(getCashFlowLoansSuccess(response));
+  } else {
+    let message;
+    switch (response.status) {
+      case 500:
+        message = 'Internal Server Error';
+        break;
+      case 401:
+        message = 'Invalid credentials';
+        break;
+      default:
+        message = response.message;
+    }
+    yield put(getCashFlowLoansFailure(message));
+  }
+}
+
 // Get Loan
-function* getLoan({ payload: { loanId } }) {
+function* getLoanSaga({ payload: { loanId } }) {
   const options = {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
@@ -107,7 +142,7 @@ function* getLoan({ payload: { loanId } }) {
 }
 
 // Create Loan
-function* createLoan({ payload: { loan } }) {
+function* createLoanSaga({ payload: { loan } }) {
   const options = {
     method: 'POST',
     body: JSON.stringify(loan),
@@ -134,7 +169,7 @@ function* createLoan({ payload: { loan } }) {
 }
 
 // Edit Loan
-function* editLoan({ payload: { loan } }) {
+function* editLoanSaga({ payload: { loan } }) {
   const options = {
     method: 'PUT',
     body: JSON.stringify(loan),
@@ -144,6 +179,11 @@ function* editLoan({ payload: { loan } }) {
   const response = yield call(fetchJSON, `${SERVER_URL}/loan/${loan.id}`, options);
   if (!response.status || response.status === 200) {
     yield put(editLoanSuccess(response));
+    if (loan.ratings?.length > 0) {
+      yield put(editLoanRatings(loan.ratings, loan.id));
+    } else {
+      yield put(getLoan(loan.id));
+    }
   } else {
     let message;
     switch (response.status) {
@@ -161,7 +201,7 @@ function* editLoan({ payload: { loan } }) {
 }
 
 // Delete Loan
-function* deleteLoan({ payload: { loanId } }) {
+function* deleteLoanSaga({ payload: { loanId } }) {
   const options = {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
@@ -186,42 +226,80 @@ function* deleteLoan({ payload: { loanId } }) {
   }
 }
 
+// Edit Loan Ratings
+function* editLoanRatingsSaga({ payload: { ratings, loanId } }) {
+  const options = {
+    method: 'PUT',
+    body: JSON.stringify(ratings),
+    headers: { 'Content-Type': 'application/json' },
+  };
+
+  const response = yield call(fetchJSON, `${SERVER_URL}/loan/${loanId}/rating`, options);
+  if (!response.status || response.status === 200) {
+    yield put(editLoanRatingsSuccess(response));
+    yield put(getLoan(loanId));
+  } else {
+    let message;
+    switch (response.status) {
+      case 500:
+        message = 'Internal Server Error';
+        break;
+      case 401:
+        message = 'Invalid credentials';
+      break;
+      default:
+        message = response.message;
+    }
+    yield put(editLoanRatingsFailure(message));
+  }
+}
+
 
 /**
  * Watchers
  */
 export function* watchGetLoans(): any {
-  yield takeEvery(GET_LOANS, getLoans);
+  yield takeEvery(GET_LOANS, getLoansSaga);
 }
 
 export function* watchGet60DayLoans(): any {
-  yield takeEvery(GET_60_DAY_LOANS, get60DayLoans);
+  yield takeEvery(GET_60_DAY_LOANS, get60DayLoansSaga);
+}
+
+export function* watchGetCashFlowLoans() {
+  yield takeEvery(GET_CASH_FLOW_LOANS, getCashFlowLoans);
 }
 
 export function* watchGetLoan(): any {
-  yield takeEvery(GET_LOAN, getLoan);
+  yield takeEvery(GET_LOAN, getLoanSaga);
 }
 
 export function* watchCreateLoan(): any {
-  yield takeEvery(CREATE_LOAN, createLoan);
+  yield takeEvery(CREATE_LOAN, createLoanSaga);
 }
 
 export function* watchEditLoan(): any {
-  yield takeEvery(EDIT_LOAN, editLoan);
+  yield takeEvery(EDIT_LOAN, editLoanSaga);
 }
 
 export function* watchDeleteLoan(): any {
-  yield takeEvery(DELETE_LOAN, deleteLoan);
+  yield takeEvery(DELETE_LOAN, deleteLoanSaga);
+}
+
+export function* watchEditLoanRatings(): any {
+  yield takeEvery(EDIT_LOAN_RATINGS, editLoanRatingsSaga);
 }
 
 function* LoanSaga(): any {
   yield all([
     fork(watchGetLoans),
     fork(watchGet60DayLoans),
+    fork(watchGetCashFlowLoans),
     fork(watchGetLoan),
     fork(watchCreateLoan),
     fork(watchEditLoan),
     fork(watchDeleteLoan),
+    fork(watchEditLoanRatings),
   ]);
 }
 

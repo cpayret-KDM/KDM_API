@@ -5,7 +5,9 @@ import {
   GET_60_DAY_LOANS,
   GET_60_DAY_LOANS_SUCCESS,
   GET_60_DAY_LOANS_FAILURE,
-  
+  GET_CASH_FLOW_LOANS,
+  GET_CASH_FLOW_LOANS_SUCCESS,
+  GET_CASH_FLOW_LOANS_FAILURE,
   GET_LOAN,
   GET_LOAN_SUCCESS,
   GET_LOAN_FAILURE,
@@ -19,6 +21,9 @@ import {
   DELETE_LOAN_SUCCESS,
   DELETE_LOAN_FAILURE,
   CLEAR_LOAN,
+  EDIT_LOAN_RATINGS,
+  EDIT_LOAN_RATINGS_SUCCESS,
+  EDIT_LOAN_RATINGS_FAILURE,
 } from './constants';
 
 type Action = { type: string, payload: {} };
@@ -46,9 +51,10 @@ const Loan = (state: State = initialState, action: Action) => {
         loans: undefined,
       };
     case GET_LOANS_SUCCESS:
+      const loans = action.payload?.content;
       return { 
         ...state, 
-        loans: action.payload,
+        loans: loans,
       };
     case GET_LOANS_FAILURE:
       return { 
@@ -63,15 +69,33 @@ const Loan = (state: State = initialState, action: Action) => {
         loans: undefined,
       };
     case GET_60_DAY_LOANS_SUCCESS:
+      const loans60day = action.payload?.content;
       return { 
         ...state, 
-        loans: action.payload,
+        loans: loans60day,
       };
     case GET_60_DAY_LOANS_FAILURE:
       return { 
         ...state,
         loans: undefined,
         error: action.payload,
+      };
+
+    case GET_CASH_FLOW_LOANS:
+      return {
+        ...state,
+        loans: undefined
+      };
+    case GET_CASH_FLOW_LOANS_SUCCESS:
+      return {
+        ...state,
+        loans: action.payload
+      };
+    case GET_CASH_FLOW_LOANS_FAILURE:
+      return {
+        ...state,
+        loans: undefined,
+        error: action.payload
       };
 
     /* Loan */
@@ -157,6 +181,24 @@ const Loan = (state: State = initialState, action: Action) => {
       return {
         ...state,
         loan: undefined,
+      };
+
+    case EDIT_LOAN_RATINGS:
+      return {
+        ...state,
+        edited: false,
+      };
+    case EDIT_LOAN_RATINGS_SUCCESS:
+      return { 
+        ...state, 
+        loan: action.payload,
+        edited: true,
+      };
+    case EDIT_LOAN_RATINGS_FAILURE:
+      return { 
+        ...state,
+        edited: false,
+        error: action.payload,
       };
 
     default:

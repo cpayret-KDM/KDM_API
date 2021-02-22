@@ -11,7 +11,6 @@ import { formatCurrency, formatPercentage, DATE_FORMAT, LOAN_STATUS_MAP, PROPERT
 import { paginationOptions, defaultSorted, percentageFilter, currencyFilter } from '../../helpers/table';
 
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
-import { getTarget } from 'reactstrap/lib/utils';
 
 const LoansTable = (props) => {
   const { loans } = props;
@@ -183,11 +182,10 @@ const LoansTable = (props) => {
       dataField: 'loanStatus',
       text: 'Loan Status',
       sort: true,
-      // default: 'Performing',
-      // dataField: 'loanStatus',
       style: { width: '120px' },
       filter: selectFilter({
         options: loanStatusOptions,
+        placeholder: 'All',
         defaultValue: 'PERFORMING',
         style: { color: '#495057' },
         onFilter: (filterValue, data) => {
@@ -306,6 +304,7 @@ const LoansTable = (props) => {
   const handleReportChange = (e, value) => {
     if (props.report === value) return;
     else if (value === '60-day') window.location.href = "/loans/60-day";
+    else if (value === 'cash-flow') window.location.href = "/loans/cash-flow";
     else window.location.href = "/loans/list";
   }
 
@@ -337,6 +336,7 @@ const LoansTable = (props) => {
                         >
                           <option value="list">All Loans</option>
                           <option value="60-day">60 Day Report</option>
+                          <option value="cash-flow">Cash Flow Report</option>
                         </AvField>
                       </AvGroup>
                     </AvForm>

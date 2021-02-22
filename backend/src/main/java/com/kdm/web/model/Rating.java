@@ -20,9 +20,10 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import com.fasterxml.jackson.annotation.JsonView;
+import com.kdm.web.security.SecurityUtil;
 import com.kdm.web.util.View;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -60,11 +61,22 @@ public class Rating {
 	@OneToMany(mappedBy = "rating", fetch = FetchType.LAZY)
 	private Set<LoanRating> loanRatings;
 	
+	@JsonIgnore
+	@OneToMany(mappedBy = "rating", fetch = FetchType.LAZY)
+	private Set<MSNRating> msnRatings;
+	
 	public void addLoanRating(LoanRating loanRating) {
 		if (this.loanRatings == null) {
 			this.loanRatings = new LinkedHashSet<LoanRating>();
 		}
 		this.loanRatings.add(loanRating);
+	}
+	
+	public void addMSNRating(MSNRating msnRating) {
+		if (this.msnRatings == null) {
+			this.msnRatings = new LinkedHashSet<MSNRating>();
+		}
+		this.msnRatings.add(msnRating);
 	}
 
 	@JsonProperty(value = "createdAt")
@@ -73,17 +85,17 @@ public class Rating {
 	private ZonedDateTime createdAt;
 
 	@JsonProperty(value = "updatedAt")
-	@Column(name = "updatedAt", precision = 5, scale = 2, updatable = false, nullable = false)
+	@Column(name = "updatedAt", precision = 5, scale = 2, nullable = false)
 	@JsonView(View.ReadOnly.class)
 	private ZonedDateTime updatedAt;
 
 	@JsonProperty(value = "createdBy")
-	@Column(name = "createdBy", insertable = false, updatable = false)
+	@Column(name = "createdBy", nullable = false, updatable = false)
 	@JsonView(View.ReadOnly.class)
 	private String createdBy;
 
 	@JsonProperty(value = "updatedBy")
-	@Column(name = "updatedBy", insertable = false, updatable = false)
+	@Column(name = "updatedBy", nullable = false)
 	@JsonView(View.ReadOnly.class)
 	private String updatedBy;
 
@@ -91,11 +103,14 @@ public class Rating {
 	public void prePersist() {
 		this.createdAt = ZonedDateTime.now();
 		this.updatedAt = this.createdAt;
+		this.createdBy = SecurityUtil.getSystemOrLoggedInUserName();
+		this.updatedBy = this.createdBy;
 	}
 
 	@PreUpdate
 	public void preUpdate() {
 		this.updatedAt = ZonedDateTime.now();
+		this.updatedBy = SecurityUtil.getSystemOrLoggedInUserName();
 	}
 
 }

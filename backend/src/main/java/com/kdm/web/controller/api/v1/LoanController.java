@@ -22,7 +22,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,6 +45,7 @@ import com.kdm.web.model.Rating;
 import com.kdm.web.model.Sponsor;
 import com.kdm.web.model.util.Note;
 import com.kdm.web.model.view.LoanCashFlow;
+import com.kdm.web.model.view.RatingValue;
 import com.kdm.web.service.EntityUtil;
 import com.kdm.web.service.LoanService;
 import com.kdm.web.util.View;
@@ -144,7 +144,7 @@ public class LoanController {
 	)
 	@ResponseBody
 	@GetMapping
-	@PreAuthorize(LoanController.READ_LOAN_PERMISSION)
+	//@PreAuthorize(LoanController.READ_LOAN_PERMISSION)
 	public ResponseEntity<Page<Loan>> getLoans(
 			@Parameter(hidden = true) LoanSpec loanSpec, 
 			@PageableDefault(size = 25) @Parameter(hidden = true) Pageable pageable) {
@@ -173,7 +173,7 @@ public class LoanController {
 			@ApiResponse(responseCode = "404", description = "loan not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
 	@ResponseBody
 	@GetMapping(path = "/{loanId}")
-	@PreAuthorize(LoanController.READ_LOAN_PERMISSION)
+	//@PreAuthorize(LoanController.READ_LOAN_PERMISSION)
 	public ResponseEntity<Loan> getLoan(
 			@PathVariable("loanId") Long loanId) throws Exception {
 
@@ -278,6 +278,38 @@ public class LoanController {
 		//loan = entityManager.find(Loan.class, loanId);
 		return this.getLoan(loanId);
 	}
+	
+	@Operation(summary = "assign a rating to a loan", tags = "loan", responses = {
+			@ApiResponse(responseCode = "200", description = "rating assigned"),
+			@ApiResponse(responseCode = "400", description = "bad or insufficient information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+			@ApiResponse(responseCode = "404", description = "loan or rating not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) }
+	)
+	@ResponseBody
+	@PutMapping(path = "/{loanId}/rating")
+	@Transactional
+	public ResponseEntity<Void> assignRatings(@PathVariable("loanId") Long loanId, @RequestBody @Valid List<RatingValue> ratings, BindingResult bindingResult) throws Exception {
+		Loan loan = entityUtil.tryGetEntity(Loan.class, loanId);
+		//entityManager.detach(loan);
+		
+		/*Rating rating = entityUtil.tryGetEntity(Rating.class, ratingId);
+		
+		LoanRating lnRtng = LoanRating.builder()
+				.loan(loan)
+				.loanId(loanId)
+				.rating(rating)
+				.ratingId(ratingId)
+				.note(note.toString())
+				.date(ZonedDateTime.now())
+				.build();
+		
+		*/
+		loanService.syncRatings(loan, ratings);
+		//rating.addLoanRating(lnRtng);
+		
+		//loan = entityManager.find(Loan.class, loanId);
+		return new ResponseEntity<Void>(OK);
+	}
+
 	
 	@Operation(summary = "delete a loan", tags = "loan", responses = {
 			@ApiResponse(responseCode = "200", description = "loan deleted"),

@@ -22,11 +22,13 @@
   thead {
     th {
       border: none;
+      padding: 8px;
     }
   }
   tbody {
     td {
       padding: 8px;
+      vertical-align: top !important;
 
       .form-group {
         margin-bottom: 0;

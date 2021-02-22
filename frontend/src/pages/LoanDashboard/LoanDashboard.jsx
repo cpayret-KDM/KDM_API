@@ -4,7 +4,8 @@ import { Row, Col} from 'reactstrap';
 
 import PageTitle from '../../components/PageTitle';
 import LoansTable from './LoansTable';
-import { getLoans, get60DayLoans } from '../../redux/actions';
+import CashFlowTable from './CashFlowTable';
+import { getLoans, get60DayLoans, getCashFlowLoans } from '../../redux/actions';
 
 const LoanDashboard = (props) => {
 
@@ -17,6 +18,9 @@ const LoanDashboard = (props) => {
     else if (report === '60-day') {
       props.get60DayLoans();
     }
+    else if (report === 'cash-flow') {
+      props.getCashFlowLoans();
+    }
   }, [report]);
 
   const breadcrumb = ((report) => {
@@ -25,27 +29,49 @@ const LoanDashboard = (props) => {
         return { label: 'Loans', path: '/loans/list' };
       case '60-day':
         return { label: '60 Day Loan Report', path: '/loans/60-day' };
+      case 'cash-flow':
+        return { label: 'Cash Flow Report', path: '/loans/cash-flow' }
       default:
         return { label: '', path: '' };
     }
   })(props.report);
 
-  return (
-    <>
-      <PageTitle
-        breadCrumbItems={[
-          {...breadcrumb},
-        ]}
-        title="Dashboard"
-      />
+  if (report === 'cash-flow') {
+    return (
+      <>
+        <PageTitle
+          breadCrumbItems={[
+            {...breadcrumb},
+          ]}
+          title="Cash Flow Report"
+        />
 
-      <Row>
-        <Col sm={12}>
-          <LoansTable loans={loans?.content} report={report} />
-        </Col>
-      </Row>
-    </>
-  );
+        <Row>
+          <Col sm={12}>
+            <CashFlowTable loans={loans} report={report} />
+          </Col>
+        </Row>
+      </>
+    );
+  }
+  else {
+    return (
+      <>
+        <PageTitle
+          breadCrumbItems={[
+            {...breadcrumb},
+          ]}
+          title="Loans Dashboard"
+        />
+
+        <Row>
+          <Col sm={12}>
+            <LoansTable loans={loans} report={report} />
+          </Col>
+        </Row>
+      </>
+    );
+  }
 };
 
 const mapStateToProps = state => {
@@ -55,6 +81,6 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { getLoans, get60DayLoans }
+  { getLoans, get60DayLoans, getCashFlowLoans }
 )(LoanDashboard);
 

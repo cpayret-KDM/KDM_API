@@ -32,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.kdm.web.model.view.LoanCashFlow;
 import com.kdm.web.model.view.LoanRatingLatestByLoanView;
+import com.kdm.web.security.SecurityUtil;
 import com.kdm.web.util.View;
 
 import lombok.AllArgsConstructor;
@@ -60,9 +61,9 @@ import lombok.Setter;
 @NamedNativeQuery(
 		name="getCashFlowReport", 
 		query = "SELECT  l.\"loanNumber\", l.\"principalBalance\", l.\"loanRate\", m.\"noteRate\" as \"msnRate\", " + 
-			"        (l.\"principalBalance\" * l.\"loanRate\") - (l.\"principalBalance\" * m.\"noteRate\") as \"anualRevenue\", " + 
-			"        ((l.\"principalBalance\" * l.\"loanRate\") - (l.\"principalBalance\" * m.\"noteRate\"))/12 as \"monthlyRevenue\", " + 
-			"        ((l.\"principalBalance\" * l.\"loanRate\") - (l.\"principalBalance\" * m.\"noteRate\"))/365 as \"dailyRevenue\" " + 
+			"        (l.\"principalBalance\" * m.\"noteRate\") - (l.\"principalBalance\" * l.\"loanRate\") as \"anualRevenue\", " + 
+			"        ((l.\"principalBalance\" * m.\"noteRate\") - (l.\"principalBalance\" * l.\"loanRate\"))/12 as \"monthlyRevenue\", " + 
+			"        ((l.\"principalBalance\" * m.\"noteRate\") - (l.\"principalBalance\" * l.\"loanRate\"))/365 as \"dailyRevenue\" " + 
 			"FROM    \"Loan\" as l " + 
 			"    LEFT JOIN \"MSN\" as m ON l.\"msnID\" = m.\"msnID\" " + 
 			"WHERE   l.\"loanStatus\" IN ('PERFORMING') ",
@@ -191,19 +192,7 @@ public class Loan {
 	@OneToMany(mappedBy="loan", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
 	@JsonView(View.All.class)
 	private Set<LoanRatingLatestByLoanView> ratings;
-	
-	/* TODO: remove this test code
-	public void addProperty(Property property) {
-		if (this.properties == null) {
-			this.properties = new ArrayList<>();
-		}
 		
-		if (!this.properties.contains(property)) {
-			this.properties.add(property);
-		}
-		
-	}*/
-	
 	@JsonProperty(value = "spread")
 	@JsonView(View.All.class)
 	public BigDecimal getSpread() {
@@ -221,17 +210,17 @@ public class Loan {
 	private ZonedDateTime createdAt;
 
 	@JsonProperty(value = "updatedAt")
-	@Column(name = "updatedAt", precision = 5, scale = 2, updatable = false, nullable = false)
+	@Column(name = "updatedAt", precision = 5, scale = 2, nullable = false)
 	@JsonView(View.ReadOnly.class)
 	private ZonedDateTime updatedAt;
 
 	@JsonProperty(value = "createdBy")
-	@Column(name = "createdBy", insertable = false, updatable = false)
+	@Column(name = "createdBy", nullable = false, updatable = false)
 	@JsonView(View.ReadOnly.class)
 	private String createdBy;
 
 	@JsonProperty(value = "updatedBy")
-	@Column(name = "updatedBy", insertable = false, updatable = false)
+	@Column(name = "updatedBy", nullable = false)
 	@JsonView(View.ReadOnly.class)
 	private String updatedBy;
 
@@ -239,11 +228,14 @@ public class Loan {
 	public void prePersist() {
 		this.createdAt = ZonedDateTime.now();
 		this.updatedAt = this.createdAt;
+		this.createdBy = SecurityUtil.getSystemOrLoggedInUserName();
+		this.updatedBy = this.createdBy;
 	}
 
 	@PreUpdate
 	public void preUpdate() {
 		this.updatedAt = ZonedDateTime.now();
+		this.updatedBy = SecurityUtil.getSystemOrLoggedInUserName();
 	}
 
 	@Override

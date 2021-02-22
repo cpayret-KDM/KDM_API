@@ -1,4 +1,5 @@
 package com.kdm.web.service;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -11,13 +12,18 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import com.kdm.web.data.repository.AddressRepository;
+import com.kdm.web.data.repository.LoanRatingRepository;
 import com.kdm.web.data.repository.LoanRepository;
 import com.kdm.web.data.repository.PropertyRepository;
+import com.kdm.web.data.repository.RatingRepository;
 import com.kdm.web.data.repository.SponsorRepository;
 import com.kdm.web.model.Address;
 import com.kdm.web.model.Loan;
+import com.kdm.web.model.LoanRating;
 import com.kdm.web.model.Property;
+import com.kdm.web.model.Rating;
 import com.kdm.web.model.Sponsor;
+import com.kdm.web.model.view.RatingValue;
 
 @Service
 public class LoanServiceImpl implements LoanService {
@@ -42,6 +48,15 @@ public class LoanServiceImpl implements LoanService {
 	
 	@Autowired
 	AddressService addressService;
+	
+	@Autowired
+	private LoanRatingRepository loanRatingRepository;
+	
+	@Autowired
+	private EntityUtil entityUtil;
+	
+	@Autowired
+	private RatingRepository ratingRepository;
 
 	@Override
 	@Transactional
@@ -93,8 +108,11 @@ public class LoanServiceImpl implements LoanService {
 				//propertyRepository.save(property);
 			}
 		}
+		
+		entityManager.merge(property);
+		entityManager.detach(property);
 				
-		return entityManager.merge(property);
+		return entityUtil.tryGetEntity(Property.class, property.getId());
 
 	}
 	
@@ -163,4 +181,29 @@ public class LoanServiceImpl implements LoanService {
 		sponsorRepository.delete(sponsor);	
 	}
 	
+	@Override
+	@Transactional
+	public void syncRatings(Loan loan, List<RatingValue> ratings) {
+		
+		// list to update
+		for (RatingValue ratingValue: ratings) {
+			//add rating
+			Rating rating = entityUtil.tryGetEntity(Rating.class, ratingValue.getRatingId());
+			
+			LoanRating lnRtng = LoanRating.builder()
+					.loan(loan)
+					.loanId(loan.getId())
+					.rating(rating)
+					.ratingId(rating.getId())
+					.note(ratingValue.getNote())
+					.date(ratingValue.getDate())
+					.build();
+			
+			
+			lnRtng = loanRatingRepository.saveAndFlush(lnRtng);
+			rating.addLoanRating(lnRtng);
+			
+			ratingRepository.saveAndFlush(rating);
+		}
+	}
 }
