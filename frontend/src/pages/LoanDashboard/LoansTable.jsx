@@ -41,9 +41,9 @@ const LoansTable = (props) => {
   const columns = [
     {
       dataField: 'loanNumber',
-      text: 'Ticker',
+      text: 'Ticker (Loan Number)',
       sort: true,
-      style: { width: '140px', textAlign: 'center' },
+      style: { width: '200px', textAlign: 'center' },
       filter: textFilter({
         placeholder: ' ',
       }),
