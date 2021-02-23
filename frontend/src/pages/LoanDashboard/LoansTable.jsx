@@ -48,7 +48,7 @@ const LoansTable = (props) => {
         placeholder: ' ',
       }),
       formatter: (cell, row) => {
-        return (<a href={`/loans/${cell}`} className="btn btn-sm btn-primary">{cell}</a>);
+        return (<a href={`/loans/${row.id}`} className="btn btn-sm btn-primary">{cell}</a>);
       },
       footer: '',
     },
