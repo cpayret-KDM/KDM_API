@@ -342,7 +342,7 @@ const LoanDetails = (props) => {
                         </AvGroup>
                       </Col>
                     </Row>
-
+                    {/* TODO: Remove this code if not needed */}
                     {/* Ryan - temp as I move to Properties Modal
                     <Row>
                       <Col sm={6}>
