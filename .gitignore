@@ -1,4 +1,4 @@
-/target/
+target
 .classpath
 
 # Ignore Microsoft Visual Studio Code configuration
@@ -6,7 +6,21 @@
 .settings
 .project
 
+#Ignore Intellij configuration
+**/*.iml
+.idea
+
+#Ignore Maven Specific files
+**/.mvn
+**/mvnw
+**/mvnw.cmd
+
+#Ignore Frontend stuff
 frontend/node_modules
 node_modules
 frontend/.eslintcache
 frontend/cypress/.screenshots
+frontend/.env
+frontend/cypress.json
+# keep frontend shared vscode settings
+!frontend/.vscode
