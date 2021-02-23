@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Table, UncontrolledAlert } from 'reactstrap';
 
 import { getSecurityLoans, getLoans } from '../../redux/actions';
-import { DATE_FORMAT, PROPERTY_TYPE_MAP } from '../../helpers/utils';
 import ModalAddLoan from './ModalAddLoan';
 
 const LoanTable = (props) => {

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Row, Col, Label, Button, Modal, ModalHeader, ModalBody, ModalFooter, Spinner, UncontrolledAlert } from 'reactstrap';
 import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 import { getSponsor, createSponsor, editSponsor, clearSponsor } from '../../redux/actions';
-import { US_STATES_MAP } from '../../helpers/utils';
+import { US_STATES_MAP } from '../../constants/utils';
 
 const ModalSponsor = (props) => {
   const { isOpen, toggle, mode, loanId } = props;

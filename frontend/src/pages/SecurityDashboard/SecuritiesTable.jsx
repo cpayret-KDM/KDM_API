@@ -7,7 +7,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory, { Comparator, textFilter, dateFilter, selectFilter } from 'react-bootstrap-table2-filter';
 
-import { formatCurrency, formatPercentage, DATE_FORMAT, SECURITY_STATUS_MAP } from '../../helpers/utils';
+import { formatCurrency, formatPercentage, DATE_FORMAT, SECURITY_STATUS_MAP } from '../../constants/utils';
 import { paginationOptions, defaultSorted, percentageFilter, currencyFilter } from '../../helpers/table';
 
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';

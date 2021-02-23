@@ -5,7 +5,7 @@ import moment from 'moment';
 import { Row, Col, Label, Button, InputGroupAddon, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from 'reactstrap';
 import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 import { getProperty, createProperty, editProperty, clearProperty, editBorrower, assignBorrower } from '../../redux/actions';
-import { PROPERTY_TYPE_MAP, US_STATES_MAP } from '../../helpers/utils';
+import { PROPERTY_TYPE_MAP, US_STATES_MAP } from '../../constants/utils';
 
 const ModalProperty = (props) => {
   const { isOpen, toggle, mode, loanId } = props;

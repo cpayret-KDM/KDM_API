@@ -6,7 +6,7 @@ import { Table } from 'reactstrap';
 import { AvField, AvGroup, AvInput } from 'availity-reactstrap-validation';
 
 import { getRatings } from '../../redux/actions';
-import { DATE_FORMAT } from '../../helpers/utils';
+import { DATE_FORMAT } from '../../constants/utils';
 import UncontrolledAlert from 'reactstrap/lib/UncontrolledAlert';
 
 const RatingsTable = (props) => {

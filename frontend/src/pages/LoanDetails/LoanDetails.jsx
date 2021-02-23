@@ -15,7 +15,7 @@ import ModalDeleteSponsor from './ModalDeleteSponsor';
 import RatingsTable from './RatingsTable';
 
 import { getLoan, createLoan, editLoan, deleteLoan, clearLoan } from '../../redux/actions';
-import { formatCurrency, DATE_FORMAT, EMPTY_LOAN, LOAN_STATUS_MAP, PIPELINE_STATUS_MAP, PROPERTY_TYPE_MAP } from '../../helpers/utils';
+import { formatCurrency, DATE_FORMAT, EMPTY_LOAN, LOAN_STATUS_MAP, PIPELINE_STATUS_MAP, PROPERTY_TYPE_MAP } from '../../constants/utils';
 
 const LoanDetails = (props) => {
   const { loan = {...EMPTY_LOAN} } = props;

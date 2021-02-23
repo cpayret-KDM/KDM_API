@@ -5,7 +5,7 @@ import { AvForm, AvField, AvGroup } from 'availity-reactstrap-validation';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory, { Comparator, textFilter, dateFilter, selectFilter } from 'react-bootstrap-table2-filter';
-import { formatCurrency, formatPercentage } from '../../helpers/utils';
+import { formatCurrency, formatPercentage } from '../../constants/utils';
 
 import { paginationOptions, defaultSorted, percentageFilter, currencyFilter } from '../../helpers/table';
 
