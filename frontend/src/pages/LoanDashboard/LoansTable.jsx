@@ -40,7 +40,7 @@ const LoansTable = (props) => {
 
   const columns = [
     {
-      dataField: 'id',
+      dataField: 'loanNumber',
       text: '#',
       sort: true,
       style: { width: '40px', textAlign: 'center' },
