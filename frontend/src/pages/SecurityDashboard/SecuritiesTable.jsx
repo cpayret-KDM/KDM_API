@@ -17,26 +17,16 @@ const SecuritiesTable = (props) => {
 
   const columns = [
     {
-      dataField: 'id',
-      text: '#',
+      dataField: 'number',
+      text: 'Ticker (Note Number)',
       sort: true,
-      style: { width: '40px', textAlign: 'center' },
+      style: { width: '140px', textAlign: 'center' },
       filter: textFilter({
         placeholder: ' ',
       }),
       formatter: (cell, row) => {
-        return (<a href={`/securities/${cell}`} className="btn btn-sm btn-primary">{cell}</a>);
+        return (<a href={`/securities/${row.id}`} className="btn btn-sm btn-primary">{cell}</a>);
       },
-      footer: '',
-    },
-    {
-      dataField: 'number',
-      text: 'Ticker (Note Number)',
-      sort: true,
-      style: { width: '140px' },
-      filter: textFilter({
-        placeholder: ' ',
-      }),
       footer: '',
     },
     {
