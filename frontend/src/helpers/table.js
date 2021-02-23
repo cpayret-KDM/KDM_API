@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatPercentage } from './utils';
+import { formatPercentage } from '../constants/utils';
 
 const customTotal = (from, to, size) => (
   <span className="react-bootstrap-table-pagination-total ml-2">
