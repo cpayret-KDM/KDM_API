@@ -255,93 +255,104 @@ const LoanDetails = (props) => {
                             <AvInput name="principalBalance" id="principalBalance" value={loan?.principalBalance || ''} required disabled={viewing} />
                             <AvFeedback tooltip>Principal Amount is required</AvFeedback>
                           </div>
-                      </AvGroup>
-                    </Col>
-                  </Row>
+                        </AvGroup>
+                      </Col>
+                    </Row>
 
-                  <Row>
-                    <Col sm={6}>
-                      <AvGroup className="position-relative">
-                        <div className="input-group">
-                          <DatePicker
-                            className={`form-control date ${viewing ? 'disabled' : ''}`}
-                            dateFormat="MM/dd/yyyy" 
-                            selected={originationDate}
-                            onChange={date => setOriginationDate(date)}
-                          />
-                        </div>
-                      </AvGroup>
-                    </Col>
+                    <Row>
+                      <Col sm={6}>
+                        <AvGroup className="position-relative">
+                          <div className="input-group">
+                            <DatePicker
+                              className={`form-control date ${viewing ? 'disabled' : ''}`}
+                              dateFormat="MM/dd/yyyy"
+                              selected={originationDate}
+                              onChange={date => setOriginationDate(date)}
+                            />
+                          </div>
+                        </AvGroup>
+                      </Col>
 
-                    <Col sm={6}>
-                      <AvGroup className="position-relative">
-                        <Label for="loanStatus">Loan Status *</Label>
-                        <AvField
-                          name="loanStatus"
-                          type="select"
-                          required
-                          disabled={viewing}
-                          value={loan?.loanStatus || 'PERFORMING'}
-                          className="custom-select"
-                        >
-                          {Object.entries(LOAN_STATUS_MAP).map((status, i) => 
-                            (<option value={status[0]} key={i}>{status[1]}</option>)
-                          )}
-                        </AvField>
-                        <AvFeedback tooltip>Loan Status is required</AvFeedback>
-                      </AvGroup>
-                    </Col>
-                  </Row>
+                      <Col sm={6}>
+                        <AvGroup className="position-relative">
+                          <Label for="loanStatus">Loan Status *</Label>
+                          <AvField
+                            name="loanStatus"
+                            type="select"
+                            required
+                            disabled={viewing}
+                            value={loan?.loanStatus || 'PERFORMING'}
+                            className="custom-select"
+                          >
+                            {Object.entries(LOAN_STATUS_MAP).map((status, i) =>
+                              (<option value={status[0]} key={i}>{status[1]}</option>)
+                            )}
+                          </AvField>
+                          <AvFeedback tooltip>Loan Status is required</AvFeedback>
+                        </AvGroup>
+                      </Col>
+                    </Row>
 
-                  <Row>
-                    <Col sm={6}>
-                      <AvGroup className="position-relative">
-                        <Label for="loanRate">Loan Rate *</Label>
-                        <div className="input-group">
-                          <AvInput name="loanRate" id="loanRate" value={loan?.loanRate || ''} required disabled={viewing} />
-                          <AvFeedback tooltip>Loan Rate is required</AvFeedback>
-                          <InputGroupAddon addonType="append">%</InputGroupAddon>
-                        </div>
-                      </AvGroup>
-                    </Col>
+                    <Row>
+                      <Col sm={6}>
+                        <AvGroup className="position-relative">
+                          <Label for="loanRate">Loan Rate *</Label>
+                          <div className="input-group">
+                            <AvInput name="loanRate" id="loanRate" value={loan?.loanRate} required disabled={viewing} />
+                            <AvFeedback tooltip>Loan Rate is required</AvFeedback>
+                            <InputGroupAddon addonType="append">%</InputGroupAddon>
+                          </div>
+                        </AvGroup>
+                      </Col>
 
-                    <Col sm={6}>
-                      <AvGroup className="position-relative">
-                        <Label for="pipelineStatus">Pipeline Status *</Label>
-                        <AvField
-                          name="pipelineStatus"
-                          type="select"
-                          required
-                          disabled={viewing}
-                          value={loan?.pipelineStatus || 'NEW'}
-                          className="custom-select"
-                        >
-                          {Object.entries(PIPELINE_STATUS_MAP).map((status, i) => 
-                            (<option value={status[0]} key={i}>{status[1]}</option>)
-                          )}
-                        </AvField>
-                        <AvFeedback tooltip>Pipeline Status is required</AvFeedback>
-                      </AvGroup>
-                    </Col>
-                  </Row>
+                      <Col sm={6}>
+                        <AvGroup className="position-relative">
+                          <Label for="pipelineStatus">Pipeline Status *</Label>
+                          <AvField
+                            name="pipelineStatus"
+                            type="select"
+                            required
+                            disabled={viewing}
+                            value={loan?.pipelineStatus || 'NEW'}
+                            className="custom-select"
+                          >
+                            {Object.entries(PIPELINE_STATUS_MAP).map((status, i) =>
+                              (<option value={status[0]} key={i}>{status[1]}</option>)
+                            )}
+                          </AvField>
+                          <AvFeedback tooltip>Pipeline Status is required</AvFeedback>
+                        </AvGroup>
+                      </Col>
+                    </Row>
 
-                  <Row>
-                    <Col sm={6}>
-                      <AvGroup className="position-relative">
-                        <Label for="loanTermMonths">Loan Term (months) *</Label>
-                        <AvInput type="number" name="loanTermMonths" id="loanTermMonths" value={loan?.loanTermMonths || ''} required disabled={viewing} />
-                        <AvFeedback tooltip>Loan Term is required</AvFeedback>
-                      </AvGroup>
-                    </Col>
+                    <Row>
+                      <Col sm={6}>
+                        <AvGroup className="position-relative">
+                          <Label for="loanTermMonths">Loan Term (months) *</Label>
+                          <AvInput type="number" name="loanTermMonths" id="loanTermMonths" value={loan?.loanTermMonths} required disabled={viewing} />
+                          <AvFeedback tooltip>Loan Term is required</AvFeedback>
+                        </AvGroup>
+                      </Col>
 
-                    <Col sm={6}>
-                      <AvGroup className="position-relative">
-                        <Label for="prepayMonths">Prepay (months) *</Label>
-                        <AvInput type="number" name="prepayMonths" id="prepayMonths" value={loan?.prepayMonths || ''} required disabled={viewing} />
-                        <AvFeedback tooltip>Prepay is required</AvFeedback>
-                      </AvGroup>
-                    </Col>
-                  </Row>
+                      <Col sm={6}>
+                        <AvGroup className="position-relative">
+                          <Label for="prepayMonths">Prepay (months) *</Label>
+                          <AvInput type="number" name="prepayMonths" id="prepayMonths" value={loan?.prepayMonths} required disabled={viewing} />
+                          <AvFeedback tooltip>Prepay is required</AvFeedback>
+                        </AvGroup>
+                      </Col>
+                    </Row>
+                    {/* TODO: Remove this code if not needed */}
+                    {/* Ryan - temp as I move to Properties Modal
+                    <Row>
+                      <Col sm={6}>
+                        <AvGroup className="position-relative">
+                          <Label for="borrower">Borrower *</Label>
+                          <AvInput name="borrower" id="borrower" value={loan?.borrower} required disabled={viewing} />
+                          <AvFeedback tooltip>Borrower is required</AvFeedback>
+                        </AvGroup>
+                      </Col>
+                    </Row> */}
 
                   {!creating && (
                     <>

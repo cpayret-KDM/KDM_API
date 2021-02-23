@@ -19,6 +19,10 @@ import {
   deletePropertyFailure,
   assignAppraisalSuccess,
   assignAppraisalFailure,
+  assignBorrowerSuccess,
+  assignBorrowerFailure,
+  editBorrowerSuccess,
+  editBorrowerFailure,
 } from './actions';
 
 import { getLoan } from '../loan/actions';
@@ -55,7 +59,7 @@ function* getProperty({ payload: { propertyId } }) {
 function* createProperty({ payload: { property } }) {
   const options = {
     method: 'POST',
-    body: JSON.stringify( property ),
+    body: JSON.stringify(property),
     headers: { 'Content-Type': 'application/json' },
   };
 
@@ -80,7 +84,7 @@ function* createProperty({ payload: { property } }) {
 }
 
 // Edit Property
-function* editProperty({ payload: { property } }) {
+function* editProperty({ payload: { property, borrowerId } }) {
   const options = {
     method: 'PUT',
     body: JSON.stringify(property),
@@ -91,6 +95,11 @@ function* editProperty({ payload: { property } }) {
   if (!response.status || response.status === 200) {
     yield put(editPropertySuccess(response));
     yield assignAppraisal(property.id, property.loanId, property.appraisal);
+    if (borrowerId) {
+      yield editBorrower(property.id, property.loanId, property.borrower)
+    } else {
+      yield assignBorrower(property.id, property.loanId, property.borrower)
+    }
   } else {
     let message;
     switch (response.status) {
@@ -134,6 +143,7 @@ function* deleteProperty({ payload: { propertyId, loanId } }) {
   }
 }
 
+
 // Assign Appraisal
 function* assignAppraisal(propertyId, loanId, appraisal) {
   const options = {
@@ -145,7 +155,6 @@ function* assignAppraisal(propertyId, loanId, appraisal) {
   const response = yield call(fetchJSON, `${SERVER_URL}/property/${propertyId}/appraisal`, options);
   if (!response.status || response.status === 200) {
     yield put(assignAppraisalSuccess(response));
-    yield put(getLoan(loanId));
   } else {
     let message;
     switch (response.status) {
@@ -162,6 +171,59 @@ function* assignAppraisal(propertyId, loanId, appraisal) {
   }
 }
 
+// Assign (Create) Borrower
+function* assignBorrower(propertyId, loanId, borrower) {
+  const options = {
+    method: 'PUT',
+    body: JSON.stringify(borrower),
+    headers: { 'Content-Type': 'application/json' },
+  };
+
+  const response = yield call(fetchJSON, `${SERVER_URL}/property/${propertyId}/borrower/`, options);
+  if (!response.status || response.status === 200) {
+    yield put(assignBorrowerSuccess(response));
+  } else {
+    let message;
+    switch (response.status) {
+      case 500:
+        message = 'Internal Server Error';
+        break;
+      case 401:
+        message = 'Invalid credentials';
+        break;
+      default:
+        message = response.message;
+    }
+    yield put(assignBorrowerFailure(message));
+  }
+}
+
+// Edit Borrower
+function* editBorrower(propertyId, loanId, borrower)  {
+  const options = {
+    method: 'PUT',
+    body: JSON.stringify(borrower),
+    headers: { 'Content-Type': 'application/json' },
+  }
+
+  const response = yield call(fetchJSON, `${SERVER_URL}/borrower/${borrower.id}`, options)
+  if (!response.status || response.status === 200) {
+    yield put(editBorrowerSuccess(response))
+  } else {
+    let message
+    switch (response.status) {
+      case 500:
+        message = 'Internal Server Error'
+        break
+      case 401:
+        message = 'Invalid credentials'
+        break
+      default:
+        message = response.message
+    }
+    yield put(editBorrowerFailure(message))
+  }
+}
 
 /**
  * Watchers

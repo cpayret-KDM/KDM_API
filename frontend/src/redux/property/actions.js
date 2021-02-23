@@ -14,6 +14,12 @@ import {
   ASSIGN_APPRAISAL,
   ASSIGN_APPRAISAL_SUCCESS,
   ASSIGN_APPRAISAL_FAILURE,
+  ASSIGN_BORROWER,
+  ASSIGN_BORROWER_SUCCESS,
+  ASSIGN_BORROWER_FAILURE,
+  EDIT_BORROWER,
+  EDIT_BORROWER_SUCCESS,
+  EDIT_BORROWER_FAILURE,
   CLEAR_PROPERTY,
 } from './constants';
 
@@ -52,9 +58,9 @@ export const createPropertyFailure = (err: Object): PropertyAction => ({
 });
 
 // Edit Property
-export const editProperty = (property: Object = {}): PropertyAction => ({
+export const editProperty = (property: Object = {}, borrowerId ): PropertyAction => ({
   type: EDIT_PROPERTY,
-  payload: { property },
+  payload: { property, borrowerId},
 });
 
 export const editPropertySuccess = (property: Object): PropertyAction => ({
@@ -99,8 +105,40 @@ export const assignAppraisalFailure = (err: Object): PropertyAction => ({
   payload: err,
 });
 
+// Assign Borrower to Property
+export const assignBorrower = (propertyId: String, loanId: String, borrower: Object = {}): PropertyAction => ({
+  type: ASSIGN_BORROWER,
+  payload: { propertyId, loanId, borrower },
+});
+
+export const assignBorrowerSuccess = (borrower: Object): PropertyAction => ({
+  type: ASSIGN_BORROWER_SUCCESS,
+  payload: borrower,
+});
+
+export const assignBorrowerFailure = (err: Object): PropertyAction => ({
+  type: ASSIGN_BORROWER_FAILURE,
+  payload: err,
+});
+
+// Edit Borrower
+export const editBorrower = (borrower: Object = {}, loanId: String = ''): BorrowerAction => ({
+  type: EDIT_BORROWER,
+  payload: { borrower, loanId },
+})
+
+export const editBorrowerSuccess = (borrower: Object): BorrowerAction => ({
+  type: EDIT_BORROWER_SUCCESS,
+  payload: borrower,
+})
+
+export const editBorrowerFailure = (err: Object): BorrowerAction => ({
+  type: EDIT_BORROWER_FAILURE,
+  payload: err,
+});
+
 // Clear Property
 export const clearProperty = (): LoanAction => ({
   type: CLEAR_PROPERTY,
-  payload: {  },
+  payload: {},
 });
