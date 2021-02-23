@@ -53,16 +53,6 @@ const LoansTable = (props) => {
       footer: '',
     },
     {
-      dataField: 'loanNumber',
-      text: 'Ticker',
-      sort: true,
-      style: { width: '140px' },
-      filter: textFilter({
-        placeholder: ' ',
-      }),
-      footer: '',
-    },
-    {
       dataField: 'property',
       text: 'Property',
       sort: false,
