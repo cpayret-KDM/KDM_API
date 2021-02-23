@@ -7,10 +7,10 @@ import { isUserAuthenticated } from '../helpers/authUtils';
 import * as layoutConstants from '../constants/layout';
 
 // All layouts/containers
-import AuthLayout from '../hyper-layouts/Auth';
-import VerticalLayout from '../hyper-layouts/Vertical';
-import HorizontalLayout from '../hyper-layouts/Horizontal';
-import DetachedLayout from '../hyper-layouts/Detached';
+import AuthLayout from '../layouts/Auth';
+import VerticalLayout from '../layouts/Vertical';
+import HorizontalLayout from '../layouts/Horizontal';
+import DetachedLayout from '../layouts/Detached';
 
 
 class Routes extends Component {

@@ -8,7 +8,7 @@ import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstr
 import { loginUser } from '../../redux/actions';
 import { isUserAuthenticated } from '../../helpers/authUtils';
 import LoaderWidget from '../../components/Loader';
-import logo from '../../assets/images/logo.png';
+import logo from '../../assets/images/logos/K_Direct_Mortgage_transparent_white_font.fw.png';
 
 class Login extends Component {
     _isMounted = false;
@@ -63,7 +63,7 @@ class Login extends Component {
                                         <div className="card-header pt-4 pb-4 text-center bg-primary">
                                             <Link to="/">
                                                 <span>
-                                                    <img src={logo} alt="" height="18" />
+                                                    <img src={logo} alt="" height="70" />
                                                 </span>
                                             </Link>
                                         </div>
@@ -119,8 +119,8 @@ class Login extends Component {
                                                 </FormGroup>
 
                                                 <p>
-                                                    <strong>Username:</strong> test &nbsp;&nbsp;{' '}
-                                                    <strong>Password:</strong> test
+                                                    <strong>Username:</strong> {this.state.username} &nbsp;&nbsp;{' '}
+                                                    <strong>Password:</strong> {this.state.password}
                                                 </p>
                                             </AvForm>
                                         </CardBody>
