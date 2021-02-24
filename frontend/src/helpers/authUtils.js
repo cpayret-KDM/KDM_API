@@ -14,14 +14,17 @@ const isUserAuthenticated = () => {
         return null
     }
     
-    return isSessionExpired(user)
+    return isSessionValid(user)
 };
 
-const isSessionExpired = (user) => {
+const isSessionValid = (user) => {
+    //check input, typescript would save us here
+    if (!user || !user.exp) {
+        return false
+    }
     //FIXME: logic here could be vulnerable to a hack by changing the system time
     const currentTime = Date.now() / 1000;
     if (user.exp < currentTime) {
-        console.warn('access token expired');
         return false;
     } else {
         return true;
@@ -58,10 +61,13 @@ const getLoggedInUserRole = () => {
 
 
 const getUserRole = (user) => {
-    if (!user || (!user[ROLE_CLAIM] && !user[ROLE_CLAIM].length)){
+    if (user && user[ROLE_CLAIM] && user[ROLE_CLAIM].length) {
+        return user[ROLE_CLAIM][0]
+    }
+    else {
         return null
     }
-    return user[ROLE_CLAIM][0];
+    
 }
 
-export { isUserAuthenticated, getLoggedInUser, getLoggedInUserRole, getUserRole, isSessionExpired };
+export { isUserAuthenticated, getLoggedInUser, getLoggedInUserRole, getUserRole, isSessionValid };
