@@ -200,7 +200,7 @@ public class Loan {
 			return null;	
 		}
 		
-		BigDecimal spread = this.loanRate.subtract(this.msn.getNoteRate()); 
+		BigDecimal spread = this.msn.getNoteRate().subtract(this.loanRate);
 		return spread;
 	}
 
