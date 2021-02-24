@@ -1,19 +1,22 @@
-import { isUserAuthenticated, getLoggedInUser, getLoggedInUserRole } from './authUtils'
-import Cookies from 'js-cookie'
+import { isSessionExpired, getUserRole } from './authUtils'
+//requires this to be set in the environment to correctly test authUtils
+const ROLE_CLAIM = process.env.REACT_APP_AUTH0_ROLE_CLAIM_PREFIX;
 
-jest.mock('js-cookie')
+let validUser = {
+    exp: (Date.now() + 1000) / 1000,
+}
+validUser[ROLE_CLAIM] = ['Test']
+let invalidUser1 = {
+    exp: 1
+}
+invalidUser1[ROLE_CLAIM] = null
+const invalidUser2 = { }
+const nullUser = null
 
-describe('AuthUtil Tests', () => {
+describe('User Role Tests', () => {
 
-    it('is a test', () => {
-        
-        Cookies.get.mockImplementation(() => 'fr')
-        console.log(Cookies.get())
-
-        expect(Cookies.get()).toEqual('fr')
-    })
-
-    it('should return a null user', () => {
-        expect(getLoggedInUser()).toEqual(null)
-    })
+    it('should return a valid user role', () =>
+        expect(getUserRole(validUser)).toBe('Test')
+    )
+   
 })
