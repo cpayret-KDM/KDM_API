@@ -11,7 +11,7 @@ describe('Loan Dashboard', () => {
 
     it('not have any negative spread values', () => {
         cy.get('.loan-list-table')
-        cy.contains(/([-])\d+/g).should('not.exist')
+        cy.contains(/(?<!\d)([-])\d+/g).should('not.exist')
     })
 
 })
