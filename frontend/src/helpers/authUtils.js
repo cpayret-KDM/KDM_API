@@ -1,5 +1,6 @@
 
 import jwtDecode from 'jwt-decode';
+import { useReducer } from 'react';
 import { Cookies } from 'react-cookie';
 
 const ROLE_CLAIM = process.env.REACT_APP_AUTH0_ROLE_CLAIM_PREFIX;
@@ -14,7 +15,8 @@ const isUserAuthenticated = () => {
         return null
     }
     
-    return isSessionValid(user)
+    const decoded = jwtDecode(user.id_token)
+    return isSessionValid(decoded)
 };
 
 const isSessionValid = (user) => {
@@ -43,7 +45,12 @@ const getLoggedInUser = () => {
         return null;
     }
 
-    return jwtDecode(user.id_token);
+    if (typeof user == 'object') {
+        return user
+    }
+    else {
+        return JSON.parse(user)
+    }
 };
 
 /**
@@ -56,7 +63,8 @@ const getLoggedInUserRole = () => {
         return null;
     }
 
-    return getUserRole(user)
+    const decoded = jwtDecode(user.id_token)
+    return getUserRole(decoded)
 };
 
 
