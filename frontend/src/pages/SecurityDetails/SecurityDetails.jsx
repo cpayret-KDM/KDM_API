@@ -185,10 +185,10 @@ const SecurityDetails = (props) => {
                           <Label for="tradeDate">Trade Date *</Label>
                           <div className="input-group">
                             <DatePicker
-                              required
                               className="form-control date"
                               dateFormat="MM/dd/yyyy"
                               selected={tradeDate}
+                              // selected={tradeDate}
                               onChange={date => setTradeDate(date)}
                               required disabled={viewing}
                             />
