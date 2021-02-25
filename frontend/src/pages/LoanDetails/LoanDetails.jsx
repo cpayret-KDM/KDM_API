@@ -96,6 +96,7 @@ const LoanDetails = (props) => {
       props.editLoan(newLoan);
     }
     if (creating) {
+      props.clearLoan()
       props.createLoan(newLoan);
     }
   }
