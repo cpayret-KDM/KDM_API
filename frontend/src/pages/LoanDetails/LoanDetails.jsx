@@ -263,6 +263,7 @@ const LoanDetails = (props) => {
                     <Row>
                       <Col sm={6}>
                         <AvGroup className="position-relative">
+                          <Label for="originationDate">Origination Date *</Label>
                           <div className="input-group">
                             <DatePicker
                               className={`form-control date ${viewing ? 'disabled' : ''}`}
