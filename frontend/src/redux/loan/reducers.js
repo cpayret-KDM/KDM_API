@@ -39,7 +39,8 @@ const initialState = {
   loans: [],
   loan: {},
   loaded: false,
-  deleted: false
+  deleted: false,
+  edited: false,
 };
 
 const Loan = (state: State = initialState, action: Action) => {

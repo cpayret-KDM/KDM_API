@@ -17,6 +17,14 @@ import {
 type Action = { type: string, payload: {} };
 type State = { +value: boolean };
 
+const initialState = {
+  sponsor: {},
+  added: false,
+  edited: false,
+  deleted: false,
+  error: false
+}
+
 const sponsor = (state: State = {}, action: Action) => {
   switch (action.type) {
     case GET_SPONSOR:

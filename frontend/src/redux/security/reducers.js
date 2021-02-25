@@ -31,7 +31,16 @@ import {
 type Action = { type: string, payload: {} };
 type State = { +value: boolean };
 
-const Security = (state: State = {}, action: Action) => {
+const intialState = {
+  securities: [],
+  security: {},
+  loaded: false,
+  deleted: false,
+  edited: false
+
+}
+
+const Security = (state: State = intialState, action: Action) => {
   switch (action.type) {
     /* Securities */
     case GET_SECURITIES:
