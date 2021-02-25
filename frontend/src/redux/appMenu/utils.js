@@ -7,7 +7,7 @@ import MenuItem from './models';
  */
 let uuid = 1;
 
-const assignIdAndParent = (menuItems: Array<MenuItem>, parentId?: number) => {
+const assignIdAndParent = (menuItems, parentId) => {
     menuItems = menuItems || [];
     menuItems.forEach(item => {
         const id = item.id || uuid;
@@ -22,7 +22,7 @@ const assignIdAndParent = (menuItems: Array<MenuItem>, parentId?: number) => {
     });
 };
 
-export default (menuItems: Array<MenuItem>) => {
+export default (menuItems) => {
     assignIdAndParent(menuItems);
     return menuItems;
 };

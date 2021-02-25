@@ -17,17 +17,7 @@ const RightSidebar = React.lazy(() => import('../components/RightSidebar'));
 
 const loading = () => <div className="text-center"></div>;
 
-type HorizontalLayoutProps = {
-    changeLayout: PropTypes.func,
-    children: PropTypes.object,
-    layout: PropTypes.object,
-};
-
-type HorizontalLayoutState = {
-    isMenuOpened: boolean,
-};
-
-class HorizontalLayout extends Component<HorizontalLayoutProps, HorizontalLayoutState> {
+class HorizontalLayout extends Component {
     constructor(props) {
         super(props);
 

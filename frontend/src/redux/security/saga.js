@@ -263,39 +263,39 @@ function* editSecurityLoansSaga({ payload: { loans, securityId } }) {
 /**
  * Watchers
  */
-export function* watchGetSecurities(): any {
+export function* watchGetSecurities() {
   yield takeEvery(GET_SECURITIES, getSecurities);
 }
 
-export function* watchGetSecurity(): any {
+export function* watchGetSecurity() {
   yield takeEvery(GET_SECURITY, getSecuritySaga);
 }
 
-export function* watchGetSecurityLoans(): any {
+export function* watchGetSecurityLoans() {
   yield takeEvery(GET_SECURITY_LOANS, getSecurityLoans);
 }
 
-export function* watchCreateSecurity(): any {
+export function* watchCreateSecurity() {
   yield takeEvery(CREATE_SECURITY, createSecurity);
 }
 
-export function* watchEditSecurity(): any {
+export function* watchEditSecurity() {
   yield takeEvery(EDIT_SECURITY, editSecurity);
 }
 
-export function* watchDeleteSecurity(): any {
+export function* watchDeleteSecurity() {
   yield takeEvery(DELETE_SECURITY, deleteSecurity);
 }
 
-export function* watchEditSecurityRatings(): any {
+export function* watchEditSecurityRatings() {
   yield takeEvery(EDIT_SECURITY_RATINGS, editSecurityRatingsSaga);
 }
 
-export function* watchEditSecurityLoans(): any {
+export function* watchEditSecurityLoans() {
   yield takeEvery(EDIT_SECURITY_LOANS, editSecurityLoansSaga);
 }
 
-function* SecuritySaga(): any {
+function* SecuritySaga() {
   yield all([
     fork(watchGetSecurities),
     fork(watchGetSecurity),

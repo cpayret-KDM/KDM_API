@@ -14,8 +14,8 @@ import {
   CLEAR_SPONSOR,
 } from './constants';
 
-type Action = { type: string, payload: {} };
-type State = { +value: boolean };
+
+
 
 const initialState = {
   sponsor: {},
@@ -25,7 +25,7 @@ const initialState = {
   error: false
 }
 
-const sponsor = (state: State = {}, action: Action) => {
+const sponsor = (state = {}, action) => {
   switch (action.type) {
     case GET_SPONSOR:
       return {

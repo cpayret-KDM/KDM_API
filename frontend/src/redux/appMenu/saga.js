@@ -48,15 +48,15 @@ function* changeActiveMenuFromLocation() {
 /**
  * Watchers
  */
-export function* watchMenuInit(): any {
+export function* watchMenuInit() {
     yield takeEvery(INIT_MENU, initMenuAndItems);
 }
 
-export function* watchMenuChange(): any {
+export function* watchMenuChange() {
     yield takeEvery(CHANGE_ACTIVE_MENU_FROM_LOCATION, changeActiveMenuFromLocation);
 }
 
-function* appMenuSaga(): any {
+function* appMenuSaga() {
     yield all([fork(watchMenuInit), fork(watchMenuChange)]);
 }
 

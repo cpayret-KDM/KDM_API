@@ -15,26 +15,11 @@ const Topbar = React.lazy(() => import('../components/Topbar'));
 const Footer = React.lazy(() => import('../components/Footer'));
 const RightSidebar = React.lazy(() => import('../components/RightSidebar'));
 
-type VerticalLayoutProps = {
-    changeLayout: PropTypes.func,
-    changeSidebarTheme: PropTypes.func,
-    changeSidebarType: PropTypes.func,
-    children?: any,
-    layout: {
-        leftSideBarType?: string,
-        leftSideBarTheme?: string,
-    },
-};
-
-type VerticalLayoutState = {
-    isMenuOpened?: boolean,
-};
-
 // loading
 const emptyLoading = () => <div></div>;
 const loading = () => <div className="text-center"></div>;
 
-class VerticalLayout extends Component<VerticalLayoutProps, VerticalLayoutState> {
+class VerticalLayout extends Component {
     constructor(props) {
         super(props);
         this.openLeftMenu = this.openLeftMenu.bind(this);

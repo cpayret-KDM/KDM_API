@@ -7,9 +7,9 @@ import PageTitle from '../../components/PageTitle';
 type ModalProps = {};
 
 type ModalState = {
-    modal?: boolean,
-    size?: string | null,
-    className?: string | null,
+    modal?,
+    size? | null,
+    className? | null,
 };
 
 class ModalSizesAndPosition extends Component<ModalProps, ModalState> {
@@ -161,9 +161,9 @@ class ModalSizesAndPosition extends Component<ModalProps, ModalState> {
 type ModalColorVariantProps = {};
 
 type ModalColorVariantState = {
-    modal?: boolean,
-    bodyClass?: string | null,
-    headerClassName?: string | null,
+    modal?,
+    bodyClass? | null,
+    headerClassName? | null,
 };
 
 class ModalColorVariant extends Component<ModalColorVariantProps, ModalColorVariantState> {
@@ -339,7 +339,7 @@ class ModalColorVariant extends Component<ModalColorVariantProps, ModalColorVari
 type ModalWithFormProps = {};
 
 type ModalWithFormState = {
-    modal?: boolean,
+    modal?,
 };
 
 class ModalWithForm extends React.Component<ModalWithFormProps, ModalWithFormState> {
@@ -435,9 +435,9 @@ class ModalWithForm extends React.Component<ModalWithFormProps, ModalWithFormSta
 type NestedModalProps = {};
 
 type NestedModalState = {
-    toggleMultiple?: boolean,
-    nestedModal?: boolean,
-    closeAll?: boolean,
+    toggleMultiple?,
+    nestedModal?,
+    closeAll?,
 };
 
 class NestedModal extends React.Component<NestedModalProps, NestedModalState> {

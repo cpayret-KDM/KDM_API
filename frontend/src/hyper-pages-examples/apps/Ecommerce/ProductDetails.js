@@ -80,14 +80,14 @@ type ProductDetailsProps = {};
 
 type ProductDetailsState = {
     product?: {
-        name?: string,
-        addedOn?: string,
-        status?: string,
-        price?: string,
-        description?: string,
-        stock?: string,
-        noOfOrders?: string,
-        revenue?: string,
+        name?,
+        addedOn?,
+        status?,
+        price?,
+        description?,
+        stock?,
+        noOfOrders?,
+        revenue?,
         rating?: number,
     },
     selectedProductImg?: any,

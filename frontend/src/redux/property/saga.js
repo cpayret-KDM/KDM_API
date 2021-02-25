@@ -228,23 +228,23 @@ function* editBorrower(propertyId, loanId, borrower)  {
 /**
  * Watchers
  */
-export function* watchGetProperty(): any {
+export function* watchGetProperty() {
   yield takeEvery(GET_PROPERTY, getProperty);
 }
 
-export function* watchCreateProperty(): any {
+export function* watchCreateProperty() {
   yield takeEvery(CREATE_PROPERTY, createProperty);
 }
 
-export function* watchEditProperty(): any {
+export function* watchEditProperty() {
   yield takeEvery(EDIT_PROPERTY, editProperty);
 }
 
-export function* watchDeleteProperty(): any {
+export function* watchDeleteProperty() {
   yield takeEvery(DELETE_PROPERTY, deleteProperty);
 }
 
-function* PropertySaga(): any {
+function* PropertySaga() {
   yield all([
     fork(watchGetProperty),
     fork(watchCreateProperty),

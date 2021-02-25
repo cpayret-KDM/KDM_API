@@ -12,54 +12,52 @@ import {
     FORGET_PASSWORD_FAILED,
 } from './constants';
 
-type AuthAction = { type: string, payload: {} | string };
-
-export const loginUser = (username: string, password: string): AuthAction => ({
+export const loginUser = (username, password) => ({
     type: LOGIN_USER,
     payload: { username, password },
 });
 
-export const loginUserSuccess = (user: string): AuthAction => ({
+export const loginUserSuccess = (user) => ({
     type: LOGIN_USER_SUCCESS,
     payload: user,
 });
 
-export const loginUserFailed = (error: string): AuthAction => ({
+export const loginUserFailed = (error) => ({
     type: LOGIN_USER_FAILED,
     payload: error,
 });
 
-export const registerUser = (fullname: string, email: string, password: string): AuthAction => ({
+export const registerUser = (fullname, email, password) => ({
     type: REGISTER_USER,
     payload: { fullname, email, password },
 });
 
-export const registerUserSuccess = (user: {}): AuthAction => ({
+export const registerUserSuccess = (user: {}) => ({
     type: REGISTER_USER_SUCCESS,
     payload: user,
 });
 
-export const registerUserFailed = (error: string): AuthAction => ({
+export const registerUserFailed = (error) => ({
     type: REGISTER_USER_FAILED,
     payload: error,
 });
 
-export const logoutUser = (history: any): AuthAction => ({
+export const logoutUser = (history) => ({
     type: LOGOUT_USER,
     payload: { history },
 });
 
-export const forgetPassword = (username: string): AuthAction => ({
+export const forgetPassword = (username) => ({
     type: FORGET_PASSWORD,
     payload: { username },
 });
 
-export const forgetPasswordSuccess = (passwordResetStatus: string): AuthAction => ({
+export const forgetPasswordSuccess = (passwordResetStatus) => ({
     type: FORGET_PASSWORD_SUCCESS,
     payload: passwordResetStatus,
 });
 
-export const forgetPasswordFailed = (error: string): AuthAction => ({
+export const forgetPasswordFailed = (error) => ({
     type: FORGET_PASSWORD_FAILED,
     payload: error,
 });

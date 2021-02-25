@@ -5,10 +5,10 @@ import {
     CHANGE_ACTIVE_MENU_FROM_LOCATION_SUCCESS,
 } from './constants';
 
-type Action = { type: string, payload: {} };
-type State = { +value: boolean };
 
-const AppMenu = (state: State = {}, action: Action) => {
+
+
+const AppMenu = (state = {}, action) => {
     switch (action.type) {
         case INIT_MENU:
             return action.payload;

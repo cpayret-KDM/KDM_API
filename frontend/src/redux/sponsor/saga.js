@@ -136,23 +136,23 @@ function* deleteSponsor({ payload: { sponsorId, loanId } }) {
 /**
  * Watchers
  */
-export function* watchGetSponsor(): any {
+export function* watchGetSponsor() {
   yield takeEvery(GET_SPONSOR, getSponsor);
 }
 
- export function* watchCreateSponsor(): any {
+ export function* watchCreateSponsor() {
   yield takeEvery(CREATE_SPONSOR, createSponsor);
 }
 
-export function* watchEditSponsor(): any {
+export function* watchEditSponsor() {
   yield takeEvery(EDIT_SPONSOR, editSponsor);
 }
 
-export function* watchDeleteSponsor(): any {
+export function* watchDeleteSponsor() {
   yield takeEvery(DELETE_SPONSOR, deleteSponsor);
 }
 
-function* SponsorSaga(): any {
+function* SponsorSaga() {
   yield all([
     fork(watchGetSponsor),
     fork(watchCreateSponsor),

@@ -19,10 +19,7 @@ const INIT_STATE = {
     loading: false,
 };
 
-type AuthAction = { type: string, payload: {} | string };
-type State = { user?: {} | null, loading?: boolean, +value?: boolean };
-
-const Auth = (state: State = INIT_STATE, action: AuthAction) => {
+const Auth = (state = INIT_STATE, action) => {
     switch (action.type) {
         case LOGIN_USER:
             return { ...state, loading: true };

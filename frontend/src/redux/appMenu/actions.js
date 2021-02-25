@@ -6,24 +6,22 @@ import {
     CHANGE_ACTIVE_MENU_FROM_LOCATION_SUCCESS,
 } from './constants';
 
-type DefaultMenuAction = { type: string, payload: {} };
-
-export const initMenu = (): DefaultMenuAction => ({
+export const initMenu = () => ({
     type: INIT_MENU,
     payload: {},
 });
 
-export const initMenuSuccess = (menuItems: Array<{}>): DefaultMenuAction => ({
+export const initMenuSuccess = (menuItems) => ({
     type: INIT_MENU_SUCCESS,
     payload: { menuItems },
 });
 
-export const changeActiveMenuFromLocation = (): DefaultMenuAction => ({
+export const changeActiveMenuFromLocation = () => ({
     type: CHANGE_ACTIVE_MENU_FROM_LOCATION,
     payload: {},
 });
 
-export const changeActiveMenuFromLocationSuccess = (activatedMenuItemIds: Array<string>): DefaultMenuAction => ({
+export const changeActiveMenuFromLocationSuccess = (activatedMenuItemIds) => ({
     type: CHANGE_ACTIVE_MENU_FROM_LOCATION_SUCCESS,
     payload: { activatedMenuItemIds },
 });

@@ -166,27 +166,27 @@ function* deleteRating({ payload: { ratingId, loanId } }) {
 /**
  * Watchers
  */
-export function* watchGetRatings(): any {
+export function* watchGetRatings() {
   yield takeEvery(GET_RATINGS, getRatings);
 }
 
- export function* watchGetRating(): any {
+ export function* watchGetRating() {
   yield takeEvery(GET_RATING, getRating);
 }
 
- export function* watchCreateRating(): any {
+ export function* watchCreateRating() {
   yield takeEvery(CREATE_RATING, createRating);
 }
 
-export function* watchEditRating(): any {
+export function* watchEditRating() {
   yield takeEvery(EDIT_RATING, editRating);
 }
 
-export function* watchDeleteRating(): any {
+export function* watchDeleteRating() {
   yield takeEvery(DELETE_RATING, deleteRating);
 }
 
-function* RatingSaga(): any {
+function* RatingSaga() {
   yield all([
     fork(watchGetRatings),
     fork(watchGetRating),

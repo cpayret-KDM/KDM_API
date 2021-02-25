@@ -26,14 +26,6 @@ import {
   EDIT_LOAN_RATINGS_FAILURE,
 } from './constants';
 
-type Action = { type: string, payload: {} };
-
-type State = {
-  loans: Array<{}>,
-  loan: {},
-  loaded: boolean,
-  deleted: boolean
-};
 
 const initialState = {
   loans: [],
@@ -43,7 +35,7 @@ const initialState = {
   edited: false,
 };
 
-const Loan = (state: State = initialState, action: Action) => {
+const Loan = (state = initialState, action) => {
   switch (action.type) {
     /* Loans */
     case GET_LOANS:

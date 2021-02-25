@@ -258,11 +258,11 @@ function* editLoanRatingsSaga({ payload: { ratings, loanId } }) {
 /**
  * Watchers
  */
-export function* watchGetLoans(): any {
+export function* watchGetLoans() {
   yield takeEvery(GET_LOANS, getLoansSaga);
 }
 
-export function* watchGet60DayLoans(): any {
+export function* watchGet60DayLoans() {
   yield takeEvery(GET_60_DAY_LOANS, get60DayLoansSaga);
 }
 
@@ -270,27 +270,27 @@ export function* watchGetCashFlowLoans() {
   yield takeEvery(GET_CASH_FLOW_LOANS, getCashFlowLoans);
 }
 
-export function* watchGetLoan(): any {
+export function* watchGetLoan() {
   yield takeEvery(GET_LOAN, getLoanSaga);
 }
 
-export function* watchCreateLoan(): any {
+export function* watchCreateLoan() {
   yield takeEvery(CREATE_LOAN, createLoanSaga);
 }
 
-export function* watchEditLoan(): any {
+export function* watchEditLoan() {
   yield takeEvery(EDIT_LOAN, editLoanSaga);
 }
 
-export function* watchDeleteLoan(): any {
+export function* watchDeleteLoan() {
   yield takeEvery(DELETE_LOAN, deleteLoanSaga);
 }
 
-export function* watchEditLoanRatings(): any {
+export function* watchEditLoanRatings() {
   yield takeEvery(EDIT_LOAN_RATINGS, editLoanRatingsSaga);
 }
 
-function* LoanSaga(): any {
+function* LoanSaga() {
   yield all([
     fork(watchGetLoans),
     fork(watchGet60DayLoans),

@@ -17,8 +17,8 @@ import {
   CLEAR_RATING,
 } from './constants';
 
-type Action = { type: string, payload: {} };
-type State = { +value: boolean };
+
+
 
 const initialState = {
   ratings: [],
@@ -29,7 +29,7 @@ const initialState = {
   error: false
 }
 
-const rating = (state: State = initialState, action: Action) => {
+const rating = (state = initialState, action) => {
   switch (action.type) {
     case GET_RATINGS:
       return {

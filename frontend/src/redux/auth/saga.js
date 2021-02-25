@@ -143,23 +143,23 @@ function* forgetPassword({ payload: { username } }) {
     }
 }
 
-export function* watchLoginUser(): any {
+export function* watchLoginUser() {
     yield takeEvery(LOGIN_USER, login);
 }
 
-export function* watchLogoutUser(): any {
+export function* watchLogoutUser() {
     yield takeEvery(LOGOUT_USER, logout);
 }
 
-export function* watchRegisterUser(): any {
+export function* watchRegisterUser() {
     yield takeEvery(REGISTER_USER, register);
 }
 
-export function* watchForgetPassword(): any {
+export function* watchForgetPassword() {
     yield takeEvery(FORGET_PASSWORD, forgetPassword);
 }
 
-function* authSaga(): any {
+function* authSaga() {
     yield all([fork(watchLoginUser), fork(watchLogoutUser), fork(watchRegisterUser), fork(watchForgetPassword)]);
 }
 

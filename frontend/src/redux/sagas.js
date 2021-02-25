@@ -9,7 +9,7 @@ import sponsorSaga from './sponsor/saga';
 import securitySaga from './security/saga';
 import ratingSaga from './rating/saga';
 
-export default function* rootSaga(getState: any): any {
+export default function* rootSaga(getState) {
   yield all([
     authSaga(),
     layoutSaga(),

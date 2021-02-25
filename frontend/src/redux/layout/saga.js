@@ -137,35 +137,35 @@ function* hideRightSidebar() {
 /**
  * Watchers
  */
-export function* watchChangeLayoutType(): any {
+export function* watchChangeLayoutType() {
     yield takeEvery(CHANGE_LAYOUT, changeLayout);
 }
 
-export function* watchChangeLayoutWidth(): any {
+export function* watchChangeLayoutWidth() {
     yield takeEvery(CHANGE_LAYOUT_WIDTH, changeLayoutWidth);
 }
 
-export function* watchChangeLeftSidebarTheme(): any {
+export function* watchChangeLeftSidebarTheme() {
     yield takeEvery(CHANGE_SIDEBAR_THEME, changeLeftSidebarTheme);
 }
 
-export function* watchChangeLeftSidebarType(): any {
+export function* watchChangeLeftSidebarType() {
     yield takeEvery(CHANGE_SIDEBAR_TYPE, changeLeftSidebarType);
 }
 
-export function* watchToggleRightSidebar(): any {
+export function* watchToggleRightSidebar() {
     yield takeEvery(TOGGLE_RIGHT_SIDEBAR, toggleRightSidebar);
 }
 
-export function* watchShowRightSidebar(): any {
+export function* watchShowRightSidebar() {
     yield takeEvery(SHOW_RIGHT_SIDEBAR, showRightSidebar);
 }
 
-export function* watchHideRightSidebar(): any {
+export function* watchHideRightSidebar() {
     yield takeEvery(HIDE_RIGHT_SIDEBAR, hideRightSidebar);
 }
 
-function* LayoutSaga(): any {
+function* LayoutSaga() {
     yield all([
         fork(watchChangeLayoutType),
         fork(watchChangeLayoutWidth),

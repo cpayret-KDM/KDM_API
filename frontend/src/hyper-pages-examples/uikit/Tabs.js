@@ -8,7 +8,7 @@ import PageTitle from '../../components/PageTitle';
 type TabsProps = {};
 
 type TabsState = {
-    activeTab?: string,
+    activeTab?,
 };
 class Tabs extends Component<TabsProps, TabsState> {
     constructor(props: TabsProps) {
@@ -20,7 +20,7 @@ class Tabs extends Component<TabsProps, TabsState> {
     /**
      * Toggle the tab
      */
-    toggle = (tab: string) => {
+    toggle = (tab) => {
         if (this.state.activeTab !== tab) {
             this.setState({
                 activeTab: tab,
