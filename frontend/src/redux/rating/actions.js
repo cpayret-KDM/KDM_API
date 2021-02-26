@@ -17,90 +17,88 @@ import {
   CLEAR_RATING,
 } from './constants';
 
-type RatingAction = { type: String, payload: {} | String };
-
 // Get Ratings
-export const getRatings = (): RatingAction => ({
+export const getRatings = () => ({
   type: GET_RATINGS,
   payload: { },
 });
 
-export const getRatingsSuccess = (ratings: Array): RatingAction => ({
+export const getRatingsSuccess = (ratings) => ({
   type: GET_RATINGS_SUCCESS,
   payload: { ratings },
 });
 
-export const getRatingsFailure = (err: Object): RatingAction => ({
+export const getRatingsFailure = (err) => ({
   type: GET_RATINGS_FAILURE,
   payload: err,
 });
 
 // Get Rating
-export const getRating = (ratingId: String = ''): RatingAction => ({
+export const getRating = (ratingId = '') => ({
   type: GET_RATING,
   payload: { ratingId },
 });
 
-export const getRatingSuccess = (rating: Object): RatingAction => ({
+export const getRatingSuccess = (rating) => ({
   type: GET_RATING_SUCCESS,
   payload: rating,
 });
 
-export const getRatingFailure = (err: Object): RatingAction => ({
+export const getRatingFailure = (err) => ({
   type: GET_RATING_FAILURE,
   payload: err,
 });
 
 // Create Rating
-export const createRating = (rating: Object = {}, loanId: String = ''): RatingAction => ({
+export const createRating = (rating = {}, loanId = '') => ({
   type: CREATE_RATING,
   payload: { rating, loanId },
 });
 
-export const createRatingSuccess = (rating: Object): RatingAction => ({
+export const createRatingSuccess = (rating) => ({
   type: CREATE_RATING_SUCCESS,
   payload: rating,
 });
 
-export const createRatingFailure = (err: Object): RatingAction => ({
+export const createRatingFailure = (err) => ({
   type: CREATE_RATING_FAILURE,
   payload: err,
 });
 
 // Edit Rating
-export const editRating = (rating: Object = {}, loanId: String = ''): RatingAction => ({
+export const editRating = (rating = {}, loanId = '') => ({
   type: EDIT_RATING,
   payload: { rating, loanId },
 });
 
-export const editRatingSuccess = (rating: Object): RatingAction => ({
+export const editRatingSuccess = (rating) => ({
   type: EDIT_RATING_SUCCESS,
   payload: rating,
 });
 
-export const editRatingFailure = (err: Object): RatingAction => ({
+export const editRatingFailure = (err) => ({
   type: EDIT_RATING_FAILURE,
   payload: err,
 });
 
 // Delete Rating
-export const deleteRating = (ratingId: String = '', loanId: String = ''): RatingAction => ({
+export const deleteRating = (ratingId = '', loanId = '') => ({
   type: DELETE_RATING,
   payload: { ratingId, loanId },
 });
 
-export const deleteRatingSuccess = (): RatingAction => ({
+export const deleteRatingSuccess = () => ({
   type: DELETE_RATING_SUCCESS,
   payload: {},
 });
 
-export const deleteRatingFailure = (err: Object): RatingAction => ({
+export const deleteRatingFailure = (err) => ({
   type: DELETE_RATING_FAILURE,
   payload: err,
 });
 
 // Clear Rating
-export const clearRating = (): LoanAction => ({
+export const clearRating = () => ({
   type: CLEAR_RATING,
   payload: {  },
 });

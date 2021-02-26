@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Row, Col } from 'reactstrap';
-
 import PageTitle from '../../components/PageTitle';
-import SecuritiesTable from './SecuritiesTable';
 import { getSecurities } from '../../redux/actions';
+import SecuritiesTable from './SecuritiesTable';
 
 const SecurityDashboard = (props) => {
 

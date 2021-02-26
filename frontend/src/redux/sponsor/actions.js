@@ -14,74 +14,72 @@ import {
   CLEAR_SPONSOR,
 } from './constants';
 
-type SponsorAction = { type: String, payload: {} | String };
-
 // Get Sponsor
-export const getSponsor = (sponsorId: String = ''): SponsorAction => ({
+export const getSponsor = (sponsorId = '') => ({
   type: GET_SPONSOR,
   payload: { sponsorId },
 });
 
-export const getSponsorSuccess = (sponsor: Object): SponsorAction => ({
+export const getSponsorSuccess = (sponsor) => ({
   type: GET_SPONSOR_SUCCESS,
   payload: sponsor,
 });
 
-export const getSponsorFailure = (err: Object): SponsorAction => ({
+export const getSponsorFailure = (err) => ({
   type: GET_SPONSOR_FAILURE,
   payload: err,
 });
 
 // Create Sponsor
-export const createSponsor = (sponsor: Object = {}, loanId: String = ''): SponsorAction => ({
+export const createSponsor = (sponsor = {}, loanId = '') => ({
   type: CREATE_SPONSOR,
   payload: { sponsor, loanId },
 });
 
-export const createSponsorSuccess = (sponsor: Object): SponsorAction => ({
+export const createSponsorSuccess = (sponsor) => ({
   type: CREATE_SPONSOR_SUCCESS,
   payload: sponsor,
 });
 
-export const createSponsorFailure = (err: Object): SponsorAction => ({
+export const createSponsorFailure = (err) => ({
   type: CREATE_SPONSOR_FAILURE,
   payload: err,
 });
 
 // Edit Sponsor
-export const editSponsor = (sponsor: Object = {}, loanId: String = ''): SponsorAction => ({
+export const editSponsor = (sponsor = {}, loanId = '') => ({
   type: EDIT_SPONSOR,
   payload: { sponsor, loanId },
 });
 
-export const editSponsorSuccess = (sponsor: Object): SponsorAction => ({
+export const editSponsorSuccess = (sponsor) => ({
   type: EDIT_SPONSOR_SUCCESS,
   payload: sponsor,
 });
 
-export const editSponsorFailure = (err: Object): SponsorAction => ({
+export const editSponsorFailure = (err) => ({
   type: EDIT_SPONSOR_FAILURE,
   payload: err,
 });
 
 // Delete Sponsor
-export const deleteSponsor = (sponsorId: String = '', loanId: String = ''): SponsorAction => ({
+export const deleteSponsor = (sponsorId = '', loanId = '') => ({
   type: DELETE_SPONSOR,
   payload: { sponsorId, loanId },
 });
 
-export const deleteSponsorSuccess = (): SponsorAction => ({
+export const deleteSponsorSuccess = () => ({
   type: DELETE_SPONSOR_SUCCESS,
   payload: {},
 });
 
-export const deleteSponsorFailure = (err: Object): SponsorAction => ({
+export const deleteSponsorFailure = (err) => ({
   type: DELETE_SPONSOR_FAILURE,
   payload: err,
 });
 
 // Clear Sponsor
-export const clearSponsor = (): LoanAction => ({
+export const clearSponsor = () => ({
   type: CLEAR_SPONSOR,
   payload: {  },
 });

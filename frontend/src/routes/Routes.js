@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
-
-import { allFlattenRoutes as routes } from './index';
-import { isUserAuthenticated } from '../helpers/authUtils';
+import { BrowserRouter, Switch } from 'react-router-dom';
 import * as layoutConstants from '../constants/layout';
-
+import { isUserAuthenticated } from '../helpers/authUtils';
 // All layouts/containers
-import AuthLayout from '../hyper-layouts/Auth';
-import VerticalLayout from '../hyper-layouts/Vertical';
-import HorizontalLayout from '../hyper-layouts/Horizontal';
-import DetachedLayout from '../hyper-layouts/Detached';
+import AuthLayout from '../layouts/Auth';
+import DetachedLayout from '../layouts/Detached';
+import HorizontalLayout from '../layouts/Horizontal';
+import VerticalLayout from '../layouts/Vertical';
+import { allFlattenRoutes as routes } from './index';
 
 
 class Routes extends Component {
   getLayout = () => {
-    if (!isUserAuthenticated()) return AuthLayout;
+    if (!isUserAuthenticated()) {
+      return AuthLayout;
+    }
 
     let layoutCls = VerticalLayout;
 
@@ -33,7 +33,7 @@ class Routes extends Component {
     return layoutCls;
   };
 
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps) {
     let oldLayout = { ...this.props.layout };
     delete oldLayout.showRightSidebar;
     let newLayout = { ...nextProps.layout };

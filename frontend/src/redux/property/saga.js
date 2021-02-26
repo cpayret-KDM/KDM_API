@@ -1,13 +1,6 @@
 import { all, call, put, takeEvery, fork } from 'redux-saga/effects';
 import { fetchJSON } from '../../helpers/api';
-
-import {
-  GET_PROPERTY,
-  CREATE_PROPERTY,
-  EDIT_PROPERTY,
-  DELETE_PROPERTY,
-} from './constants';
-
+import { getLoan } from '../loan/actions';
 import {
   getPropertySuccess,
   getPropertyFailure,
@@ -24,8 +17,12 @@ import {
   editBorrowerSuccess,
   editBorrowerFailure,
 } from './actions';
-
-import { getLoan } from '../loan/actions';
+import {
+  GET_PROPERTY,
+  CREATE_PROPERTY,
+  EDIT_PROPERTY,
+  DELETE_PROPERTY,
+} from './constants';
 
 const SERVER_URL = process.env.REACT_APP_KDM_API_ENDPOINT;
 
@@ -228,23 +225,23 @@ function* editBorrower(propertyId, loanId, borrower)  {
 /**
  * Watchers
  */
-export function* watchGetProperty(): any {
+export function* watchGetProperty() {
   yield takeEvery(GET_PROPERTY, getProperty);
 }
 
-export function* watchCreateProperty(): any {
+export function* watchCreateProperty() {
   yield takeEvery(CREATE_PROPERTY, createProperty);
 }
 
-export function* watchEditProperty(): any {
+export function* watchEditProperty() {
   yield takeEvery(EDIT_PROPERTY, editProperty);
 }
 
-export function* watchDeleteProperty(): any {
+export function* watchDeleteProperty() {
   yield takeEvery(DELETE_PROPERTY, deleteProperty);
 }
 
-function* PropertySaga(): any {
+function* PropertySaga() {
   yield all([
     fork(watchGetProperty),
     fork(watchCreateProperty),

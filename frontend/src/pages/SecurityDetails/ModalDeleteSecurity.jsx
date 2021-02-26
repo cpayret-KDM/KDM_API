@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from 'reactstrap';
-
 import { deleteSecurity } from '../../redux/actions';
 
 const ModalDeleteSecurity = (props) => {

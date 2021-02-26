@@ -1,8 +1,8 @@
 class MenuItem {
-    id: number;
-    parentId: number;
-    active: boolean;
-    children: Array<MenuItem>;
+    id;
+    parentId;
+    active;
+    children;
 }
 
 export default MenuItem;
