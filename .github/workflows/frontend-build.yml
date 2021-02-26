@@ -25,7 +25,7 @@ jobs:
         run: rm -rf node_modules && yarn install --frozen-lockfile
         working-directory: frontend
       - name: yarn run lint
-        run: yarn run lint
+        run: yarn run lint:es
         working-directory: frontend
   test:
     name: test
@@ -46,5 +46,5 @@ jobs:
         run: rm -rf node_modules && yarn install --frozen-lockfile
         working-directory: frontend
       - name: yarn test
-        run: yarn test:noWatch
+        run: yarn test:nowatch
         working-directory: frontend
