@@ -1,6 +1,6 @@
 {
-  "name": "hyper-react",
-  "version": "2.0.2",
+  "name": "kdm-api",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@fullcalendar/bootstrap": "^4.4.2",
