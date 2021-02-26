@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import DatePicker from 'react-datepicker';
-import moment from 'moment';
-import { Table } from 'reactstrap';
 import { AvField, AvGroup, AvInput } from 'availity-reactstrap-validation';
-
-import { getRatings } from '../../redux/actions';
-import { DATE_FORMAT } from '../../constants/utils';
+import moment from 'moment';
+import DatePicker from 'react-datepicker';
+import { connect } from 'react-redux';
+import { Table } from 'reactstrap';
 import UncontrolledAlert from 'reactstrap/lib/UncontrolledAlert';
+import { DATE_FORMAT } from '../../constants/utils';
+import { getRatings } from '../../redux/actions';
 
 const RatingsTable = (props) => {
   const {  
     itemType = 'loan', 
-    item = {}, 
     editing = false,
     viewing = false,
   } = props;
@@ -27,7 +25,7 @@ const RatingsTable = (props) => {
   useEffect(() => {
     if (props.agencyRatings) {
       let formattedAgencyRatings = [];
-      Object.entries(props.agencyRatings).forEach((rating, i) => {
+      Object.entries(props.agencyRatings).forEach((rating) => {
         formattedAgencyRatings.push({
           agency: rating[0],
           values: rating[1]

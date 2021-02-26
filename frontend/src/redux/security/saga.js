@@ -1,17 +1,5 @@
 import { all, call, put, takeEvery, fork } from 'redux-saga/effects';
 import { fetchJSON } from '../../helpers/api';
-
-import {
-  GET_SECURITIES,
-  GET_SECURITY,
-  GET_SECURITY_LOANS,
-  EDIT_SECURITY_LOANS,
-  CREATE_SECURITY,
-  EDIT_SECURITY,
-  DELETE_SECURITY,
-  EDIT_SECURITY_RATINGS,
-} from './constants';
-
 import {
   getSecuritiesSuccess,
   getSecuritiesFailure,
@@ -27,24 +15,33 @@ import {
   editSecurityRatings,
   editSecurityRatingsSuccess,
   editSecurityRatingsFailure,
-
   getSecurityLoansSuccess,
   getSecurityLoansFailure,
   editSecurityLoans,
   editSecurityLoansSuccess,
   editSecurityLoansFailure,
 } from './actions';
+import {
+  GET_SECURITIES,
+  GET_SECURITY,
+  GET_SECURITY_LOANS,
+  EDIT_SECURITY_LOANS,
+  CREATE_SECURITY,
+  EDIT_SECURITY,
+  DELETE_SECURITY,
+  EDIT_SECURITY_RATINGS,
+} from './constants';
 
 const SERVER_URL = process.env.REACT_APP_KDM_API_ENDPOINT;
 
 // Get Securities
-function* getSecurities({ payload: { securityNumber, size, page, sort } }) {
+function* getSecurities({ payload: { size, page, sort } }) {
   const options = {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   };
 
-  const response = yield call(fetchJSON, `${SERVER_URL}/msn?size=500`, options);
+  const response = yield call(fetchJSON, `${SERVER_URL}/msn?size=${size}&page=${page}&sort=${sort}`, options);
   if (!response.status || response.status === 200) {
     yield put(getSecuritiesSuccess(response));
   } else {
@@ -153,13 +150,13 @@ function* editSecurity({ payload: { security } }) {
   const response = yield call(fetchJSON, `${SERVER_URL}/msn/${security.id}`, options);
   if (!response.status || response.status === 200) {
     yield put(editSecuritySuccess(response));
-    if (security.ratings?.length > 0) {
+    if (security.ratings.length > 0) {
       yield put(editSecurityRatings(security.ratings, security.id));
     }
-    if (security.loans?.length > 0) {
+    if (security.loans.length > 0) {
       yield put(editSecurityLoans(security.loans, security.id));
     }
-    if (security.loans?.length === 0 && security.ratings?.length === 0) {
+    if (security.loans.length === 0 && security.ratings.length === 0) {
       yield put(getSecurity(security.id));
     }
   } else {

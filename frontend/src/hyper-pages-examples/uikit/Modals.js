@@ -4,15 +4,7 @@ import { Row, Col, Card, CardBody, Button, Modal, ModalHeader, ModalBody, ModalF
 
 import PageTitle from '../../components/PageTitle';
 
-type ModalProps = {};
-
-type ModalState = {
-    modal?,
-    size? | null,
-    className? | null,
-};
-
-class ModalSizesAndPosition extends Component<ModalProps, ModalState> {
+class ModalSizesAndPosition extends Component {
     constructor(props) {
         super(props);
 
@@ -158,15 +150,7 @@ class ModalSizesAndPosition extends Component<ModalProps, ModalState> {
     }
 }
 
-type ModalColorVariantProps = {};
-
-type ModalColorVariantState = {
-    modal?,
-    bodyClass? | null,
-    headerClassName? | null,
-};
-
-class ModalColorVariant extends Component<ModalColorVariantProps, ModalColorVariantState> {
+class ModalColorVariant extends Component {
     constructor(props) {
         super(props);
 
@@ -336,13 +320,8 @@ class ModalColorVariant extends Component<ModalColorVariantProps, ModalColorVari
     }
 }
 
-type ModalWithFormProps = {};
 
-type ModalWithFormState = {
-    modal?,
-};
-
-class ModalWithForm extends React.Component<ModalWithFormProps, ModalWithFormState> {
+class ModalWithForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -432,15 +411,8 @@ class ModalWithForm extends React.Component<ModalWithFormProps, ModalWithFormSta
     }
 }
 
-type NestedModalProps = {};
 
-type NestedModalState = {
-    toggleMultiple?,
-    nestedModal?,
-    closeAll?,
-};
-
-class NestedModal extends React.Component<NestedModalProps, NestedModalState> {
+class NestedModal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {

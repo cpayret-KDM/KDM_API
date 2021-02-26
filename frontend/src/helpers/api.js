@@ -22,7 +22,9 @@ const fetchJSON = (url, options = {}) => {
             }
 
             const contentLength = response.headers.get('content-length');
-            if (contentLength && contentLength === "0") return Promise.resolve('');
+            if (contentLength && contentLength === "0") {
+                return Promise.resolve('');
+            }
 
             return response.json();
         })

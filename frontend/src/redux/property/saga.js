@@ -1,13 +1,6 @@
 import { all, call, put, takeEvery, fork } from 'redux-saga/effects';
 import { fetchJSON } from '../../helpers/api';
-
-import {
-  GET_PROPERTY,
-  CREATE_PROPERTY,
-  EDIT_PROPERTY,
-  DELETE_PROPERTY,
-} from './constants';
-
+import { getLoan } from '../loan/actions';
 import {
   getPropertySuccess,
   getPropertyFailure,
@@ -24,8 +17,12 @@ import {
   editBorrowerSuccess,
   editBorrowerFailure,
 } from './actions';
-
-import { getLoan } from '../loan/actions';
+import {
+  GET_PROPERTY,
+  CREATE_PROPERTY,
+  EDIT_PROPERTY,
+  DELETE_PROPERTY,
+} from './constants';
 
 const SERVER_URL = process.env.REACT_APP_KDM_API_ENDPOINT;
 

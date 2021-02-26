@@ -1,11 +1,7 @@
 
 import { Cookies } from 'react-cookie';
 import { all, call, fork, put, takeEvery } from 'redux-saga/effects';
-
 import { fetchJSON } from '../../helpers/api';
-
-import { LOGIN_USER, LOGOUT_USER, REGISTER_USER, FORGET_PASSWORD } from './constants';
-
 import {
     loginUserSuccess,
     loginUserFailed,
@@ -14,6 +10,7 @@ import {
     forgetPasswordSuccess,
     forgetPasswordFailed,
 } from './actions';
+import { LOGIN_USER, LOGOUT_USER, REGISTER_USER, FORGET_PASSWORD } from './constants';
 
 const DOMAIN = process.env.REACT_APP_AUTH0_DOMAIN;
 const CLIENT_ID = process.env.REACT_APP_AUTH0_CLIENT_ID;
@@ -27,8 +24,12 @@ const CLIENT = process.env.REACT_APP_AUTH0_CLIENT;
  */
 const setSession = user => {
     let cookies = new Cookies();
-    if (user) cookies.set('user', JSON.stringify(user), { path: '/' });
-    else cookies.remove('user', { path: '/' });
+    if (user) {
+        cookies.set('user', JSON.stringify(user), { path: '/' });
+    }
+    else {
+        cookies.remove('user', { path: '/' });
+    }
 };
 
 /**
@@ -77,12 +78,10 @@ function* login({ payload: { username, password } }) {
  * @param {*} param0
  */
 function* logout({ payload: { history } }) {
-    try {
-        setSession(null);
-        yield call(() => {
-            history.push('/account/login');
-        });
-    } catch (error) {}
+    setSession(null);
+    yield call(() => {
+        history.push('/account/login');
+    });
 }
 
 /**

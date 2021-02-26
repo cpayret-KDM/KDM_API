@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import DatePicker from 'react-datepicker';
-import moment from 'moment';
-import { Row, Col, Label, Button, InputGroupAddon, Card, CardBody, Spinner, UncontrolledAlert, Table } from 'reactstrap';
 import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
-
+import moment from 'moment';
+import DatePicker from 'react-datepicker';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { Row, Col, Label, Button, InputGroupAddon, Card, CardBody, Spinner, UncontrolledAlert } from 'reactstrap';
 import PageTitle from '../../components/PageTitle';
-import ModalProperty from './ModalProperty';
-import ModalDeleteProperty from './ModalDeleteProperty';
-import ModalDeleteLoan from './ModalDeleteLoan';
-import ModalSponsor from './ModalSponsor';
-import ModalDeleteSponsor from './ModalDeleteSponsor';
-import RatingsTable from './RatingsTable';
-
-import { getLoan, createLoan, editLoan, deleteLoan, clearLoan } from '../../redux/actions';
 import { formatCurrency, DATE_FORMAT, EMPTY_LOAN, LOAN_STATUS_MAP, PIPELINE_STATUS_MAP, PROPERTY_TYPE_MAP } from '../../constants/utils';
+import { getLoan, createLoan, editLoan, deleteLoan, clearLoan } from '../../redux/actions';
+import ModalDeleteLoan from './ModalDeleteLoan';
+import ModalDeleteProperty from './ModalDeleteProperty';
+import ModalDeleteSponsor from './ModalDeleteSponsor';
+import ModalProperty from './ModalProperty';
+import ModalSponsor from './ModalSponsor';
+import RatingsTable from './RatingsTable';
 
 const LoanDetails = (props) => {
   const { loan = {...EMPTY_LOAN} } = props;
@@ -38,7 +36,9 @@ const LoanDetails = (props) => {
 
   const [originationDate, setOriginationDate] = useState(new Date());
   useEffect(() => {
-    if (!loan.originationDate) return;
+    if (!loan.originationDate) {
+      return;
+    }
     setOriginationDate(moment(loan.originationDate).toDate());
   }, [loan]);
 
@@ -82,7 +82,9 @@ const LoanDetails = (props) => {
 
   /* Loan */
   const submitLoan = (e, errors, values) => {
-    if (errors.length !== 0) return;
+    if (errors.length !== 0) {
+      return;
+    }
     setIsSaving(true);
 
     const newLoan = {
@@ -101,7 +103,9 @@ const LoanDetails = (props) => {
   }
 
   const [showDeleteLoanModal, setShowDeleteLoanModal] = useState(false);
-  const handleDeleteLoan = (loanId) => {
+  //TODO: Why isn't loanId used here? Is this the right method to call?
+  //const handleDeleteLoan = (loanId) => {
+  const handleDeleteLoan = () => {
     setShowDeleteLoanModal(true);
   }
 
@@ -116,7 +120,9 @@ const LoanDetails = (props) => {
   }
 
   const handleAddNewPropertyModal = (e) => {
-    if (e) e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
     setPropertyId(1);
     setPropertyMode('create');
     setShowPropertyModal(true);
@@ -145,7 +151,9 @@ const LoanDetails = (props) => {
   }
 
   const handleAddSponsorModal = (e) => {
-    if (e) e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
     setSponsorId(1);
     setSponsorMode('create');
     setShowSponsorModal(true);
@@ -172,7 +180,9 @@ const LoanDetails = (props) => {
   const [loanRatings, setLoanRatings] = useState([]);
   const [hasRatingsError, setHasRatingsError] = useState(false);
   const handleEditLoanRatings = (ratings, hasError) => {
-    if (hasError) setHasRatingsError(true)
+    if (hasError) {
+      setHasRatingsError(true)
+    }
     const newLoanRatings = [...ratings];
     setLoanRatings([...newLoanRatings]);
   }
@@ -549,7 +559,7 @@ const LoanActionButtons = ({ creating, editing, viewing, loanId, handleDeleteLoa
 
       {viewing && (
         <>
-          <Button className="btn btn-danger mr-2" onClick={(e) => handleDeleteLoan(loanId)}>Delete Loan</Button>
+          <Button className="btn btn-danger mr-2" onClick={() => handleDeleteLoan(loanId)}>Delete Loan</Button>
           <Link to={`/loans/${loanId}/edit`} className="btn btn-primary">Edit Loan</Link>
         </>
       )}

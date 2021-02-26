@@ -1,17 +1,5 @@
 import { all, call, put, takeEvery, fork } from 'redux-saga/effects';
 import { fetchJSON } from '../../helpers/api';
-
-import {
-  GET_LOANS,
-  GET_60_DAY_LOANS,
-  GET_CASH_FLOW_LOANS,
-  GET_LOAN,
-  CREATE_LOAN,
-  EDIT_LOAN,
-  DELETE_LOAN,
-  EDIT_LOAN_RATINGS,
-} from './constants';
-
 import {
   getLoansSuccess,
   getLoansFailure,
@@ -19,7 +7,6 @@ import {
   get60DayLoansFailure,
   getCashFlowLoansSuccess,
   getCashFlowLoansFailure,
-  
   getLoan,
   getLoanSuccess,
   getLoanFailure,
@@ -33,6 +20,16 @@ import {
   editLoanRatingsSuccess,
   editLoanRatingsFailure,
 } from './actions';
+import {
+  GET_LOANS,
+  GET_60_DAY_LOANS,
+  GET_CASH_FLOW_LOANS,
+  GET_LOAN,
+  CREATE_LOAN,
+  EDIT_LOAN,
+  DELETE_LOAN,
+  EDIT_LOAN_RATINGS,
+} from './constants';
 
 const SERVER_URL = process.env.REACT_APP_KDM_API_ENDPOINT;
 
@@ -64,13 +61,16 @@ function* getLoansSaga({ payload: { nullMSN } }) {
 }
 
 // Get 60 Day Loans
-function* get60DayLoansSaga({ payload: {} }) {
+function* get60DayLoansSaga({ payload: { days } }) {
   const options = {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   };
 
-  const response = yield call(fetchJSON, `${SERVER_URL}/loan/anniversary?days=60`, options);
+  //days defaults to 60 if not present
+  days = days || 60
+
+  const response = yield call(fetchJSON, `${SERVER_URL}/loan/anniversary?days=${days}`, options);
   if (!response.status || response.status === 200) {
     yield put(get60DayLoansSuccess(response));
   } else {
@@ -179,7 +179,7 @@ function* editLoanSaga({ payload: { loan } }) {
   const response = yield call(fetchJSON, `${SERVER_URL}/loan/${loan.id}`, options);
   if (!response.status || response.status === 200) {
     yield put(editLoanSuccess(response));
-    if (loan.ratings?.length > 0) {
+    if (loan.ratings.length > 0) {
       yield put(editLoanRatings(loan.ratings, loan.id));
     } else {
       yield put(getLoan(loan.id));

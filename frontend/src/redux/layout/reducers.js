@@ -1,4 +1,4 @@
-
+import * as layoutConstants from '../../constants/layout';
 import {
     CHANGE_LAYOUT,
     CHANGE_LAYOUT_WIDTH,
@@ -8,9 +8,6 @@ import {
     SHOW_RIGHT_SIDEBAR,
     HIDE_RIGHT_SIDEBAR,
 } from './constants';
-
-import * as layoutConstants from '../../constants/layout';
-
 const INIT_STATE = {
     layoutType: layoutConstants.LAYOUT_VERTICAL,
     layoutWidth: layoutConstants.LAYOUT_WIDTH_FLUID,

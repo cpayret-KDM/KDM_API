@@ -7,7 +7,7 @@ import sagas from './sagas';
 const sagaMiddleware = createSagaMiddleware();
 const middlewares = [sagaMiddleware];
 
-export function configureStore(initialState: {}) {
+export function configureStore(initialState) {
     const composeEnhancers = compose;
 
     const store = createStore(reducers, initialState, composeEnhancers(applyMiddleware(...middlewares)));

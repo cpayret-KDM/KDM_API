@@ -1,25 +1,10 @@
 import { all, call, put, takeEvery, fork } from 'redux-saga/effects';
 import { fetchJSON } from '../../helpers/api';
-
-import {
-  GET_SPONSOR,
-  CREATE_SPONSOR,
-  EDIT_SPONSOR,
-  DELETE_SPONSOR,
-} from './constants';
-
-import {
-  getSponsorSuccess,
-  getSponsorFailure,
-  createSponsorSuccess,
-  createSponsorFailure,
-  editSponsorSuccess,
-  editSponsorFailure,
-  deleteSponsorSuccess,
-  deleteSponsorFailure,
-} from './actions';
-
 import { getLoan } from '../loan/actions';
+import { getSponsorSuccess, getSponsorFailure, createSponsorSuccess,
+  createSponsorFailure, editSponsorSuccess, editSponsorFailure,
+  deleteSponsorSuccess, deleteSponsorFailure } from './actions';
+import { GET_SPONSOR, CREATE_SPONSOR, EDIT_SPONSOR, DELETE_SPONSOR } from './constants';
 
 const SERVER_URL = process.env.REACT_APP_KDM_API_ENDPOINT;
 

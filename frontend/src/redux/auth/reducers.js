@@ -1,4 +1,4 @@
-
+import { getLoggedInUser } from '../../helpers/authUtils';
 import {
     LOGIN_USER,
     LOGIN_USER_SUCCESS,
@@ -11,8 +11,6 @@ import {
     FORGET_PASSWORD_SUCCESS,
     FORGET_PASSWORD_FAILED,
 } from './constants';
-
-import { getLoggedInUser } from '../../helpers/authUtils';
 
 const INIT_STATE = {
     user: getLoggedInUser(),

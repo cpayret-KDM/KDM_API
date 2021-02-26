@@ -1,14 +1,5 @@
 import { all, call, put, takeEvery, fork } from 'redux-saga/effects';
 import { fetchJSON } from '../../helpers/api';
-
-import {
-  GET_RATINGS,
-  GET_RATING,
-  CREATE_RATING,
-  EDIT_RATING,
-  DELETE_RATING,
-} from './constants';
-
 import {
   getRatingsSuccess,
   getRatingsFailure,
@@ -21,14 +12,19 @@ import {
   deleteRatingSuccess,
   deleteRatingFailure,
 } from './actions';
-
-import { getLoan } from '../loan/actions';
+import {
+  GET_RATINGS,
+  GET_RATING,
+  CREATE_RATING,
+  EDIT_RATING,
+  DELETE_RATING,
+} from './constants';
 
 const SERVER_URL = process.env.REACT_APP_KDM_API_ENDPOINT;
 
 
 // Get Ratings
-function* getRatings({ payload: { } }) {
+function* getRatings() { //FIXME unexpected empty object pattern
   const options = {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
@@ -80,7 +76,7 @@ function* getRating({ payload: { ratingId } }) {
 }
 
 // Create Rating
-function* createRating({ payload: { rating, loanId } }) {
+function* createRating({ payload: { rating } }) {
   const options = {
     method: 'POST',
     body: JSON.stringify( rating ),
@@ -90,7 +86,7 @@ function* createRating({ payload: { rating, loanId } }) {
   const response = yield call(fetchJSON, `${SERVER_URL}/rating`, options);
   if (!response.status || response.status === 200) {
     yield put(createRatingSuccess(response));
-    yield put(getLoan(loanId));
+    //yield put(getLoan(loanId));
   } else {
     let message;
     switch (response.status) {
@@ -108,7 +104,7 @@ function* createRating({ payload: { rating, loanId } }) {
 }
 
 // Edit Rating
-function* editRating({ payload: { rating, loanId } }) {
+function* editRating({ payload: { rating } }) {
   const options = {
     method: 'PUT',
     body: JSON.stringify( rating ),
@@ -118,7 +114,7 @@ function* editRating({ payload: { rating, loanId } }) {
   const response = yield call(fetchJSON, `${SERVER_URL}/rating/${rating.id}`, options);
   if (!response.status || response.status === 200) {
     yield put(editRatingSuccess(response));
-    yield put(getLoan(loanId));
+    //yield put(getLoan(loanId));
   } else {
     let message;
     switch (response.status) {
@@ -136,7 +132,7 @@ function* editRating({ payload: { rating, loanId } }) {
 }
 
 // Delete Rating
-function* deleteRating({ payload: { ratingId, loanId } }) {
+function* deleteRating({ payload: { ratingId } }) {
   const options = {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
@@ -145,7 +141,7 @@ function* deleteRating({ payload: { ratingId, loanId } }) {
   const response = yield call(fetchJSON, `${SERVER_URL}/rating/${ratingId}`, options);
   if (!response.status || response.status === 200) {
     yield put(deleteRatingSuccess(response));
-    yield put(getLoan(loanId));
+   // yield put(getLoan(loanId));
   } else {
     let message;
     switch (response.status) {

@@ -32,7 +32,7 @@ export const registerUser = (fullname, email, password) => ({
     payload: { fullname, email, password },
 });
 
-export const registerUserSuccess = (user: {}) => ({
+export const registerUserSuccess = (user) => ({
     type: REGISTER_USER_SUCCESS,
     payload: user,
 });

@@ -1,12 +1,10 @@
 
 import React, { Component, Suspense } from 'react';
-import { Container } from 'reactstrap';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-
-import { changeLayout } from '../redux/actions';
+import { Container } from 'reactstrap';
 import ThemeCustomizer from '../components/ThemeCustomizer';
 import * as layoutConstants from '../constants/layout';
+import { changeLayout } from '../redux/actions';
 
 // code splitting and lazy loading
 // https://blog.logrocket.com/lazy-loading-components-in-react-16-6-6cea535c0b52
@@ -17,20 +15,7 @@ const RightSidebar = React.lazy(() => import('../components/RightSidebar'));
 
 const loading = () => <div className="text-center"></div>;
 
-type DetachedLayoutProps = {
-    changeLayout: PropTypes.func,
-    children?: any,
-    layout: {
-        leftSideBarType?: string,
-        leftSideBarTheme?: string,
-    },
-};
-
-type DetachedLayoutState = {
-    isMenuOpened?: boolean,
-};
-
-class DetachedLayout extends Component<DetachedLayoutProps, DetachedLayoutState> {
+class DetachedLayout extends Component {
     constructor(props) {
         super(props);
 
@@ -51,7 +36,9 @@ class DetachedLayout extends Component<DetachedLayoutProps, DetachedLayoutState>
     openMenu = e => {
         e.preventDefault();
         this.setState({ isMenuOpened: !this.state.isMenuOpened });
-        if (document.body) document.body.classList.add('sidebar-enable');
+        if (document.body) {
+            document.body.classList.add('sidebar-enable');
+        }
     };
 
     render() {

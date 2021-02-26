@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 const loading = () => <div className="text-center"></div>;
 
 type DefaultLayoutProps = {
-    children?: any,
+    children: any,
 };
 
 class DefaultLayout extends Component<DefaultLayoutProps> {
@@ -17,14 +17,18 @@ class DefaultLayout extends Component<DefaultLayoutProps> {
      * On component update - update layout
      */
     componentDidMount = () => {
-        if (document.body) document.body.classList.add('authentication-bg');
+        if (document.body) {
+            document.body.classList.add('authentication-bg');
+        }
     };
 
     /**
      * On component unmount - reset layout
      */
     componentWillUnmount = () => {
-        if (document.body) document.body.classList.remove('authentication-bg');
+        if (document.body) {
+            document.body.classList.remove('authentication-bg');
+        }
     };
 
     render() {

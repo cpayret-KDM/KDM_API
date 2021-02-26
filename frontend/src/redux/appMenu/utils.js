@@ -1,7 +1,3 @@
-
-
-import MenuItem from './models';
-
 /**
  * Flatten the nested list of menu items
  */

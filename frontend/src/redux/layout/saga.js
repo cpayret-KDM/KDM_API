@@ -1,4 +1,5 @@
 import { all, call, fork, takeEvery, put } from 'redux-saga/effects';
+import * as layoutConstants from '../../constants';
 import {
     changeLayoutWidth as changeLayoutWidthAction,
     changeSidebarTheme as changeLeftSidebarThemeAction,
@@ -13,13 +14,12 @@ import {
     SHOW_RIGHT_SIDEBAR,
     HIDE_RIGHT_SIDEBAR,
 } from './constants';
-import * as layoutConstants from '../../constants';
 
 /**
  * Changes the body attribute
  */
 function changeBodyAttribute(attribute, value) {
-    if (document.body) document.body.setAttribute(attribute, value);
+    if (document.body) { document.body.setAttribute(attribute, value); }
     return true;
 }
 

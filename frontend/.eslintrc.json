@@ -1,29 +1,28 @@
 {
-  "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "import"],
+  "plugins": ["import"],
   "extends": [
     "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
     "prettier",
     "plugin:import/recommended",
-    "plugin:import/typescript",
     "plugin:react/recommended",
     "plugin:react-hooks/recommended"
   ],
+  "globals": {
+    "document": "writable",
+    "global": "writable",
+    "jest": "readonly",
+    "process": "readonly"
+  },
   "settings": {
-    "import/resolver": {
-      "typescript": {}
-    },
     "react": {
       "version": "detect"
     }
   },
   "rules": {
     "curly": "error",
-    "@typescript-eslint/no-explicit-any": "error",
-    "@typescript-eslint/explicit-function-return-type": "error",
     "react/prop-types": "off",
     "react/react-in-jsx-scope": "off",
+    "react/display-name": "off",
     "import/order": [
       "error",
       {

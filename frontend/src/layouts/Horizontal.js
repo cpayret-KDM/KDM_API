@@ -1,12 +1,10 @@
 
 import React, { Component, Suspense } from 'react';
-import { Container } from 'reactstrap';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-
-import { changeLayout } from '../redux/actions';
-import * as layoutConstants from '../constants/layout';
+import { Container } from 'reactstrap';
 import ThemeCustomizer from '../components/ThemeCustomizer';
+import * as layoutConstants from '../constants/layout';
+import { changeLayout } from '../redux/actions';
 
 // code splitting and lazy loading
 // https://blog.logrocket.com/lazy-loading-components-in-react-16-6-6cea535c0b52

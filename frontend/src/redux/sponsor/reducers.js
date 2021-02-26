@@ -25,7 +25,7 @@ const initialState = {
   error: false
 }
 
-const sponsor = (state = {}, action) => {
+const sponsor = (state = initialState, action) => {
   switch (action.type) {
     case GET_SPONSOR:
       return {

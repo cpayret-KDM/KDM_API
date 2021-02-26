@@ -5,13 +5,8 @@ import classnames from 'classnames';
 
 import PageTitle from '../../components/PageTitle';
 
-type TabsProps = {};
-
-type TabsState = {
-    activeTab?,
-};
-class Tabs extends Component<TabsProps, TabsState> {
-    constructor(props: TabsProps) {
+class Tabs extends Component {
+    constructor(props) {
         super(props);
         this.state = { activeTab: '2' };
         this.toggle = this.toggle.bind(this);

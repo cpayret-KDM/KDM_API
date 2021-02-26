@@ -1,22 +1,17 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { Route } from 'react-router-dom';
-
 import { isUserAuthenticated, getLoggedInUserRole } from '../helpers/authUtils';
 
 // auth
 const Login = React.lazy(() => import('../pages/auth/Login'));
 const Logout = React.lazy(() => import('../pages/auth/Logout'));
-const Register = React.lazy(() => import('../pages/auth/Register'));
-const ForgetPassword = React.lazy(() => import('../pages/auth/ForgetPassword'));
-const Confirm = React.lazy(() => import('../pages/auth/Confirm'));
 
 // pages
 const LoanDashboard = React.lazy(() => import('../pages/LoanDashboard'));
 const LoanDetails = React.lazy(() => import('../pages/LoanDetails'));
 const SecurityDashboard = React.lazy(() => import('../pages/SecurityDashboard'));
 const SecurityDetails = React.lazy(() => import('../pages/SecurityDetails'));
-// const Profile = React.lazy(() => import('../hyper-pages/profile'));
 //const ErrorPageNotFound = React.lazy(() => import('../pages/error/PageNotFound'));
 //const ServerError = React.lazy(() => import('../pages/error/ServerError'));
 
@@ -167,25 +162,7 @@ const authRoutes = {
       name: 'Logout',
       component: Logout,
       route: Route,
-    },
-    {
-      path: '/account/register',
-      name: 'Register',
-      component: Register,
-      route: Route,
-    },
-    {
-      path: '/account/confirm',
-      name: 'Confirm',
-      component: Confirm,
-      route: Route,
-    },
-    {
-      path: '/account/forget-password',
-      name: 'Forget Password',
-      component: ForgetPassword,
-      route: Route,
-    },
+    }
   ],
 };
 

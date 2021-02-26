@@ -1,6 +1,5 @@
 
 import jwtDecode from 'jwt-decode';
-import { useReducer } from 'react';
 import { Cookies } from 'react-cookie';
 
 const ROLE_CLAIM = process.env.REACT_APP_AUTH0_ROLE_CLAIM_PREFIX;
