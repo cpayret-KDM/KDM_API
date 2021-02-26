@@ -22,5 +22,6 @@ frontend/.eslintcache
 frontend/cypress/.screenshots
 frontend/.env
 frontend/cypress.json
+frontend/build
 # keep frontend shared vscode settings
 !frontend/.vscode
