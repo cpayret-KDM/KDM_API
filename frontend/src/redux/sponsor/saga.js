@@ -1,25 +1,10 @@
 import { all, call, put, takeEvery, fork } from 'redux-saga/effects';
 import { fetchJSON } from '../../helpers/api';
-
-import {
-  GET_SPONSOR,
-  CREATE_SPONSOR,
-  EDIT_SPONSOR,
-  DELETE_SPONSOR,
-} from './constants';
-
-import {
-  getSponsorSuccess,
-  getSponsorFailure,
-  createSponsorSuccess,
-  createSponsorFailure,
-  editSponsorSuccess,
-  editSponsorFailure,
-  deleteSponsorSuccess,
-  deleteSponsorFailure,
-} from './actions';
-
 import { getLoan } from '../loan/actions';
+import { getSponsorSuccess, getSponsorFailure, createSponsorSuccess,
+  createSponsorFailure, editSponsorSuccess, editSponsorFailure,
+  deleteSponsorSuccess, deleteSponsorFailure } from './actions';
+import { GET_SPONSOR, CREATE_SPONSOR, EDIT_SPONSOR, DELETE_SPONSOR } from './constants';
 
 const SERVER_URL = process.env.REACT_APP_KDM_API_ENDPOINT;
 
@@ -136,23 +121,23 @@ function* deleteSponsor({ payload: { sponsorId, loanId } }) {
 /**
  * Watchers
  */
-export function* watchGetSponsor(): any {
+export function* watchGetSponsor() {
   yield takeEvery(GET_SPONSOR, getSponsor);
 }
 
- export function* watchCreateSponsor(): any {
+ export function* watchCreateSponsor() {
   yield takeEvery(CREATE_SPONSOR, createSponsor);
 }
 
-export function* watchEditSponsor(): any {
+export function* watchEditSponsor() {
   yield takeEvery(EDIT_SPONSOR, editSponsor);
 }
 
-export function* watchDeleteSponsor(): any {
+export function* watchDeleteSponsor() {
   yield takeEvery(DELETE_SPONSOR, deleteSponsor);
 }
 
-function* SponsorSaga(): any {
+function* SponsorSaga() {
   yield all([
     fork(watchGetSponsor),
     fork(watchCreateSponsor),

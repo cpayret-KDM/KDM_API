@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from 'reactstrap';
-
 import { deleteProperty } from '../../redux/actions';
 
 const ModalDeleteProperty = (props) => {

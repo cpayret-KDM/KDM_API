@@ -26,23 +26,16 @@ import {
   EDIT_LOAN_RATINGS_FAILURE,
 } from './constants';
 
-type Action = { type: string, payload: {} };
-
-type State = {
-  loans: Array<{}>,
-  loan: {},
-  loaded: boolean,
-  deleted: boolean
-};
 
 const initialState = {
   loans: [],
   loan: {},
   loaded: false,
-  deleted: false
+  deleted: false,
+  edited: false,
 };
 
-const Loan = (state: State = initialState, action: Action) => {
+const Loan = (state = initialState, action) => {
   switch (action.type) {
     /* Loans */
     case GET_LOANS:
@@ -51,10 +44,9 @@ const Loan = (state: State = initialState, action: Action) => {
         loans: undefined,
       };
     case GET_LOANS_SUCCESS:
-      const loans = action.payload?.content;
       return { 
         ...state, 
-        loans: loans,
+        loans: action.payload.content,
       };
     case GET_LOANS_FAILURE:
       return { 
@@ -69,10 +61,9 @@ const Loan = (state: State = initialState, action: Action) => {
         loans: undefined,
       };
     case GET_60_DAY_LOANS_SUCCESS:
-      const loans60day = action.payload?.content;
       return { 
         ...state, 
-        loans: loans60day,
+        loans: action.payload.content,
       };
     case GET_60_DAY_LOANS_FAILURE:
       return { 

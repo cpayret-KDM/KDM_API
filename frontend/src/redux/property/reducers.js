@@ -23,10 +23,18 @@ import {
   CLEAR_PROPERTY,
 } from './constants';
 
-type Action = { type: string, payload: {} };
-type State = { +value: boolean };
 
-const property = (state: State = {}, action: Action) => {
+
+
+const initialState = {
+  property: {},
+  added: false,
+  edited: false,
+  deleted: false,
+  error: false
+}
+
+const property = (state = initialState, action) => {
   switch (action.type) {
     case GET_PROPERTY:
       return {

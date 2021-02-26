@@ -1,5 +1,10 @@
 Hyper React was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Setup
+Copy the following example environment variable files and populate with your local settings for development.
+- `.env.local` -> `.env`
+- `cypress.json.local` -> `cypress.json`
+
 ## Available Scripts
 
 In the project directory, you can run:

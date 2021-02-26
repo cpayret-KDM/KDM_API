@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 import { connect } from 'react-redux';
 import { Row, Col, Label, Button, Modal, ModalHeader, ModalBody, ModalFooter, Spinner, UncontrolledAlert } from 'reactstrap';
-import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
+import { US_STATES_MAP } from '../../constants/utils';
 import { getSponsor, createSponsor, editSponsor, clearSponsor } from '../../redux/actions';
-import { US_STATES_MAP } from '../../helpers/utils';
 
 const ModalSponsor = (props) => {
   const { isOpen, toggle, mode, loanId } = props;
@@ -44,7 +44,9 @@ const ModalSponsor = (props) => {
   }, [props.added, props.edited, props.deleted, props.error]);
 
   const handleSubmitSponsor = (e, errors, values) => {
-    if (errors.length > 0) return false;
+    if (errors.length > 0) {
+      return false;
+    }
     e.preventDefault();
     setIsSaving(true);
 

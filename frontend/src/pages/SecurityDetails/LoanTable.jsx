@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Table, UncontrolledAlert } from 'reactstrap';
-
 import { getSecurityLoans, getLoans } from '../../redux/actions';
-import { DATE_FORMAT, PROPERTY_TYPE_MAP } from '../../helpers/utils';
 import ModalAddLoan from './ModalAddLoan';
 
 const LoanTable = (props) => {
   const {  
     editing = false,
-    viewing = false,
     securityId,
   } = props;
 
@@ -39,7 +36,7 @@ const LoanTable = (props) => {
 
   /* State Functions */
   const [showAddNewLoanModal, setShowAddNewLoanModal] = useState(false);
-  const handleAddNewLoan = (e, i) => {
+  const handleAddNewLoan = () => {
     setShowAddNewLoanModal(true);
   }
 
