@@ -6,27 +6,6 @@ on:
       - 'frontend/**'
 
 jobs:
-  lint:
-    name: lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '15.8.x'
-      - uses: actions/cache@v2
-        with:
-          path: ~/.yarn
-          key: ${{ runner.OS }}-node-${{ hashFiles('./frontend/yarn.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-node-
-            ${{ runner.OS }}-
-      - name: yarn install
-        run: rm -rf node_modules && yarn install --frozen-lockfile
-        working-directory: frontend
-      - name: yarn run lint
-        run: yarn run lint:es
-        working-directory: frontend
   test:
     name: test
     runs-on: ubuntu-latest
