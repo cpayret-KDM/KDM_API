@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { AvField, AvGroup } from 'availity-reactstrap-validation';
 import { connect } from 'react-redux';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from 'reactstrap';
-import { AvField, AvGroup } from 'availity-reactstrap-validation';
 
 const ModalAddLoan = (props) => {
   const { isOpen, toggle, loans } = props;

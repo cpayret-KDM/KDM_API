@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
+import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 import { connect } from 'react-redux';
 import { Redirect, Link } from 'react-router-dom';
-
 import { Container, Row, Col, Card, CardBody, Label, FormGroup, Button, Alert } from 'reactstrap';
-import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
-
-import { loginUser } from '../../redux/actions';
-import { isUserAuthenticated } from '../../helpers/authUtils';
+import logo from '../../assets/images/logos/K_Direct_Mortgage_transparent_white_font.fw.png';
 import LoaderWidget from '../../components/Loader';
-import logo from '../../assets/images/logo.png';
+import { isUserAuthenticated } from '../../helpers/authUtils';
+import { loginUser } from '../../redux/actions';
 
 class Login extends Component {
     _isMounted = false;
@@ -63,7 +61,7 @@ class Login extends Component {
                                         <div className="card-header pt-4 pb-4 text-center bg-primary">
                                             <Link to="/">
                                                 <span>
-                                                    <img src={logo} alt="" height="18" />
+                                                    <img src={logo} alt="" height="70" />
                                                 </span>
                                             </Link>
                                         </div>
@@ -119,8 +117,8 @@ class Login extends Component {
                                                 </FormGroup>
 
                                                 <p>
-                                                    <strong>Username:</strong> test &nbsp;&nbsp;{' '}
-                                                    <strong>Password:</strong> test
+                                                    <strong>Username:</strong> {this.state.username} &nbsp;&nbsp;{' '}
+                                                    <strong>Password:</strong> {this.state.password}
                                                 </p>
                                             </AvForm>
                                         </CardBody>
@@ -131,7 +129,7 @@ class Login extends Component {
                             <Row className="mt-1">
                                 <Col className="col-12 text-center">
                                     <p className="text-muted">
-                                        Don't have an account?{' '}
+                                        Need an account?{' '}
                                         <Link to="/account/register" className="text-muted ml-1">
                                             <b>Register</b>
                                         </Link>

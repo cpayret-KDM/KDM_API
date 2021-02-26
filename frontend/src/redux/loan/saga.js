@@ -1,17 +1,5 @@
 import { all, call, put, takeEvery, fork } from 'redux-saga/effects';
 import { fetchJSON } from '../../helpers/api';
-
-import {
-  GET_LOANS,
-  GET_60_DAY_LOANS,
-  GET_CASH_FLOW_LOANS,
-  GET_LOAN,
-  CREATE_LOAN,
-  EDIT_LOAN,
-  DELETE_LOAN,
-  EDIT_LOAN_RATINGS,
-} from './constants';
-
 import {
   getLoansSuccess,
   getLoansFailure,
@@ -19,7 +7,6 @@ import {
   get60DayLoansFailure,
   getCashFlowLoansSuccess,
   getCashFlowLoansFailure,
-  
   getLoan,
   getLoanSuccess,
   getLoanFailure,
@@ -33,6 +20,16 @@ import {
   editLoanRatingsSuccess,
   editLoanRatingsFailure,
 } from './actions';
+import {
+  GET_LOANS,
+  GET_60_DAY_LOANS,
+  GET_CASH_FLOW_LOANS,
+  GET_LOAN,
+  CREATE_LOAN,
+  EDIT_LOAN,
+  DELETE_LOAN,
+  EDIT_LOAN_RATINGS,
+} from './constants';
 
 const SERVER_URL = process.env.REACT_APP_KDM_API_ENDPOINT;
 
@@ -64,13 +61,16 @@ function* getLoansSaga({ payload: { nullMSN } }) {
 }
 
 // Get 60 Day Loans
-function* get60DayLoansSaga({ payload: {} }) {
+function* get60DayLoansSaga({ payload: { days } }) {
   const options = {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   };
 
-  const response = yield call(fetchJSON, `${SERVER_URL}/loan/anniversary?days=60`, options);
+  //days defaults to 60 if not present
+  days = days || 60
+
+  const response = yield call(fetchJSON, `${SERVER_URL}/loan/anniversary?days=${days}`, options);
   if (!response.status || response.status === 200) {
     yield put(get60DayLoansSuccess(response));
   } else {
@@ -179,7 +179,7 @@ function* editLoanSaga({ payload: { loan } }) {
   const response = yield call(fetchJSON, `${SERVER_URL}/loan/${loan.id}`, options);
   if (!response.status || response.status === 200) {
     yield put(editLoanSuccess(response));
-    if (loan.ratings?.length > 0) {
+    if (loan.ratings.length > 0) {
       yield put(editLoanRatings(loan.ratings, loan.id));
     } else {
       yield put(getLoan(loan.id));
@@ -258,11 +258,11 @@ function* editLoanRatingsSaga({ payload: { ratings, loanId } }) {
 /**
  * Watchers
  */
-export function* watchGetLoans(): any {
+export function* watchGetLoans() {
   yield takeEvery(GET_LOANS, getLoansSaga);
 }
 
-export function* watchGet60DayLoans(): any {
+export function* watchGet60DayLoans() {
   yield takeEvery(GET_60_DAY_LOANS, get60DayLoansSaga);
 }
 
@@ -270,27 +270,27 @@ export function* watchGetCashFlowLoans() {
   yield takeEvery(GET_CASH_FLOW_LOANS, getCashFlowLoans);
 }
 
-export function* watchGetLoan(): any {
+export function* watchGetLoan() {
   yield takeEvery(GET_LOAN, getLoanSaga);
 }
 
-export function* watchCreateLoan(): any {
+export function* watchCreateLoan() {
   yield takeEvery(CREATE_LOAN, createLoanSaga);
 }
 
-export function* watchEditLoan(): any {
+export function* watchEditLoan() {
   yield takeEvery(EDIT_LOAN, editLoanSaga);
 }
 
-export function* watchDeleteLoan(): any {
+export function* watchDeleteLoan() {
   yield takeEvery(DELETE_LOAN, deleteLoanSaga);
 }
 
-export function* watchEditLoanRatings(): any {
+export function* watchEditLoanRatings() {
   yield takeEvery(EDIT_LOAN_RATINGS, editLoanRatingsSaga);
 }
 
-function* LoanSaga(): any {
+function* LoanSaga() {
   yield all([
     fork(watchGetLoans),
     fork(watchGet60DayLoans),

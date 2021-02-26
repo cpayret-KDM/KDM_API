@@ -1,6 +1,10 @@
-
 import { all, call, fork, takeEvery, put } from 'redux-saga/effects';
-
+import * as layoutConstants from '../../constants';
+import {
+    changeLayoutWidth as changeLayoutWidthAction,
+    changeSidebarTheme as changeLeftSidebarThemeAction,
+    changeSidebarType as changeSidebarTypeAction,
+} from './actions';
 import {
     CHANGE_LAYOUT,
     CHANGE_LAYOUT_WIDTH,
@@ -10,18 +14,12 @@ import {
     SHOW_RIGHT_SIDEBAR,
     HIDE_RIGHT_SIDEBAR,
 } from './constants';
-import * as layoutConstants from '../../constants';
-import {
-    changeLayoutWidth as changeLayoutWidthAction,
-    changeSidebarTheme as changeLeftSidebarThemeAction,
-    changeSidebarType as changeSidebarTypeAction,
-} from './actions';
 
 /**
  * Changes the body attribute
  */
 function changeBodyAttribute(attribute, value) {
-    if (document.body) document.body.setAttribute(attribute, value);
+    if (document.body) { document.body.setAttribute(attribute, value); }
     return true;
 }
 
@@ -32,13 +30,13 @@ function changeBodyAttribute(attribute, value) {
 function manageBodyClass(cssClass, action = 'toggle') {
     switch (action) {
         case 'add':
-            if (document.body) document.body.classList.add(cssClass);
+            if (document.body) { document.body.classList.add(cssClass); }
             break;
         case 'remove':
-            if (document.body) document.body.classList.remove(cssClass);
+            if (document.body) { document.body.classList.remove(cssClass); }
             break;
         default:
-            if (document.body) document.body.classList.toggle(cssClass);
+            if (document.body) { document.body.classList.toggle(cssClass); }
             break;
     }
 
@@ -57,24 +55,22 @@ function manageBodyClass(cssClass, action = 'toggle') {
  * @param {*} param0
  */
 function* changeLayout({ payload: layout }) {
-    try {
-        yield call(changeBodyAttribute, 'data-layout', layout);
-        if (layout === layoutConstants.LAYOUT_VERTICAL) {
-            yield put(changeLeftSidebarThemeAction(layoutConstants.LEFT_SIDEBAR_THEME_DEFAULT));
-            yield put(changeSidebarTypeAction(layoutConstants.LEFT_SIDEBAR_TYPE_FIXED));
-        }
+    yield call(changeBodyAttribute, 'data-layout', layout);
+    if (layout === layoutConstants.LAYOUT_VERTICAL) {
+        yield put(changeLeftSidebarThemeAction(layoutConstants.LEFT_SIDEBAR_THEME_DEFAULT));
+        yield put(changeSidebarTypeAction(layoutConstants.LEFT_SIDEBAR_TYPE_FIXED));
+    }
 
-        if (layout === layoutConstants.LAYOUT_HORIZONTAL) {
-            yield put(changeLeftSidebarThemeAction(layoutConstants.LEFT_SIDEBAR_THEME_DEFAULT));
-            yield put(changeSidebarTypeAction(layoutConstants.LEFT_SIDEBAR_TYPE_FIXED));
-        }
+    if (layout === layoutConstants.LAYOUT_HORIZONTAL) {
+        yield put(changeLeftSidebarThemeAction(layoutConstants.LEFT_SIDEBAR_THEME_DEFAULT));
+        yield put(changeSidebarTypeAction(layoutConstants.LEFT_SIDEBAR_TYPE_FIXED));
+    }
 
-        if (layout === layoutConstants.LAYOUT_DETACHED) {
-            yield put(changeLayoutWidthAction(layoutConstants.LAYOUT_WIDTH_FLUID));
-            yield put(changeSidebarTypeAction(layoutConstants.LEFT_SIDEBAR_TYPE_SCROLLABLE));
-            yield put(changeLeftSidebarThemeAction(layoutConstants.LEFT_SIDEBAR_THEME_DEFAULT));
-        }
-    } catch (error) {}
+    if (layout === layoutConstants.LAYOUT_DETACHED) {
+        yield put(changeLayoutWidthAction(layoutConstants.LAYOUT_WIDTH_FLUID));
+        yield put(changeSidebarTypeAction(layoutConstants.LEFT_SIDEBAR_TYPE_SCROLLABLE));
+        yield put(changeLeftSidebarThemeAction(layoutConstants.LEFT_SIDEBAR_THEME_DEFAULT));
+    }
 }
 
 /**
@@ -82,9 +78,7 @@ function* changeLayout({ payload: layout }) {
  * @param {*} param0
  */
 function* changeLayoutWidth({ payload: width }) {
-    try {
-        yield call(changeBodyAttribute, 'data-layout-mode', width);
-    } catch (error) {}
+    yield call(changeBodyAttribute, 'data-layout-mode', width);
 }
 
 /**
@@ -92,9 +86,7 @@ function* changeLayoutWidth({ payload: width }) {
  * @param {*} param0
  */
 function* changeLeftSidebarTheme({ payload: theme }) {
-    try {
-        yield call(changeBodyAttribute, 'data-leftbar-theme', theme);
-    } catch (error) {}
+    yield call(changeBodyAttribute, 'data-leftbar-theme', theme);
 }
 
 /**
@@ -102,70 +94,62 @@ function* changeLeftSidebarTheme({ payload: theme }) {
  * @param {*} param0
  */
 function* changeLeftSidebarType({ payload: type }) {
-    try {
-        yield call(changeBodyAttribute, 'data-leftbar-compact-mode', type);
-    } catch (error) {}
+    yield call(changeBodyAttribute, 'data-leftbar-compact-mode', type);
 }
 
 /**
  * Toggles the rightsidebar
  */
 function* toggleRightSidebar() {
-    try {
-        yield call(manageBodyClass, 'right-bar-enabled');
-    } catch (error) {}
+    yield call(manageBodyClass, 'right-bar-enabled');
 }
 
 /**
  * Show the rightsidebar
  */
 function* showRightSidebar() {
-    try {
-        yield call(manageBodyClass, 'right-bar-enabled', 'add');
-    } catch (error) {}
+    yield call(manageBodyClass, 'right-bar-enabled', 'add');
 }
 
 /**
  * Hides the rightsidebar
  */
 function* hideRightSidebar() {
-    try {
-        yield call(manageBodyClass, 'right-bar-enabled', 'remove');
-    } catch (error) {}
+    yield call(manageBodyClass, 'right-bar-enabled', 'remove');
 }
 
 /**
  * Watchers
  */
-export function* watchChangeLayoutType(): any {
+export function* watchChangeLayoutType() {
     yield takeEvery(CHANGE_LAYOUT, changeLayout);
 }
 
-export function* watchChangeLayoutWidth(): any {
+export function* watchChangeLayoutWidth() {
     yield takeEvery(CHANGE_LAYOUT_WIDTH, changeLayoutWidth);
 }
 
-export function* watchChangeLeftSidebarTheme(): any {
+export function* watchChangeLeftSidebarTheme() {
     yield takeEvery(CHANGE_SIDEBAR_THEME, changeLeftSidebarTheme);
 }
 
-export function* watchChangeLeftSidebarType(): any {
+export function* watchChangeLeftSidebarType() {
     yield takeEvery(CHANGE_SIDEBAR_TYPE, changeLeftSidebarType);
 }
 
-export function* watchToggleRightSidebar(): any {
+export function* watchToggleRightSidebar() {
     yield takeEvery(TOGGLE_RIGHT_SIDEBAR, toggleRightSidebar);
 }
 
-export function* watchShowRightSidebar(): any {
+export function* watchShowRightSidebar() {
     yield takeEvery(SHOW_RIGHT_SIDEBAR, showRightSidebar);
 }
 
-export function* watchHideRightSidebar(): any {
+export function* watchHideRightSidebar() {
     yield takeEvery(HIDE_RIGHT_SIDEBAR, hideRightSidebar);
 }
 
-function* LayoutSaga(): any {
+function* LayoutSaga() {
     yield all([
         fork(watchChangeLayoutType),
         fork(watchChangeLayoutWidth),

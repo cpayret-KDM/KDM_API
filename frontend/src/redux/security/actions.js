@@ -28,138 +28,136 @@ import {
   EDIT_SECURITY_LOANS_FAILURE,
 } from './constants';
 
-type SecurityAction = { type: String, payload: {} | String };
-
 // Get Securities
-export const getSecurities = (securityNumber: String = '', size: Number, page: Number, sort: String = ''): SecurityAction => ({
+export const getSecurities = (securityNumber = '', size, page, sort = '') => ({
   type: GET_SECURITIES,
   payload: { securityNumber, size, page, sort },
 });
 
-export const getSecuritiesSuccess = (security: Object): SecurityAction => ({
+export const getSecuritiesSuccess = (security) => ({
   type: GET_SECURITIES_SUCCESS,
   payload: security,
 });
 
-export const getSecuritiesFailure = (err: Object): SecurityAction => ({
+export const getSecuritiesFailure = (err) => ({
   type: GET_SECURITIES_FAILURE,
   payload: err,
 });
 
 // Get Security
-export const getSecurity = (securityId: String): SecurityAction => ({
+export const getSecurity = (securityId) => ({
   type: GET_SECURITY,
   payload: { securityId },
 });
 
-export const getSecuritySuccess = (security: Object): SecurityAction => ({
+export const getSecuritySuccess = (security) => ({
   type: GET_SECURITY_SUCCESS,
   payload: security,
 });
 
-export const getSecurityFailure = (err: Object): SecurityAction => ({
+export const getSecurityFailure = (err) => ({
   type: GET_SECURITY_FAILURE,
   payload: err,
 });
 
 // Create Security
-export const createSecurity = (security: Object = {}): SecurityAction => ({
+export const createSecurity = (security = {}) => ({
   type: CREATE_SECURITY,
   payload: { security },
 });
 
-export const createSecuritySuccess = (security: Object): SecurityAction => ({
+export const createSecuritySuccess = (security) => ({
   type: CREATE_SECURITY_SUCCESS,
   payload: security,
 });
 
-export const createSecurityFailure = (err: Object): SecurityAction => ({
+export const createSecurityFailure = (err) => ({
   type: CREATE_SECURITY_FAILURE,
   payload: err,
 });
 
 // Edit Security
-export const editSecurity = (security: Object = {}): SecurityAction => ({
+export const editSecurity = (security = {}) => ({
   type: EDIT_SECURITY,
   payload: { security },
 });
 
-export const editSecuritySuccess = (security: Object): SecurityAction => ({
+export const editSecuritySuccess = (security) => ({
   type: EDIT_SECURITY_SUCCESS,
   payload: security,
 });
 
-export const editSecurityFailure = (err: Object): SecurityAction => ({
+export const editSecurityFailure = (err) => ({
   type: EDIT_SECURITY_FAILURE,
   payload: err,
 });
 
 // Delete Security
-export const deleteSecurity = (securityId: String = ''): SecurityAction => ({
+export const deleteSecurity = (securityId = '') => ({
   type: DELETE_SECURITY,
   payload: { securityId },
 });
 
-export const deleteSecuritySuccess = (): SecurityAction => ({
+export const deleteSecuritySuccess = () => ({
   type: DELETE_SECURITY_SUCCESS,
   payload: {},
 });
 
-export const deleteSecurityFailure = (err: Object): SecurityAction => ({
+export const deleteSecurityFailure = (err) => ({
   type: DELETE_SECURITY_FAILURE,
   payload: err,
 });
 
 // Delete Security
-export const clearSecurity = (): SecurityAction => ({
+export const clearSecurity = () => ({
   type: CLEAR_SECURITY,
   payload: {},
 });
 
 // Edit Security Ratings
-export const editSecurityRatings = (ratings: Array = [], securityId: String = ''): LoanAction => ({
+export const editSecurityRatings = (ratings = [], securityId = '') => ({
   type: EDIT_SECURITY_RATINGS,
   payload: { ratings, securityId },
 });
 
-export const editSecurityRatingsSuccess = (ratings: Object): LoanAction => ({
+export const editSecurityRatingsSuccess = (ratings) => ({
   type: EDIT_SECURITY_RATINGS_SUCCESS,
   payload: ratings,
 });
 
-export const editSecurityRatingsFailure = (err: Object): LoanAction => ({
+export const editSecurityRatingsFailure = (err) => ({
   type: EDIT_SECURITY_RATINGS_FAILURE,
   payload: err,
 });
 
 // Get Security Loans
-export const getSecurityLoans = (securityId: String): SecurityAction => ({
+export const getSecurityLoans = (securityId) => ({
   type: GET_SECURITY_LOANS,
   payload: { securityId },
 });
 
-export const getSecurityLoansSuccess = (loans: Array): SecurityAction => ({
+export const getSecurityLoansSuccess = (loans) => ({
   type: GET_SECURITY_LOANS_SUCCESS,
   payload: loans,
 });
 
-export const getSecurityLoansFailure = (err: Object): SecurityAction => ({
+export const getSecurityLoansFailure = (err) => ({
   type: GET_SECURITY_LOANS_FAILURE,
   payload: err,
 });
 
 // Edit Security Loans
-export const editSecurityLoans = (loans: Object, securityId: String): SecurityAction => ({
+export const editSecurityLoans = (loans, securityId) => ({
   type: EDIT_SECURITY_LOANS,
   payload: { loans, securityId },
 });
 
-export const editSecurityLoansSuccess = (loans: Object): SecurityAction => ({
+export const editSecurityLoansSuccess = (loans) => ({
   type: EDIT_SECURITY_LOANS_SUCCESS,
   payload: loans,
 });
 
-export const editSecurityLoansFailure = (err: Object): SecurityAction => ({
+export const editSecurityLoansFailure = (err) => ({
   type: EDIT_SECURITY_LOANS_FAILURE,
   payload: err,
 });

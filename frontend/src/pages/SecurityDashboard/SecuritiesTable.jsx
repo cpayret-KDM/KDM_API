@@ -1,14 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import moment from 'moment';
-import { Card, CardBody, Spinner } from 'reactstrap';
 import { AvForm, AvField, AvGroup } from 'availity-reactstrap-validation';
+import moment from 'moment';
 import BootstrapTable from 'react-bootstrap-table-next';
+import filterFactory, { Comparator, textFilter, dateFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import filterFactory, { Comparator, textFilter, dateFilter, selectFilter } from 'react-bootstrap-table2-filter';
-
-import { formatCurrency, formatPercentage, DATE_FORMAT, SECURITY_STATUS_MAP } from '../../helpers/utils';
-import { paginationOptions, defaultSorted, percentageFilter, currencyFilter } from '../../helpers/table';
+import { Link } from 'react-router-dom';
+import { Card, CardBody, Spinner } from 'reactstrap';
+import { formatPercentage, DATE_FORMAT } from '../../constants/utils';
+import { paginationOptions, defaultSorted, percentageFilter } from '../../helpers/table';
 
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 
@@ -24,7 +23,7 @@ const SecuritiesTable = (props) => {
       filter: textFilter({
         placeholder: ' ',
       }),
-      formatter: (cell, row) => {
+      formatter: (cell) => {
         return (<a href={`/securities/${cell}`} className="btn btn-sm btn-primary">{cell}</a>);
       },
       footer: '',
@@ -60,10 +59,10 @@ const SecuritiesTable = (props) => {
         placeholder: ' ',
         onFilter: (filterValue, data) => percentageFilter(filterValue, data, 'noteRate'),
       }),
-      formatter: (cell, row) => (cell)
+      formatter: (cell) => (cell)
         ? (<>{formatPercentage(cell)}%</>)
         : (<></>),
-      footer: (columnData, column, columnIndex) => `${formatPercentage(columnData.reduce((acc, item) => acc + item, 0) / (!!columnData.length ? columnData.length : 1))}%`,
+      footer: (columnData) => `${formatPercentage(columnData.reduce((acc, item) => acc + item, 0) / (!columnData.length ? columnData.length : 1))}%`,
     },
     {
       dataField: 'tradeDate',
@@ -105,8 +104,12 @@ const SecuritiesTable = (props) => {
   })(props.report);
 
   const handleReportChange = (e, value) => {
-    if (props.report === value) return;
-    else window.location.href = "/securities/list";
+    if (props.report === value) {
+      return;
+    }
+    else {
+      window.location.href = "/securities/list";
+    }
   }
 
   return (

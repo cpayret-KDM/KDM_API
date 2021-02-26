@@ -23,122 +23,120 @@ import {
   CLEAR_PROPERTY,
 } from './constants';
 
-type PropertyAction = { type: String, payload: {} | String };
-
 // Get Property
-export const getProperty = (propertyId: String): PropertyAction => ({
+export const getProperty = (propertyId) => ({
   type: GET_PROPERTY,
   payload: { propertyId },
 });
 
-export const getPropertySuccess = (property: Object): PropertyAction => ({
+export const getPropertySuccess = (property) => ({
   type: GET_PROPERTY_SUCCESS,
   payload: property,
 });
 
-export const getPropertyFailure = (err: Object): PropertyAction => ({
+export const getPropertyFailure = (err) => ({
   type: GET_PROPERTY_FAILURE,
   payload: err,
 });
 
 // Create Property
-export const createProperty = (property: Object = {}): PropertyAction => ({
+export const createProperty = (property = {}) => ({
   type: CREATE_PROPERTY,
   payload: { property },
 });
 
-export const createPropertySuccess = (property: Object): PropertyAction => ({
+export const createPropertySuccess = (property) => ({
   type: CREATE_PROPERTY_SUCCESS,
   payload: property,
 });
 
-export const createPropertyFailure = (err: Object): PropertyAction => ({
+export const createPropertyFailure = (err) => ({
   type: CREATE_PROPERTY_FAILURE,
   payload: err,
 });
 
 // Edit Property
-export const editProperty = (property: Object = {}, borrowerId ): PropertyAction => ({
+export const editProperty = (property = {}, borrowerId ) => ({
   type: EDIT_PROPERTY,
   payload: { property, borrowerId},
 });
 
-export const editPropertySuccess = (property: Object): PropertyAction => ({
+export const editPropertySuccess = (property) => ({
   type: EDIT_PROPERTY_SUCCESS,
   payload: property,
 });
 
-export const editPropertyFailure = (err: Object): PropertyAction => ({
+export const editPropertyFailure = (err) => ({
   type: EDIT_PROPERTY_FAILURE,
   payload: err,
 });
 
 // Delete Property
-export const deleteProperty = (propertyId: String = '', loanId: String = ''): PropertyAction => ({
+export const deleteProperty = (propertyId = '', loanId = '') => ({
   type: DELETE_PROPERTY,
   payload: { propertyId, loanId },
 });
 
-export const deletePropertySuccess = (): PropertyAction => ({
+export const deletePropertySuccess = () => ({
   type: DELETE_PROPERTY_SUCCESS,
   payload: {},
 });
 
-export const deletePropertyFailure = (err: Object): PropertyAction => ({
+export const deletePropertyFailure = (err) => ({
   type: DELETE_PROPERTY_FAILURE,
   payload: err,
 });
 
 // Assign Appraisal to Property
-export const assignAppraisal = (propertyId: String, loanId: String, appraisal: Object = {}): PropertyAction => ({
+export const assignAppraisal = (propertyId, loanId, appraisal = {}) => ({
   type: ASSIGN_APPRAISAL,
   payload: { propertyId, loanId, appraisal },
 });
 
-export const assignAppraisalSuccess = (appraisal: Object): PropertyAction => ({
+export const assignAppraisalSuccess = (appraisal) => ({
   type: ASSIGN_APPRAISAL_SUCCESS,
   payload: appraisal,
 });
 
-export const assignAppraisalFailure = (err: Object): PropertyAction => ({
+export const assignAppraisalFailure = (err) => ({
   type: ASSIGN_APPRAISAL_FAILURE,
   payload: err,
 });
 
 // Assign Borrower to Property
-export const assignBorrower = (propertyId: String, loanId: String, borrower: Object = {}): PropertyAction => ({
+export const assignBorrower = (propertyId, loanId, borrower = {}) => ({
   type: ASSIGN_BORROWER,
   payload: { propertyId, loanId, borrower },
 });
 
-export const assignBorrowerSuccess = (borrower: Object): PropertyAction => ({
+export const assignBorrowerSuccess = (borrower) => ({
   type: ASSIGN_BORROWER_SUCCESS,
   payload: borrower,
 });
 
-export const assignBorrowerFailure = (err: Object): PropertyAction => ({
+export const assignBorrowerFailure = (err) => ({
   type: ASSIGN_BORROWER_FAILURE,
   payload: err,
 });
 
 // Edit Borrower
-export const editBorrower = (borrower: Object = {}, loanId: String = ''): BorrowerAction => ({
+export const editBorrower = (borrower = {}, loanId = '') => ({
   type: EDIT_BORROWER,
   payload: { borrower, loanId },
 })
 
-export const editBorrowerSuccess = (borrower: Object): BorrowerAction => ({
+export const editBorrowerSuccess = (borrower) => ({
   type: EDIT_BORROWER_SUCCESS,
   payload: borrower,
 })
 
-export const editBorrowerFailure = (err: Object): BorrowerAction => ({
+export const editBorrowerFailure = (err) => ({
   type: EDIT_BORROWER_FAILURE,
   payload: err,
 });
 
 // Clear Property
-export const clearProperty = (): LoanAction => ({
+export const clearProperty = () => ({
   type: CLEAR_PROPERTY,
   payload: {},
 });

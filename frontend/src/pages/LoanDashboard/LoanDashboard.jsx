@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Row, Col} from 'reactstrap';
-
 import PageTitle from '../../components/PageTitle';
-import LoansTable from './LoansTable';
-import CashFlowTable from './CashFlowTable';
 import { getLoans, get60DayLoans, getCashFlowLoans } from '../../redux/actions';
+import CashFlowTable from './CashFlowTable';
+import LoansTable from './LoansTable';
 
 const LoanDashboard = (props) => {
 

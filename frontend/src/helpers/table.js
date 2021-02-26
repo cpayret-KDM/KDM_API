@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatPercentage } from './utils';
+import { formatPercentage } from '../constants/utils';
 
 const customTotal = (from, to, size) => (
   <span className="react-bootstrap-table-pagination-total ml-2">
@@ -53,10 +53,10 @@ const defaultSorted = [
 ];
 
 const currencyFilter = (filterValue, data, key) => {
-  if (!filterValue) return data;
+  if (!filterValue) { return data; }
 
   return data.filter(loan => {
-    if (!loan[key]) return false;
+    if (!loan[key]) { return false; }
     return loan[key]
       .toString()
       .includes(
@@ -68,10 +68,10 @@ const currencyFilter = (filterValue, data, key) => {
 };
 
 const percentageFilter = (filterValue, data, key) => {
-  if (!filterValue) return data;
+  if (!filterValue) { return data; }
 
   return data.filter(loan => {
-    if (!loan[key]) return false;
+    if (!loan[key]) { return false; }
     return formatPercentage(loan[key]).includes(filterValue.replace('%', ''));
   })
 };

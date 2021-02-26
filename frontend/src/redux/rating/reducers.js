@@ -17,10 +17,19 @@ import {
   CLEAR_RATING,
 } from './constants';
 
-type Action = { type: string, payload: {} };
-type State = { +value: boolean };
 
-const rating = (state: State = {}, action: Action) => {
+
+
+const initialState = {
+  ratings: [],
+  rating: {},
+  added: false,
+  edited: false,
+  deleted: false,
+  error: false
+}
+
+const rating = (state = initialState, action) => {
   switch (action.type) {
     case GET_RATINGS:
       return {
