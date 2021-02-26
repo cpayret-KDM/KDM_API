@@ -98,6 +98,7 @@ const LoanDetails = (props) => {
       props.editLoan(newLoan);
     }
     if (creating) {
+      props.clearLoan()
       props.createLoan(newLoan);
     }
   }
@@ -272,12 +273,14 @@ const LoanDetails = (props) => {
                     <Row>
                       <Col sm={6}>
                         <AvGroup className="position-relative">
+                          <Label for="originationDate">Origination Date *</Label>
                           <div className="input-group">
                             <DatePicker
-                              className={`form-control date ${viewing ? 'disabled' : ''}`}
+                              className="form-control date"
                               dateFormat="MM/dd/yyyy"
                               selected={originationDate}
-                              onChange={date => setOriginationDate(date)}
+                              onChange={ date => setOriginationDate(date) }
+                              required disabled={ viewing }
                             />
                           </div>
                         </AvGroup>
