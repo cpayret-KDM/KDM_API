@@ -158,7 +158,7 @@ public class Loan {
 	private BigDecimal ltv;
 	
 	@JsonProperty(value = "loanRate")
-	@Column(precision = 5, scale = 2)
+	@Column(precision = 6, scale = 3)
 	@JsonView(View.Basic.class)
 	private BigDecimal loanRate;
 	
