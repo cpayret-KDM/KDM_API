@@ -12,20 +12,26 @@ import { paginationOptions, defaultSorted, percentageFilter } from '../../helper
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 
 const SecuritiesTable = (props) => {
-  const { securities } = props;
+  const {securities} = props;
+  
+  const tickerColumn = (cell, row) => {
+    return (
+      <>
+        <Link to={`/securities/${row.id}`} className="btn btn-sm btn-primary"> {cell} </Link>
+      </>
+    )
+  }
 
   const columns = [
     {
       dataField: 'number',
       text: 'Ticker (Note Number)',
       sort: true,
-      style: { width: '140px', textAlign: 'center' },
+      style: {width: '140px', textAlign: 'center'},
       filter: textFilter({
         placeholder: ' ',
       }),
-      formatter: (cell, row) => {
-        return (<a href={`/securities/${row.id}`} className="btn btn-sm btn-primary">{cell}</a>);
-      },
+      formatter: tickerColumn,
       footer: '',
     },
     {
