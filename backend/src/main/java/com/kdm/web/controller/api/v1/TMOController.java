@@ -35,7 +35,6 @@ import com.kdm.web.model.Loan;
 import com.kdm.web.model.LoanStatus;
 import com.kdm.web.model.Property;
 import com.kdm.web.model.PropertyType;
-import com.kdm.web.model.Sponsor;
 import com.kdm.web.restclient.tmo.model.Funding;
 import com.kdm.web.restclient.tmo.model.LoanTerms;
 import com.kdm.web.restclient.tmo.service.TMOLoanService;
@@ -313,37 +312,9 @@ public class TMOController {
 			this.logger.trace(String.format("\t\t funding data: %s", f.toString()));
 		});
 		
-		// Sponsor
-		Funding funding = null;
-		// if more than one funding
-		if (loan.getFundings().size() > 1) {
-			
-			//look for a 100% own
-			BigDecimal hundredPercent = new BigDecimal(100);
-			Optional<Funding> optionalFunding = loan.getFundings().stream()
-				.filter( f -> f.getPctOwn().compareTo(hundredPercent) == 0)
-				.findFirst();
-			
-			if (optionalFunding.isPresent()) {
-				funding = optionalFunding.get();
-			} else {
-				// 100% not found then just take first
-				funding = loan.getFundings().get(0);
-			}
-			
-		} else if (loan.getFundings().size() == 1) {
-			funding = loan.getFundings().get(0);
-		}
+		// nothing yet
 		
-		Sponsor sponsor = sponsorRepository.findByCompany(funding.getLenderName());
-		if (sponsor == null) {
-			sponsor = Sponsor.builder()
-					.company(funding.getLenderName())
-					.build();
-			sponsor = sponsorRepository.saveAndFlush(sponsor);
-		}
-		syncedLoan.setSponsor(sponsor);
-		loanRepository.saveAndFlush(syncedLoan);
+		//loanRepository.saveAndFlush(syncedLoan);
 	}
 
 	@Transactional
@@ -351,11 +322,11 @@ public class TMOController {
 		Optional<Loan> existingLoanOp = loanRepository.findByLoanNumber(newLoan.getLoanNumber());
 		
 		if (existingLoanOp.isPresent()) {
-			Loan loan = existingLoanOp.get();
-			if (!loan.getDealName().equals(newLoan.getDealName()) || !loan.getLtv().equals(newLoan.getLtv())) {
+			//Loan loan = existingLoanOp.get();
+			//if (!loan.getDealName().equals(newLoan.getDealName()) || !loan.getLtv().equals(newLoan.getLtv())) {
 				return entityManager.merge(newLoan);
-			}
-			return loan;
+			//}
+			//return loan;
 		} else {
 			entityManager.persist(newLoan);
 			return newLoan;
