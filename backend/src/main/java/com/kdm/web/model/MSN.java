@@ -66,7 +66,7 @@ public class MSN {
 	private ZonedDateTime maturityDate;
 
 	@JsonProperty
-	@Column(precision = 5, scale = 2)
+	@Column(precision = 6, scale = 3)
 	@JsonView(View.Basic.class)
 	private BigDecimal noteRate;
 
