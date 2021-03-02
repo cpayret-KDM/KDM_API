@@ -4,8 +4,8 @@ import { Route } from 'react-router-dom';
 import { isUserAuthenticated, getLoggedInUserRole } from '../helpers/authUtils';
 
 // auth
-const Login = React.lazy(() => import('../pages/auth/Login'));
-const Logout = React.lazy(() => import('../pages/auth/Logout'));
+const Logout = React.lazy(() => import('../pages/userauth/Logout'));
+const Login = React.lazy(() => import('../pages/userauth/Login'));
 
 // pages
 const LoanDashboard = React.lazy(() => import('../pages/LoanDashboard'));

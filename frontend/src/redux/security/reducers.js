@@ -129,7 +129,7 @@ const Security = (state = intialState, action) => {
     case CLEAR_SECURITY:
       return {
         ...state,
-        security: undefined,
+        security: undefined
       };
 
     case EDIT_SECURITY_RATINGS:

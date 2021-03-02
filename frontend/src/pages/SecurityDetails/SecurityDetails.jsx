@@ -196,6 +196,7 @@ const SecurityDetails = (props) => {
                               className="form-control date"
                               dateFormat="MM/dd/yyyy"
                               selected={tradeDate}
+                              // selected={tradeDate}
                               onChange={date => setTradeDate(date)}
                               required disabled={viewing}
                             />
@@ -223,7 +224,7 @@ const SecurityDetails = (props) => {
                       <Col sm={6}>
                         <AvGroup className="position-relative">
                           <Label for="cusip">CUSIP *</Label>
-                          <AvInput name="cusip" id="cusip" value={security.cusip} required disabled={viewing} />
+                          <AvInput name="cusip" id="cusip" value={ security.cusip || ''} required disabled={viewing} />
                           <AvFeedback tooltip>CUSIP is required</AvFeedback>
                         </AvGroup>
                       </Col>

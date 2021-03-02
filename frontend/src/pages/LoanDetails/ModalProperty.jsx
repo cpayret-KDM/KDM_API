@@ -77,6 +77,7 @@ const ModalProperty = (props) => {
     }
     else if (isEdit) {
       newProperty.appraisal = {
+        ...property.appraisal,
         value: Number(values.appraisalValue),
         date: moment(appraisalDate).utc().format(),
         note: values.appraisalNote,

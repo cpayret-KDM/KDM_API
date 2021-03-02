@@ -1,6 +1,6 @@
 {
-  "name": "hyper-react",
-  "version": "2.0.2",
+  "name": "kdm-api",
+  "version": "1.0.1",
   "private": true,
   "dependencies": {
     "@fullcalendar/bootstrap": "^4.4.2",
@@ -60,6 +60,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:nowatch": "react-scripts test --watchAll=false",
     "eject": "react-scripts eject",
     "cypress": "cypress open",
     "lint:fmt": "prettier --check .",
