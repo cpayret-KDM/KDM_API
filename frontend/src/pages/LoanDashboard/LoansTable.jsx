@@ -44,6 +44,14 @@ const LoansTable = (props) => {
     return rating;
   }
 
+  const tickerColumn = (cell, row) => {
+    return (
+      <>
+        <Link to={`/loans/${row.id}`} className="btn btn-sm btn-primary"> {cell} </Link>
+      </>
+    )
+  }
+
   const columns = [
     {
       dataField: 'loanNumber',
@@ -53,9 +61,7 @@ const LoansTable = (props) => {
       filter: textFilter({
         placeholder: ' ',
       }),
-      formatter: (cell, row) => {
-        return (<a href={`/loans/${row.id}`} className="btn btn-sm btn-primary">{cell}</a>);
-      },
+      formatter: tickerColumn,
       footer: '',
     },
     {
