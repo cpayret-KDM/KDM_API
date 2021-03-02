@@ -2,7 +2,8 @@ describe('Security Dashboard', () => {
 
     before(() => {
         cy.visit('/')
-        // cy.request('/account/login')
+        cy.get('input[name=username]').type('Ryan+kdm@codingscape.com')
+        cy.get('input[name=password]').type('password123$')
         cy.get('.btn').click()
     })
 
@@ -23,11 +24,14 @@ describe('Security Dashboard', () => {
     })
 
     it('should have data in/for securities list', () => {
-        cy.get(':nth-child(1) > [style="width: 40px; text-align: center;"] > .btn')
-        cy.get(':nth-child(1) > [style="width: 140px;"]')
+        cy.get(':nth-child(1) > [style="width: 140px; text-align: center;"]')
+        cy.get(':nth-child(1) > [style="width: 50px;"]')
         cy.get(':nth-child(1) > [style="width: 85px; text-align: right;"]')
-        cy.get('tbody > :nth-child(1) > :nth-child(4)')
         cy.get('tbody > :nth-child(1) > :nth-child(5)')
+    })
+
+    it('should have clickable security tickers', () => {
+        cy.get(':nth-child(1) > [style="width: 140px; text-align: center;"] > .btn').click()
     })
 
     it('securities dashboard option should be clickable', () => {
