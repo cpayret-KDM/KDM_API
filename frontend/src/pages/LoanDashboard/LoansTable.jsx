@@ -9,6 +9,7 @@ import { Card, CardBody, Spinner } from 'reactstrap';
 import { formatCurrency, formatPercentage, DATE_FORMAT, LOAN_STATUS_MAP, PROPERTY_TYPE_MAP } from '../../constants/utils';
 import { paginationOptions, defaultSorted, percentageFilter, currencyFilter } from '../../helpers/table';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
+import TickerColumn from '../../helpers/TickerColumn'
 
 const LoansTable = (props) => {
   const { loans } = props;
@@ -44,14 +45,6 @@ const LoansTable = (props) => {
     return rating;
   }
 
-  const tickerColumn = (cell, row) => {
-    return (
-      <>
-        <Link to={`/${window.location.pathname.split('/')[1]}/${row.id}`} className="btn btn-sm btn-primary"> {cell} </Link>
-      </>
-    )
-  }
-
   const columns = [
     {
       dataField: 'loanNumber',
@@ -61,7 +54,7 @@ const LoansTable = (props) => {
       filter: textFilter({
         placeholder: ' ',
       }),
-      formatter: tickerColumn,
+      formatter: TickerColumn,
       footer: '',
     },
     {
