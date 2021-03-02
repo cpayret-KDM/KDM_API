@@ -47,7 +47,7 @@ const LoansTable = (props) => {
   const tickerColumn = (cell, row) => {
     return (
       <>
-        <Link to={`/loans/${row.id}`} className="btn btn-sm btn-primary"> {cell} </Link>
+        <Link to={`/${window.location.pathname.split('/')[1]}/${row.id}`} className="btn btn-sm btn-primary"> {cell} </Link>
       </>
     )
   }
