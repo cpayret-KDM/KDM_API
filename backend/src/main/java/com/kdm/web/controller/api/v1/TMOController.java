@@ -84,7 +84,6 @@ public class TMOController {
 		
 		List<com.kdm.web.restclient.tmo.model.Loan> loans = getLoans();
 		
-		/*
 		loans.stream().forEach( loan -> {
 			Loan syncedLoan = syncLoan(loan);
 			
@@ -94,14 +93,13 @@ public class TMOController {
 			
 			
 		});
-		*/
 		
-		Optional<com.kdm.web.restclient.tmo.model.Loan> loan = loans.stream().findFirst();
+		/*Optional<com.kdm.web.restclient.tmo.model.Loan> loan = loans.stream().findFirst();
 		Loan syncedLoan = syncLoan(loan.get());
 		
 		syncProperties(syncedLoan, loan.get());
 		
-		syncFunding(syncedLoan, loan.get());
+		syncFunding(syncedLoan, loan.get());*/
 
 		logger.trace("Ended processing Loans from TMO API");
 		return new ResponseEntity<Void>(OK); 
@@ -113,7 +111,6 @@ public class TMOController {
 		List<com.kdm.web.restclient.tmo.model.Loan> loans = tmoLoanService.getLoans();
 		logger.trace(String.format("\tloans lenght=%d",loans.size()));
 		
-		/*
 		loans.stream().forEach(loan -> {
 			
 			try {
@@ -141,27 +138,6 @@ public class TMOController {
 				this.logger.error("Unhandle exception",e);
 			}
 		});
-		*/
-		com.kdm.web.restclient.tmo.model.Loan loan = loans.stream().findFirst().get();
-			
-			try {
-				logger.trace(String.format("GetLoan details for loan account %s", loan.getAccount()) );
-				com.kdm.web.restclient.tmo.model.LoanDetail detail = tmoLoanService.getLoanDetail(loan.getAccount());
-				loan.setLoanDetail(detail);
-				
-				logger.trace(String.format("GetLoanProperties for loan account %s", loan.getAccount()) );
-				List<com.kdm.web.restclient.tmo.model.Property> properties = tmoLoanService.getProperties(loan.getAccount());
-				loan.setProperties(properties);				
-				logger.trace(String.format("\tProperties lenght=%d",properties.size()));
-				
-				logger.trace(String.format("GetLoanFunding for loan account %s", loan.getAccount()) );
-				List<com.kdm.web.restclient.tmo.model.Funding> fundings = tmoLoanService.getFunding(loan.getAccount());
-				loan.setFundings(fundings);
-				logger.trace(String.format("\tFundings lenght=%d", fundings.size()));
-				
-			} catch (Exception e) {
-				this.logger.error("Unhandle exception",e);
-			}
 			
 		return loans;
 	}
