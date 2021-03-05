@@ -34,6 +34,10 @@ import com.kdm.web.model.Loan;
 import com.kdm.web.model.LoanStatus;
 import com.kdm.web.model.Property;
 import com.kdm.web.model.PropertyType;
+import com.kdm.web.model.comparator.tmo.AddressComparator;
+import com.kdm.web.model.comparator.tmo.AppraisalComparator;
+import com.kdm.web.model.comparator.tmo.LoanComparator;
+import com.kdm.web.model.comparator.tmo.PropertyComparator;
 import com.kdm.web.restclient.tmo.model.Funding;
 import com.kdm.web.restclient.tmo.model.LoanTerms;
 import com.kdm.web.restclient.tmo.service.TMOLoanService;
@@ -231,7 +235,7 @@ public class TMOController {
 				.loanTermMonths(loanTermMonths)
 				.build();
 		Loan savedLoan = saveLoan(newLoan);
-		savedLoan = loanRepository.getOne(newLoan.getId());
+		savedLoan = loanRepository.getOne(savedLoan.getId());
 		
 		return savedLoan;
 	}
@@ -252,7 +256,7 @@ public class TMOController {
 		if (sumData == 0 || sumWeights == 0) {
 			return new BigDecimal( 0 );
 		} else {
-			return new BigDecimal( sumData / sumWeights );
+			return new BigDecimal( sumData / sumWeights ).setScale(2, BigDecimal.ROUND_HALF_DOWN);
 		}
 	}
 
@@ -352,14 +356,14 @@ public class TMOController {
 		Optional<Loan> existingLoanOp = loanRepository.findByLoanNumber(newLoan.getLoanNumber());
 		
 		if (existingLoanOp.isPresent()) {
-			//Loan loan = existingLoanOp.get();
-			//if (!loan.getDealName().equals(newLoan.getDealName()) || !loan.getLtv().equals(newLoan.getLtv())) {
-				newLoan.setId(existingLoanOp.get().getId());
-				newLoan.setProperties(existingLoanOp.get().getProperties());
-				newLoan.setRatings(existingLoanOp.get().getRatings());
-				return entityManager.merge(newLoan);
-			//}
-			//return loan;
+			LoanComparator comparator = new LoanComparator();
+			if (comparator.compare(existingLoanOp.get(), newLoan) == 0) {
+				return existingLoanOp.get();
+			}
+			newLoan.setId(existingLoanOp.get().getId());
+			newLoan.setProperties(existingLoanOp.get().getProperties());
+			newLoan.setRatings(existingLoanOp.get().getRatings());
+			return entityManager.merge(newLoan);
 		} else {
 			entityManager.persist(newLoan);
 			return newLoan;
@@ -374,6 +378,10 @@ public class TMOController {
 		}
 		
 		if (existingAddress.isPresent()) {
+			AddressComparator comparator = new AddressComparator();
+			if (comparator.compare(existingAddress.get(), newAddress) == 0) {
+				return existingAddress.get();
+			}
 			newAddress.setId(existingAddress.get().getId());
 			return entityManager.merge(newAddress);
 		} else {
@@ -393,6 +401,10 @@ public class TMOController {
 		}
 		
 		if (existingProperty.isPresent()) {
+			PropertyComparator comparator = new PropertyComparator();
+			if (comparator.compare(existingProperty.get(), property) == 0) {
+				return existingProperty.get();
+			}
 			property.setAppraisal(existingProperty.get().getAppraisal());
 			property.setBorrower(existingProperty.get().getBorrower());
 			property.setId(existingProperty.get().getId());
@@ -413,11 +425,14 @@ public class TMOController {
 		}
 		
 		//if there is appraisal and the value is the same, then return it
-		if (existingAppraisal.isPresent() && (existingAppraisal.get().getValue().compareTo(newAppraisal.getValue()) == 0)) {
-			return existingAppraisal.get();
-		} else {
-			return appraisalRepository.save(newAppraisal);
+		if (existingAppraisal.isPresent() ) { //&& (existingAppraisal.get().getValue().compareTo(newAppraisal.getValue()) == 0)) {	
+			AppraisalComparator comparator = new AppraisalComparator();
+			if (comparator.compare(existingAppraisal.get(), newAppraisal) == 0) {
+				return existingAppraisal.get();
+			}
 		}
+		return appraisalRepository.save(newAppraisal);
+
 	}
 	
 }
