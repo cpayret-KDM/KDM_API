@@ -30,7 +30,6 @@ import com.kdm.web.data.repository.PropertyRepository;
 import com.kdm.web.data.repository.SponsorRepository;
 import com.kdm.web.model.Address;
 import com.kdm.web.model.Appraisal;
-import com.kdm.web.model.Borrower;
 import com.kdm.web.model.Loan;
 import com.kdm.web.model.LoanStatus;
 import com.kdm.web.model.Property;
@@ -81,6 +80,7 @@ public class TMOController {
 		
 		List<com.kdm.web.restclient.tmo.model.Loan> loans = getLoans();
 		
+		/*
 		loans.stream().forEach( loan -> {
 			Loan syncedLoan = syncLoan(loan);
 			
@@ -88,20 +88,28 @@ public class TMOController {
 			
 			syncFunding(syncedLoan, loan);
 			
+			
 		});
+		*/
 		
+		Optional<com.kdm.web.restclient.tmo.model.Loan> loan = loans.stream().findFirst();
+		Loan syncedLoan = syncLoan(loan.get());
+		
+		syncProperties(syncedLoan, loan.get());
+		
+		syncFunding(syncedLoan, loan.get());
+
 		logger.trace("Ended processing Loans from TMO API");
 		return new ResponseEntity<Void>(OK); 
 
 	}
-
-	
 
 	private List<com.kdm.web.restclient.tmo.model.Loan> getLoans() throws Exception {
 		logger.trace("getLoans");
 		List<com.kdm.web.restclient.tmo.model.Loan> loans = tmoLoanService.getLoans();
 		logger.trace(String.format("\tloans lenght=%d",loans.size()));
 		
+		/*
 		loans.stream().forEach(loan -> {
 			
 			try {
@@ -129,6 +137,28 @@ public class TMOController {
 				this.logger.error("Unhandle exception",e);
 			}
 		});
+		*/
+		com.kdm.web.restclient.tmo.model.Loan loan = loans.stream().findFirst().get();
+			
+			try {
+				logger.trace(String.format("GetLoan details for loan account %s", loan.getAccount()) );
+				com.kdm.web.restclient.tmo.model.LoanDetail detail = tmoLoanService.getLoanDetail(loan.getAccount());
+				loan.setLoanDetail(detail);
+				
+				logger.trace(String.format("GetLoanProperties for loan account %s", loan.getAccount()) );
+				List<com.kdm.web.restclient.tmo.model.Property> properties = tmoLoanService.getProperties(loan.getAccount());
+				loan.setProperties(properties);				
+				logger.trace(String.format("\tProperties lenght=%d",properties.size()));
+				
+				logger.trace(String.format("GetLoanFunding for loan account %s", loan.getAccount()) );
+				List<com.kdm.web.restclient.tmo.model.Funding> fundings = tmoLoanService.getFunding(loan.getAccount());
+				loan.setFundings(fundings);
+				logger.trace(String.format("\tFundings lenght=%d", fundings.size()));
+				
+			} catch (Exception e) {
+				this.logger.error("Unhandle exception",e);
+			}
+			
 		return loans;
 	}
 
@@ -201,6 +231,7 @@ public class TMOController {
 				.loanTermMonths(loanTermMonths)
 				.build();
 		Loan savedLoan = saveLoan(newLoan);
+		savedLoan = loanRepository.getOne(newLoan.getId());
 		
 		return savedLoan;
 	}
@@ -249,31 +280,34 @@ public class TMOController {
 				.zip(tmoProperty.getZipCode())
 				.build();
 		
-		newAddress = addressRepository.save(newAddress);
+		Address savedAddress = saveAddress(newAddress);
+		
 		
 		Property newProperty = Property.builder()
-				.address(newAddress)
+				.address(savedAddress)
 				.loan(loan)
 				.type(PropertyType.fromString(tmoProperty.getPropertyType()))
 				.build();
 		
-		newProperty = propertyRepository.saveAndFlush(newProperty);
-		logger.trace(String.format("\tProperty = %s", newProperty.toString()));
+		Property savedProperty = saveProperty(newProperty);
+		
+		logger.trace(String.format("\tProperty = %s", savedProperty.toString()));
 		
 		if (tmoProperty.getAppraisalDate() != null) {
 			Appraisal newAppraisal = Appraisal.builder()
-					.property(newProperty)
+					.property(savedProperty)
 					.note("appraisal from TMO data")
 					.value(tmoProperty.getAppraiserFMV())
 					.date(ZonedDateTime.ofInstant(tmoProperty.getAppraisalDate().toInstant(),
 	                        ZoneId.systemDefault()))
 					.build();
 			
-			newAppraisal = appraisalRepository.saveAndFlush(newAppraisal);
+			Appraisal savedAppraisal = saveAppraisal(newAppraisal);
+			
 			logger.trace(String.format("\t\tAppraisal = %.2f", newAppraisal.getValue()));
 		}
 		
-		if (tmoLoan.getPrimaryBorrower() != null) {
+		/*if (tmoLoan.getPrimaryBorrower() != null) {
 			//Borrower
 			com.kdm.web.restclient.tmo.model.Borrower primary = tmoLoan.getPrimaryBorrower();
 			
@@ -297,24 +331,20 @@ public class TMOController {
 			
 			newBorrower = borrowerRepository.saveAndFlush(newBorrower);
 			
-			newProperty.setBorrower(newBorrower);
+			savedProperty.setBorrower(newBorrower);
 			
-			propertyRepository.saveAndFlush(newProperty);
+			propertyRepository.saveAndFlush(savedProperty);
 			
-		}
+		}*/
 		
 	}
-	
+
 	@Transactional
 	private void syncFunding(Loan syncedLoan, com.kdm.web.restclient.tmo.model.Loan loan) {
 		loan.getFundings().stream()
 		.forEach(f -> {
 			this.logger.trace(String.format("\t\t funding data: %s", f.toString()));
 		});
-		
-		// nothing yet
-		
-		//loanRepository.saveAndFlush(syncedLoan);
 	}
 
 	@Transactional
@@ -324,12 +354,69 @@ public class TMOController {
 		if (existingLoanOp.isPresent()) {
 			//Loan loan = existingLoanOp.get();
 			//if (!loan.getDealName().equals(newLoan.getDealName()) || !loan.getLtv().equals(newLoan.getLtv())) {
+				newLoan.setId(existingLoanOp.get().getId());
+				newLoan.setProperties(existingLoanOp.get().getProperties());
+				newLoan.setRatings(existingLoanOp.get().getRatings());
 				return entityManager.merge(newLoan);
 			//}
 			//return loan;
 		} else {
 			entityManager.persist(newLoan);
 			return newLoan;
+		}
+	}
+	
+	@Transactional
+	private Address saveAddress(Address newAddress) {
+		Optional<Address> existingAddress = Optional.empty();
+		if (Objects.nonNull(newAddress) && Objects.nonNull(newAddress.getName())) {
+			existingAddress = addressRepository.findByName(newAddress.getName());
+		}
+		
+		if (existingAddress.isPresent()) {
+			newAddress.setId(existingAddress.get().getId());
+			return entityManager.merge(newAddress);
+		} else {
+			return addressRepository.save(newAddress);
+		}
+	}
+	
+	@Transactional
+	private Property saveProperty(Property property) {
+		Optional<Property> existingProperty = Optional.empty();
+		
+		Long addressId = ObjectUtils.firstNonNull(property.getAddress().getId(), property.getAddressID());
+		Long loanId = ObjectUtils.firstNonNull(property.getLoanId(), property.getLoan().getId());
+		
+		if (Objects.nonNull(property) && Objects.nonNull(addressId)  && Objects.nonNull(loanId)){
+			existingProperty = propertyRepository.findByAddressIdAndLoanId(addressId, loanId);
+		}
+		
+		if (existingProperty.isPresent()) {
+			property.setAppraisal(existingProperty.get().getAppraisal());
+			property.setBorrower(existingProperty.get().getBorrower());
+			property.setId(existingProperty.get().getId());
+			return entityManager.merge(property);
+		} else {
+			return propertyRepository.save(property);
+		}
+	}
+	
+	@Transactional
+	private Appraisal saveAppraisal(Appraisal newAppraisal) {
+		Optional<Appraisal> existingAppraisal = Optional.empty();
+		
+		Long propertyId = newAppraisal.getProperty().getId();
+		
+		if (Objects.nonNull(propertyId)){
+			existingAppraisal = appraisalRepository.findFirstByPropertyIdOrderByIdDesc(propertyId);
+		}
+		
+		//if there is appraisal and the value is the same, then return it
+		if (existingAppraisal.isPresent() && (existingAppraisal.get().getValue().compareTo(newAppraisal.getValue()) == 0)) {
+			return existingAppraisal.get();
+		} else {
+			return appraisalRepository.save(newAppraisal);
 		}
 	}
 	
