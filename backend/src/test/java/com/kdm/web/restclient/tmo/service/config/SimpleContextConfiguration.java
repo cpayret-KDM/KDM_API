@@ -6,6 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kdm.web.restclient.tmo.service.TMOLoanService;
 import com.kdm.web.restclient.tmo.service.TMOLoanServiceImpl;
 
@@ -21,6 +22,11 @@ public class SimpleContextConfiguration {
 				.defaultHeader("Database", "Korth Direct Mortgage Servicing")
 				.build();
     }
+	
+	@Bean
+	public ObjectMapper objectMapper() {
+		return new ObjectMapper();
+	}
 	
 	@Bean
 	public TMOLoanService tmoLoanService() {
