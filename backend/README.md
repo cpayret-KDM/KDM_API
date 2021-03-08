@@ -6,6 +6,7 @@ KDM API is a java spring boot application, for providing backend rest services f
 
 Java SDK v1.8+
 Maven 3.3+
+PostgreSQL
  
 ## Dependency
 
