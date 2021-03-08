@@ -47,7 +47,8 @@ logging:
     console: ${CONSOLE_LOG_PATTERN:%clr(%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(---){faint} %clr([%15.15t]){faint} %clr(%-70.70logger{69}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%xEx}}
   level:
     com.kdm.web.controller.RestResponseEntityExceptionHandler: TRACE
-    com.kdm.web.controller.api.v1.TMOController: TRACE
+    com.kdm.web.service.tmo.TmoSyncServiceImpl: TRACE
+    com.kdm.web.quartz: DEBUG
 #    root: DEBUG
 #    org.hibernate.SQL: DEBUG
 #    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
@@ -58,6 +59,10 @@ logging:
 kdm:
   api:
     allowedOrigins: http://localhost:8080,http://localhost:3000
+  quartz:
+    tmoSyncJob:
+      enable: true
+      cronExpression: 0 0 0/1 1/1 * ? *
 tmo:
   api:
     url: https://absws.com

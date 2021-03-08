@@ -20,6 +20,7 @@ public class LoanComparator implements Comparator<Loan> {
 			.compare(loan1.getOriginationDate(), loan2.getOriginationDate(), Ordering.natural().nullsFirst())
 			.compare(loan1.getLoanTermMonths(), loan2.getLoanTermMonths(), Ordering.natural().nullsFirst())
 			.compare(loan1.getPrepayMonths(), loan2.getPrepayMonths(), Ordering.natural().nullsFirst())
+			.compare(loan1.getDealName(), loan2.getDealName(), Ordering.natural().nullsFirst())
 			.result();
 	}
 
