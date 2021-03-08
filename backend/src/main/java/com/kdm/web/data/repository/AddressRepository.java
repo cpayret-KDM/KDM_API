@@ -9,6 +9,6 @@ import com.kdm.web.model.Address;
 public interface AddressRepository extends JpaRepository<Address, Long>{
 
 	// query method
-	Optional<Address> findByName(String name);
+	Optional<Address> findByNameAndStreet1(String name, String street1);
 
 }

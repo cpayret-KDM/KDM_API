@@ -350,7 +350,7 @@ public class TMOController {
 	private Address saveAddress(Address newAddress) {
 		Optional<Address> existingAddress = Optional.empty();
 		if (Objects.nonNull(newAddress) && Objects.nonNull(newAddress.getName())) {
-			existingAddress = addressRepository.findByName(newAddress.getName());
+			existingAddress = addressRepository.findByNameAndStreet1(newAddress.getName(), newAddress.getStreet1());
 		}
 		
 		if (existingAddress.isPresent()) {
