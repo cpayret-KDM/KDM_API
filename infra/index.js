@@ -45,7 +45,7 @@ const domain = new aws.route53.Record("kdm-staging", {
     zoneId: dns.zoneId,
     name: dns.dnsName,
     type: "CNAME",
-    ttl: "300",
+    ttl: 300,
     records: [alb.loadBalancer.dnsName.apply(domainName => `${domainName}`)]
 })
 

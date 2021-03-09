@@ -275,7 +275,6 @@ public class LoanController {
 		lnRtng = loanRatingRepository.saveAndFlush(lnRtng);
 		rating.addLoanRating(lnRtng);
 		
-		//loan = entityManager.find(Loan.class, loanId);
 		return this.getLoan(loanId);
 	}
 	
@@ -309,7 +308,6 @@ public class LoanController {
 		//loan = entityManager.find(Loan.class, loanId);
 		return new ResponseEntity<Void>(OK);
 	}
-
 	
 	@Operation(summary = "delete a loan", tags = "loan", responses = {
 			@ApiResponse(responseCode = "200", description = "loan deleted"),

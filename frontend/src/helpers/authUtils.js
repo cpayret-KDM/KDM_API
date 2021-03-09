@@ -8,27 +8,48 @@ const ROLE_CLAIM = process.env.REACT_APP_AUTH0_ROLE_CLAIM_PREFIX;
  * Checks if user is authenticated
  */
 const isUserAuthenticated = () => {
-    const user = getLoggedInUser();
+    const user = getLoggedInUser()
+
     if (!user) {
-        return false;
+        return null
     }
-    const decoded = jwtDecode(user.id_token);
+    
+    const decoded = jwtDecode(user.id_token)
+    return isSessionValid(decoded)
+};
+
+const isSessionValid = (user) => {
+    //check input, typescript would save us here
+    if (!user || !user.exp) {
+        return false
+    }
+    //FIXME: logic here could be vulnerable to a hack by changing the system time
     const currentTime = Date.now() / 1000;
-    if (decoded.exp < currentTime) {
-        console.warn('access token expired');
+    if (user.exp < currentTime) {
         return false;
     } else {
         return true;
     }
-};
+}
 
 /**
- * Returns the logged in user
+ * Returns the logged in user, decoded
  */
 const getLoggedInUser = () => {
     const cookies = new Cookies();
-    const user = cookies.get('user');
-    return user ? (typeof user == 'object' ? user : JSON.parse(user)) : null;
+    let user = cookies.get('user');
+    user = user ? (typeof user == 'object' ? user : JSON.parse(user)) : null;
+
+    if (!user) {
+        return null;
+    }
+
+    if (typeof user == 'object') {
+        return user
+    }
+    else {
+        return JSON.parse(user)
+    }
 };
 
 /**
@@ -36,16 +57,24 @@ const getLoggedInUser = () => {
  */
 const getLoggedInUserRole = () => {
     const user = getLoggedInUser();
+    
     if (!user) {
         return null;
     }
 
-    const decoded = jwtDecode(user.id_token);
-    if (!decoded[ROLE_CLAIM] && !decoded[ROLE_CLAIM].length){
+    const decoded = jwtDecode(user.id_token)
+    return getUserRole(decoded)
+};
+
+
+const getUserRole = (user) => {
+    if (user && user[ROLE_CLAIM] && user[ROLE_CLAIM].length) {
+        return user[ROLE_CLAIM][0]
+    }
+    else {
         return null
     }
     
-    return decoded[ROLE_CLAIM][0];
-};
+}
 
-export { isUserAuthenticated, getLoggedInUser, getLoggedInUserRole };
+export { isUserAuthenticated, getLoggedInUser, getLoggedInUserRole, getUserRole, isSessionValid };

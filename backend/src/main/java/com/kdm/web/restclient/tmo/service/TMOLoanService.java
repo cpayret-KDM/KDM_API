@@ -4,11 +4,14 @@ import java.util.List;
 
 import com.kdm.web.restclient.tmo.model.Funding;
 import com.kdm.web.restclient.tmo.model.Loan;
+import com.kdm.web.restclient.tmo.model.LoanDetail;
 import com.kdm.web.restclient.tmo.model.Property;
 
 public interface TMOLoanService {
 
 	List<Loan> getLoans() throws Exception;
+	
+	LoanDetail getLoanDetail(String loanAccount) throws Exception;
 	
 	List<Property> getProperties(String loanAccount) throws Exception;
 	

@@ -27,6 +27,9 @@ public class Loan {
 	private Borrower primaryBorrower;
 	
 	@JsonIgnore
+	private LoanDetail loanDetail;
+	
+	@JsonIgnore
 	private List<Property> properties;
 	
 	@JsonIgnore

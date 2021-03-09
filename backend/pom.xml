@@ -23,6 +23,7 @@
 
         <openapi.version>1.4.8</openapi.version>
         <spec_arg_resolver.version>2.6.2</spec_arg_resolver.version>
+        <guava.version>30.1-jre</guava.version>
     </properties>
 
     <dependencies>
@@ -110,6 +111,18 @@
         <dependency>
     		<groupId>org.springframework.boot</groupId>
     		<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
+		</dependency>
+		
+		<!--  quartz jobs -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-quartz</artifactId>
 		</dependency>
 	    
 	    <!-- 

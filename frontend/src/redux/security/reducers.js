@@ -28,10 +28,19 @@ import {
   EDIT_SECURITY_LOANS_FAILURE,
 } from './constants';
 
-type Action = { type: string, payload: {} };
-type State = { +value: boolean };
 
-const Security = (state: State = {}, action: Action) => {
+
+
+const intialState = {
+  securities: [],
+  security: {},
+  loaded: false,
+  deleted: false,
+  edited: false
+
+}
+
+const Security = (state = intialState, action) => {
   switch (action.type) {
     /* Securities */
     case GET_SECURITIES:
@@ -120,7 +129,7 @@ const Security = (state: State = {}, action: Action) => {
     case CLEAR_SECURITY:
       return {
         ...state,
-        security: undefined,
+        security: undefined
       };
 
     case EDIT_SECURITY_RATINGS:

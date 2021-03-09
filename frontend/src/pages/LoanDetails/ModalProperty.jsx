@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import DatePicker from 'react-datepicker';
-import moment from 'moment';
-import { Row, Col, Label, Button, InputGroupAddon, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from 'reactstrap';
 import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
+import moment from 'moment';
+import DatePicker from 'react-datepicker';
+import { connect } from 'react-redux';
+import { Row, Col, Label, Button, InputGroupAddon, Modal, ModalHeader, ModalBody, ModalFooter, Spinner } from 'reactstrap';
+import { PROPERTY_TYPE_MAP, US_STATES_MAP } from '../../constants/utils';
 import { getProperty, createProperty, editProperty, clearProperty, editBorrower, assignBorrower } from '../../redux/actions';
-import { PROPERTY_TYPE_MAP, US_STATES_MAP } from '../../helpers/utils';
 
 const ModalProperty = (props) => {
   const { isOpen, toggle, mode, loanId } = props;
@@ -31,7 +31,9 @@ const ModalProperty = (props) => {
 
   const [appraisalDate, setAppraisalDate] = useState(new Date());
   useEffect(() => {
-    if (!property?.appraisal?.date) return;
+    if (!property?.appraisal?.date) {
+      return;
+    }
     setAppraisalDate(moment(property.appraisal.date).toDate());
   }, [props.property]);
 
@@ -51,7 +53,9 @@ const ModalProperty = (props) => {
   }, [props.added, props.edited, props.deleted, props.error]);
 
   const handleSubmitProperty = (e, errors, values) => {
-    if (errors.length > 0) return false;
+    if (errors.length > 0) {
+      return false;
+    }
     setIsSaving(true);
 
     let newProperty = {
@@ -73,6 +77,7 @@ const ModalProperty = (props) => {
     }
     else if (isEdit) {
       newProperty.appraisal = {
+        ...property.appraisal,
         value: Number(values.appraisalValue),
         date: moment(appraisalDate).utc().format(),
         note: values.appraisalNote,

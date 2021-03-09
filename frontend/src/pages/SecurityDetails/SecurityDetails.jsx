@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import DatePicker from 'react-datepicker';
-import { Row, Col, Label, Button, InputGroupAddon, Table, Card, CardBody, Spinner } from 'reactstrap';
-import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
+import { AvForm, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 import moment from 'moment';
-
+import DatePicker from 'react-datepicker';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { Row, Col, Label, Button, InputGroupAddon, Card, CardBody, Spinner } from 'reactstrap';
 import PageTitle from '../../components/PageTitle';
-import ModalDeleteSecurity from './ModalDeleteSecurity';
+import { getSecurity, createSecurity, editSecurity, deleteSecurity, clearSecurity } from '../../redux/actions';
 import RatingsTable from '../LoanDetails/RatingsTable';
 import LoanTable from './LoanTable';
-import { getSecurity, createSecurity, editSecurity, deleteSecurity, clearSecurity } from '../../redux/actions';
+import ModalDeleteSecurity from './ModalDeleteSecurity';
+
 
 const SecurityDetails = (props) => {
   const { security = {}, loaded } = props;
@@ -32,8 +32,12 @@ const SecurityDetails = (props) => {
   const [tradeDate, setTradeDate] = useState(new Date());
   const [maturityDate, setMaturityDate] = useState(new Date());
   useEffect(() => {
-    if (!security.tradeDate) return;
-    if (!security.maturityDate) return;
+    if (!security.tradeDate) {
+      return;
+    }
+    if (!security.maturityDate) {
+      return;
+    }
     setTradeDate(moment(security.tradeDate).toDate());
     setMaturityDate(moment(security.maturityDate).toDate());
   }, [security]);
@@ -71,7 +75,9 @@ const SecurityDetails = (props) => {
   /* Security */
   const [securityLoans, setSecurityLoans] = useState([]);
   const submitSecurity = (e, errors, values) => {
-    if (errors.length !== 0) return;
+    if (errors.length !== 0) {
+      return;
+    }
     setIsSaving(true);
 
     const newSecurity = {
@@ -94,7 +100,7 @@ const SecurityDetails = (props) => {
     }
   }
 
-  const handleDeleteSecurity = (securityId) => {
+  const handleDeleteSecurity = () => {
     setShowDeleteSecurityModal(true);
   }
 
@@ -106,7 +112,9 @@ const SecurityDetails = (props) => {
  const [securityRatings, setSecurityRatings] = useState([]);
  const [hasRatingsError, setHasRatingsError] = useState(false);
  const handleEditSecurityRatings = (ratings, hasError) => {
-   if (hasError) setHasRatingsError(true)
+   if (hasError) {
+     setHasRatingsError(true)
+   }
    const newSecurityRatings = [...ratings];
    setSecurityRatings([...newSecurityRatings]);
  }
@@ -185,10 +193,10 @@ const SecurityDetails = (props) => {
                           <Label for="tradeDate">Trade Date *</Label>
                           <div className="input-group">
                             <DatePicker
-                              required
                               className="form-control date"
                               dateFormat="MM/dd/yyyy"
                               selected={tradeDate}
+                              // selected={tradeDate}
                               onChange={date => setTradeDate(date)}
                               required disabled={viewing}
                             />
@@ -216,7 +224,7 @@ const SecurityDetails = (props) => {
                       <Col sm={6}>
                         <AvGroup className="position-relative">
                           <Label for="cusip">CUSIP *</Label>
-                          <AvInput name="cusip" id="cusip" value={security.cusip} required disabled={viewing} />
+                          <AvInput name="cusip" id="cusip" value={ security.cusip || ''} required disabled={viewing} />
                           <AvFeedback tooltip>CUSIP is required</AvFeedback>
                         </AvGroup>
                       </Col>
@@ -291,7 +299,7 @@ const SecurityActionButtons = ({ creating, editing, viewing, securityId, handleD
 
       {viewing && (
         <>
-          <Button className="btn btn-danger mr-2" onClick={(e) => handleDeleteSecurity(securityId)}>Delete Security</Button>
+          <Button className="btn btn-danger mr-2" onClick={() => handleDeleteSecurity(securityId)}>Delete Security</Button>
           <Link to={`/securities/${securityId}/edit`} className="btn btn-primary">Edit Security</Link>
         </>
       )}

@@ -1,25 +1,19 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { Route } from 'react-router-dom';
-
 import { isUserAuthenticated, getLoggedInUserRole } from '../helpers/authUtils';
 
 // auth
-const Login = React.lazy(() => import('../hyper-pages/auth/Login'));
-const Logout = React.lazy(() => import('../hyper-pages/auth/Logout'));
-const Register = React.lazy(() => import('../hyper-pages/auth/Register'));
-const ForgetPassword = React.lazy(() => import('../hyper-pages/auth/ForgetPassword'));
-const Confirm = React.lazy(() => import('../hyper-pages/auth/Confirm'));
+const Logout = React.lazy(() => import('../pages/userauth/Logout'));
+const Login = React.lazy(() => import('../pages/userauth/Login'));
 
 // pages
 const LoanDashboard = React.lazy(() => import('../pages/LoanDashboard'));
 const LoanDetails = React.lazy(() => import('../pages/LoanDetails'));
 const SecurityDashboard = React.lazy(() => import('../pages/SecurityDashboard'));
 const SecurityDetails = React.lazy(() => import('../pages/SecurityDetails'));
-//const Starter = React.lazy(() => import('../hyper-pages/Starter'));
-// const Profile = React.lazy(() => import('../hyper-pages/profile'));
-//const ErrorPageNotFound = React.lazy(() => import('../hyper-pages/error/PageNotFound'));
-//const ServerError = React.lazy(() => import('../hyper-pages/error/ServerError'));
+//const ErrorPageNotFound = React.lazy(() => import('../pages/error/PageNotFound'));
+//const ServerError = React.lazy(() => import('../pages/error/ServerError'));
 
 // handle auth and authorization
 const PrivateRoute = ({ component: Component, roles, ...rest }) => (
@@ -97,6 +91,7 @@ const loanRoutes = {
       name: 'Edit Loan',
       component: (props) => <LoanDetails {...props} mode="edit" />,
       route: PrivateRoute,
+      roles: ['user', 'admin'],
       exact: true,
     },
     {
@@ -124,14 +119,6 @@ const securityRoutes = {
       roles: ['user', 'admin'],
       exact: true,
     },
-    // {
-    //   path: '/securities/60-day',
-    //   name: '60 Day Report',
-    //   component: (props) => <SecurityDashboard {...props} report="60-day" />,
-    //   route: PrivateRoute,
-    //   roles: ['user', 'admin'],
-    //   exact: true,
-    // },
     {
       path: '/securities/create',
       name: 'Create Security',
@@ -145,6 +132,7 @@ const securityRoutes = {
       name: 'Edit Security',
       component: (props) => <SecurityDetails {...props} mode="edit" />,
       route: PrivateRoute,
+      roles: ['user', 'admin'],
       exact: true,
     },
     {
@@ -174,25 +162,7 @@ const authRoutes = {
       name: 'Logout',
       component: Logout,
       route: Route,
-    },
-    {
-      path: '/account/register',
-      name: 'Register',
-      component: Register,
-      route: Route,
-    },
-    {
-      path: '/account/confirm',
-      name: 'Confirm',
-      component: Confirm,
-      route: Route,
-    },
-    {
-      path: '/account/forget-password',
-      name: 'Forget Password',
-      component: ForgetPassword,
-      route: Route,
-    },
+    }
   ],
 };
 

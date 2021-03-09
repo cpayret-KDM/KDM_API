@@ -6,6 +6,7 @@ KDM API is a java spring boot application, for providing backend rest services f
 
 Java SDK v1.8+
 Maven 3.3+
+PostgreSQL 9.x.x
  
 ## Dependency
 
@@ -114,6 +115,14 @@ Also a [openapi](https://www.openapis.org/) specificacion will be generated in t
 http://localhost:8080/v3/api-docs
 
 This specificacion can be use with any other OpenAPI ready tools like: PostMan, SoapUI, etc.
+
+## Quartz job
+
+There is one job for sync data from TMO to KDM, this job is named tmoSyncJob, and have the following configuration:
+
+kdm.quartz.tmoSyncJob.enable:  true|false     this enable (true by default) or disable the job
+kdm.quartz.tmoSyncJob.cronExpression: 0 0 0/1 1/1 * ? *     how often to run the job (hourly by default)
+   
 
 ## Continuous Deploys
 See `infra/README.md`
