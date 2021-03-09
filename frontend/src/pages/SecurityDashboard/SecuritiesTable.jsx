@@ -7,35 +7,24 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import { Link } from 'react-router-dom';
 import { Card, CardBody, Spinner } from 'reactstrap';
 import { formatPercentage, DATE_FORMAT } from '../../constants/utils';
-import { paginationOptions, defaultSorted, percentageFilter } from '../../helpers/table';
+import {paginationOptions, defaultSorted, percentageFilter} from '../../helpers/table';
+import TickerColumn from '../../helpers/TickerColumn'
 
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 
 const SecuritiesTable = (props) => {
-  const { securities } = props;
+  const {securities} = props;
 
   const columns = [
-    {
-      dataField: 'id',
-      text: '#',
-      sort: true,
-      style: { width: '40px', textAlign: 'center' },
-      filter: textFilter({
-        placeholder: ' ',
-      }),
-      formatter: (cell) => {
-        return (<a href={`/securities/${cell}`} className="btn btn-sm btn-primary">{cell}</a>);
-      },
-      footer: '',
-    },
     {
       dataField: 'number',
       text: 'Ticker (Note Number)',
       sort: true,
-      style: { width: '140px' },
+      style: {width: '140px', textAlign: 'center'},
       filter: textFilter({
         placeholder: ' ',
       }),
+      formatter: TickerColumn,
       footer: '',
     },
     {
