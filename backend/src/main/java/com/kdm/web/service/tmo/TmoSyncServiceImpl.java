@@ -25,12 +25,14 @@ import com.kdm.web.data.repository.PropertyRepository;
 import com.kdm.web.data.repository.SponsorRepository;
 import com.kdm.web.model.Address;
 import com.kdm.web.model.Appraisal;
+import com.kdm.web.model.Borrower;
 import com.kdm.web.model.Loan;
 import com.kdm.web.model.LoanStatus;
 import com.kdm.web.model.Property;
 import com.kdm.web.model.PropertyType;
 import com.kdm.web.model.comparator.tmo.AddressComparator;
 import com.kdm.web.model.comparator.tmo.AppraisalComparator;
+import com.kdm.web.model.comparator.tmo.BorrowerComparator;
 import com.kdm.web.model.comparator.tmo.LoanComparator;
 import com.kdm.web.model.comparator.tmo.PropertyComparator;
 import com.kdm.web.restclient.tmo.model.Funding;
@@ -268,35 +270,40 @@ logger.trace("Starting to process Loans from TMO API");
 			logger.trace(String.format("\t\tAppraisal = %.2f", newAppraisal.getValue()));
 		}
 		
-		/*if (tmoLoan.getPrimaryBorrower() != null) {
+		if (tmoLoan.getPrimaryBorrower() != null) {
 			//Borrower
 			com.kdm.web.restclient.tmo.model.Borrower primary = tmoLoan.getPrimaryBorrower();
 			
+			// address name
+			String email = ObjectUtils.firstNonNull(tmoLoan.getEmailAddress(), primary.getEmailAddress());
+			String firstName = primary.getFirstName();
+			String addressName = ObjectUtils.firstNonNull(email, firstName);
 			
 			Address borrowerAddress = Address.builder()
+					.name(addressName)
 					.street1(primary.getStreet())
 					.city(primary.getCity())
 					.state(primary.getState())
 					.zip(primary.getZipCode())
 					.build();
 			
-			borrowerAddress = addressRepository.save(borrowerAddress);
+			Address savedBorrowerAddress = saveAddress(borrowerAddress);
 			
 			Borrower newBorrower = Borrower.builder()
-					.email(ObjectUtils.firstNonNull(tmoLoan.getEmailAddress(), primary.getEmailAddress()))
+					.email(email)
 					.phone(ObjectUtils.firstNonNull(primary.getPhoneCell(), primary.getPhoneHome(), primary.getPhoneWork()))
-					.firstName(primary.getFirstName())
+					.firstName(firstName)
 					.lastName(primary.getLastName())
-					.address(borrowerAddress)
+					.address(savedBorrowerAddress)
 					.build();
 			
-			newBorrower = borrowerRepository.saveAndFlush(newBorrower);
+			Borrower savedBorrower = saveBorrower(newBorrower);
 			
-			savedProperty.setBorrower(newBorrower);
+			savedProperty.setBorrower(savedBorrower);
 			
 			propertyRepository.saveAndFlush(savedProperty);
 			
-		}*/
+		}
 		
 	}
 
@@ -390,6 +397,31 @@ logger.trace("Starting to process Loans from TMO API");
 		}
 		return appraisalRepository.save(newAppraisal);
 
+	}
+	
+	@Transactional
+	private Borrower saveBorrower(Borrower newBorrower) {
+		Optional<Borrower> existingBorrower = Optional.empty();
+		
+		Long addressId = ObjectUtils.firstNonNull(newBorrower.getAddress().getId(), newBorrower.getAddressID());
+		//Long loanId = ObjectUtils.firstNonNull(property.getLoanId(), property.getLoan().getId());
+		
+		if (Objects.nonNull(newBorrower) && Objects.nonNull(addressId)){
+			existingBorrower = borrowerRepository.findByAddressID(addressId);
+		}
+		
+		if (existingBorrower.isPresent()) {
+			BorrowerComparator comparator = new BorrowerComparator();
+			if (comparator.compare(existingBorrower.get(), newBorrower) == 0) {
+				return existingBorrower.get();
+			}
+			newBorrower.setAddress(existingBorrower.get().getAddress());
+			newBorrower.setId(existingBorrower.get().getId());
+			return entityManager.merge(newBorrower);
+		} else {
+			return borrowerRepository.save(newBorrower);
+		}
+		
 	}
 
 }
