@@ -20,12 +20,13 @@ import org.springframework.stereotype.Service;
 import com.kdm.web.data.repository.AddressRepository;
 import com.kdm.web.data.repository.AppraisalRepository;
 import com.kdm.web.data.repository.BorrowerRepository;
+import com.kdm.web.data.repository.LenderRepository;
 import com.kdm.web.data.repository.LoanRepository;
 import com.kdm.web.data.repository.PropertyRepository;
-import com.kdm.web.data.repository.SponsorRepository;
 import com.kdm.web.model.Address;
 import com.kdm.web.model.Appraisal;
 import com.kdm.web.model.Borrower;
+import com.kdm.web.model.Lender;
 import com.kdm.web.model.Loan;
 import com.kdm.web.model.LoanStatus;
 import com.kdm.web.model.Property;
@@ -33,6 +34,7 @@ import com.kdm.web.model.PropertyType;
 import com.kdm.web.model.comparator.tmo.AddressComparator;
 import com.kdm.web.model.comparator.tmo.AppraisalComparator;
 import com.kdm.web.model.comparator.tmo.BorrowerComparator;
+import com.kdm.web.model.comparator.tmo.LenderComparator;
 import com.kdm.web.model.comparator.tmo.LoanComparator;
 import com.kdm.web.model.comparator.tmo.PropertyComparator;
 import com.kdm.web.restclient.tmo.model.Funding;
@@ -66,7 +68,7 @@ public class TmoSyncServiceImpl implements TmoSyncService {
 	private PropertyRepository propertyRepository;
 	
 	@Autowired
-	private SponsorRepository sponsorRepository;
+	private LenderRepository lenderRepository;
 	
 	@Override
 	@Transactional
@@ -306,13 +308,27 @@ logger.trace("Starting to process Loans from TMO API");
 		}
 		
 	}
-
+	
 	@Transactional
-	private void syncFunding(Loan syncedLoan, com.kdm.web.restclient.tmo.model.Loan loan) {
-		loan.getFundings().stream()
-		.forEach(f -> {
-			this.logger.trace(String.format("\t\t funding data: %s", f.toString()));
-		});
+	private void syncFunding(Loan syncedLoan, com.kdm.web.restclient.tmo.model.Loan tmoLoan) {
+		tmoLoan.getFundings().stream()
+			.forEach(f -> {
+				this.logger.trace(String.format("\t\t funding data: %s", f.toString()));
+				syncLoanLender(syncedLoan, tmoLoan, f);
+			});
+	}
+	
+	@Transactional
+	private void syncLoanLender(Loan loan, com.kdm.web.restclient.tmo.model.Loan tmoLoan, com.kdm.web.restclient.tmo.model.Funding funding) {
+		Lender lender = Lender.builder()
+				.lenderRate(funding.getLenderRate())
+				.name(funding.getLenderName())
+				.initialAmount(funding.getFundControl())
+				.principalBalance(funding.getPrincipalBalance())
+				.loan(loan)
+				.build();
+		
+		Lender savedLender = saveLender(lender);
 	}
 
 	@Transactional
@@ -422,6 +438,29 @@ logger.trace("Starting to process Loans from TMO API");
 			return borrowerRepository.save(newBorrower);
 		}
 		
+	}
+	
+	@Transactional
+	private Lender saveLender(Lender lender) {
+		Optional<Lender> existingLender = Optional.empty();
+		
+		String lenderName = lender.getName();
+		Long loanId = ObjectUtils.firstNonNull(lender.getLoanId(), lender.getLoan().getId());
+		
+		if (Objects.nonNull(lender) && Objects.nonNull(lenderName)  && Objects.nonNull(loanId)){
+			existingLender = lenderRepository.findByNameAndLoanId(lenderName, loanId);
+		}
+		
+		if (existingLender.isPresent()) {
+			LenderComparator comparator = new LenderComparator();
+			if (comparator.compare(existingLender.get(), lender) == 0) {
+				return existingLender.get();
+			}
+			lender.setLoan(existingLender.get().getLoan());
+			return entityManager.merge(lender);
+		} else {
+			return lenderRepository.save(lender);
+		}
 	}
 
 }
