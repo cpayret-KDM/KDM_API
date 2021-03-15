@@ -20,17 +20,21 @@ import org.springframework.stereotype.Service;
 import com.kdm.web.data.repository.AddressRepository;
 import com.kdm.web.data.repository.AppraisalRepository;
 import com.kdm.web.data.repository.BorrowerRepository;
+import com.kdm.web.data.repository.LenderRepository;
 import com.kdm.web.data.repository.LoanRepository;
 import com.kdm.web.data.repository.PropertyRepository;
-import com.kdm.web.data.repository.SponsorRepository;
 import com.kdm.web.model.Address;
 import com.kdm.web.model.Appraisal;
+import com.kdm.web.model.Borrower;
+import com.kdm.web.model.Lender;
 import com.kdm.web.model.Loan;
 import com.kdm.web.model.LoanStatus;
 import com.kdm.web.model.Property;
 import com.kdm.web.model.PropertyType;
 import com.kdm.web.model.comparator.tmo.AddressComparator;
 import com.kdm.web.model.comparator.tmo.AppraisalComparator;
+import com.kdm.web.model.comparator.tmo.BorrowerComparator;
+import com.kdm.web.model.comparator.tmo.LenderComparator;
 import com.kdm.web.model.comparator.tmo.LoanComparator;
 import com.kdm.web.model.comparator.tmo.PropertyComparator;
 import com.kdm.web.restclient.tmo.model.Funding;
@@ -64,7 +68,7 @@ public class TmoSyncServiceImpl implements TmoSyncService {
 	private PropertyRepository propertyRepository;
 	
 	@Autowired
-	private SponsorRepository sponsorRepository;
+	private LenderRepository lenderRepository;
 	
 	@Override
 	@Transactional
@@ -268,44 +272,63 @@ logger.trace("Starting to process Loans from TMO API");
 			logger.trace(String.format("\t\tAppraisal = %.2f", newAppraisal.getValue()));
 		}
 		
-		/*if (tmoLoan.getPrimaryBorrower() != null) {
+		if (tmoLoan.getPrimaryBorrower() != null) {
 			//Borrower
 			com.kdm.web.restclient.tmo.model.Borrower primary = tmoLoan.getPrimaryBorrower();
 			
+			// address name
+			String email = ObjectUtils.firstNonNull(tmoLoan.getEmailAddress(), primary.getEmailAddress());
+			String firstName = primary.getFirstName();
+			String addressName = ObjectUtils.firstNonNull(email, firstName);
 			
 			Address borrowerAddress = Address.builder()
+					.name(addressName)
 					.street1(primary.getStreet())
 					.city(primary.getCity())
 					.state(primary.getState())
 					.zip(primary.getZipCode())
 					.build();
 			
-			borrowerAddress = addressRepository.save(borrowerAddress);
+			Address savedBorrowerAddress = saveAddress(borrowerAddress);
 			
 			Borrower newBorrower = Borrower.builder()
-					.email(ObjectUtils.firstNonNull(tmoLoan.getEmailAddress(), primary.getEmailAddress()))
+					.email(email)
 					.phone(ObjectUtils.firstNonNull(primary.getPhoneCell(), primary.getPhoneHome(), primary.getPhoneWork()))
-					.firstName(primary.getFirstName())
+					.firstName(firstName)
 					.lastName(primary.getLastName())
-					.address(borrowerAddress)
+					.address(savedBorrowerAddress)
 					.build();
 			
-			newBorrower = borrowerRepository.saveAndFlush(newBorrower);
+			Borrower savedBorrower = saveBorrower(newBorrower);
 			
-			savedProperty.setBorrower(newBorrower);
+			savedProperty.setBorrower(savedBorrower);
 			
 			propertyRepository.saveAndFlush(savedProperty);
 			
-		}*/
+		}
 		
 	}
-
+	
 	@Transactional
-	private void syncFunding(Loan syncedLoan, com.kdm.web.restclient.tmo.model.Loan loan) {
-		loan.getFundings().stream()
-		.forEach(f -> {
-			this.logger.trace(String.format("\t\t funding data: %s", f.toString()));
-		});
+	private void syncFunding(Loan syncedLoan, com.kdm.web.restclient.tmo.model.Loan tmoLoan) {
+		tmoLoan.getFundings().stream()
+			.forEach(f -> {
+				this.logger.trace(String.format("\t\t funding data: %s", f.toString()));
+				syncLoanLender(syncedLoan, tmoLoan, f);
+			});
+	}
+	
+	@Transactional
+	private void syncLoanLender(Loan loan, com.kdm.web.restclient.tmo.model.Loan tmoLoan, com.kdm.web.restclient.tmo.model.Funding funding) {
+		Lender lender = Lender.builder()
+				.lenderRate(funding.getLenderRate())
+				.name(funding.getLenderName())
+				.initialAmount(funding.getFundControl())
+				.principalBalance(funding.getPrincipalBalance())
+				.loan(loan)
+				.build();
+		
+		Lender savedLender = saveLender(lender);
 	}
 
 	@Transactional
@@ -390,6 +413,54 @@ logger.trace("Starting to process Loans from TMO API");
 		}
 		return appraisalRepository.save(newAppraisal);
 
+	}
+	
+	@Transactional
+	private Borrower saveBorrower(Borrower newBorrower) {
+		Optional<Borrower> existingBorrower = Optional.empty();
+		
+		Long addressId = ObjectUtils.firstNonNull(newBorrower.getAddress().getId(), newBorrower.getAddressID());
+		//Long loanId = ObjectUtils.firstNonNull(property.getLoanId(), property.getLoan().getId());
+		
+		if (Objects.nonNull(newBorrower) && Objects.nonNull(addressId)){
+			existingBorrower = borrowerRepository.findByAddressID(addressId);
+		}
+		
+		if (existingBorrower.isPresent()) {
+			BorrowerComparator comparator = new BorrowerComparator();
+			if (comparator.compare(existingBorrower.get(), newBorrower) == 0) {
+				return existingBorrower.get();
+			}
+			newBorrower.setAddress(existingBorrower.get().getAddress());
+			newBorrower.setId(existingBorrower.get().getId());
+			return entityManager.merge(newBorrower);
+		} else {
+			return borrowerRepository.save(newBorrower);
+		}
+		
+	}
+	
+	@Transactional
+	private Lender saveLender(Lender lender) {
+		Optional<Lender> existingLender = Optional.empty();
+		
+		String lenderName = lender.getName();
+		Long loanId = ObjectUtils.firstNonNull(lender.getLoanId(), lender.getLoan().getId());
+		
+		if (Objects.nonNull(lender) && Objects.nonNull(lenderName)  && Objects.nonNull(loanId)){
+			existingLender = lenderRepository.findByNameAndLoanId(lenderName, loanId);
+		}
+		
+		if (existingLender.isPresent()) {
+			LenderComparator comparator = new LenderComparator();
+			if (comparator.compare(existingLender.get(), lender) == 0) {
+				return existingLender.get();
+			}
+			lender.setLoan(existingLender.get().getLoan());
+			return entityManager.merge(lender);
+		} else {
+			return lenderRepository.save(lender);
+		}
 	}
 
 }
