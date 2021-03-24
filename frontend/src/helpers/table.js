@@ -8,8 +8,8 @@ const customTotal = (from, to, size) => (
 );
 
 const paginationOptions = {
-  paginationSize: 25,
-  sizePerPage: 25,
+  paginationSize: 100,
+  sizePerPage: 100,
   pageStartIndex: 1,
   firstPageText: 'First',
   prePageText: 'Back',
@@ -47,8 +47,8 @@ const paginationOptions = {
 
 const defaultSorted = [
   {
-    dataField: 'id',
-    order: 'asc',
+    dataField: 'loanNumber',
+    order: 'desc',
   },
 ];
 
