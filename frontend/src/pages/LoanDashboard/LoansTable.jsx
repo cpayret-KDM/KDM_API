@@ -226,7 +226,15 @@ const LoansTable = (props) => {
       dataField: 'spread',
       text: 'Spread',
       sort: false,
-      // value is loanRate - noteRate, Diego will provide this
+      style: { width: '85px', textAlign: 'right' },
+      headerStyle: { textAlign: 'right' },
+      filter: textFilter({
+        placeholder: ' ',
+        onFilter: (filterValue, data) => percentageFilter(filterValue, data, 'spread'),
+      }),
+      formatter: (cell) => (cell)
+        ? (<>{formatPercentage(cell)}%</>)
+        : (<></>),
     },
   ];
 
