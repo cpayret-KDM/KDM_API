@@ -12,8 +12,8 @@ import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css
 import TickerColumn from '../../helpers/TickerColumn'
 
 const LoansTable = (props) => {
-  const { loans } = props;
-
+  const { loans, loansStats } = props;
+  
   let propertyTypeOptions = [];
   Object.entries(PROPERTY_TYPE_MAP).map((property) => {
     propertyTypeOptions.push({ value: property[0], label: property[1] });
@@ -58,53 +58,14 @@ const LoansTable = (props) => {
       footer: '',
     },
     {
-      dataField: 'property',
-      text: 'Property',
+      dataField: 'dealName',
+      text: 'Deal Name',
       sort: false,
-      style: { minWidth: '350px' },
+      style: { width: '200px' },
       filter: textFilter({
         placeholder: ' ',
-        onFilter: (filterValue, data) => {
-          if (!filterValue) {
-            return data;
-          }
-
-          return data.filter(loan => {
-            if (!loan.properties || !loan.properties.length) {
-              return false;
-            }
-            const addresses = [];
-
-            loan.properties.forEach((property) => {
-              const address = property.address;
-              const addressStr = `${address.name} ${address.street1} ${address.street2} ${address.city}, ${address.state} ${address.zip}`;
-              addresses.push(addressStr.toLowerCase());
-            });
-
-            return addresses.some(address => address.includes(filterValue.toLowerCase()));
-          })
-        },
       }),
-      formatter: (cell, row) => {
-        if (!row || row.properties.length === 0) {
-          return '';
-        }
-        return (
-          <>
-            {row.properties.map((property, i) => {
-              return (
-                <p key={i}>
-                  {row.dealName && (<>{row.dealName}<br /></>)}
-                  {/* {property.address.name && (<>{property.address.name}<br /></>)} */}
-                  {property.address.street1}
-                  {property.address.street2 && (<>{property.address.street2}</>)}, {property.address.city} {property.address.state}, {property.address.zip}
-                  {(i + 1) === row.properties.length ? ('') : (<br />)}
-                </p>
-              );
-            })}
-          </>
-        );
-      },
+    formatter: (cell) => (<>{cell}</>),
       footer: '',
     },
     {
@@ -243,7 +204,7 @@ const LoansTable = (props) => {
       formatter: (cell) => (cell)
         ? (<>{formatPercentage(cell)}%</>)
         : (<></>),
-      footer: (columnData) => `${formatPercentage(columnData.reduce((acc, item) => acc + item, 0) / (!columnData.length ? columnData.length : 1))}%`,
+      footer: (columnData) => `${formatPercentage(loansStats.ltv)}%`,
     },
     {
       dataField: 'loanRate',
@@ -259,13 +220,21 @@ const LoansTable = (props) => {
       formatter: (cell) => (cell)
         ? (<>{formatPercentage(cell)}%</>)
         : (<></>),
-      footer: (columnData) => `${formatPercentage(columnData.reduce((acc, item) => acc + item, 0) / (!columnData.length ? columnData.length : 1))}%`,
+      footer: (columnData) => `${formatPercentage(loansStats.rate)}%`,
     },
     {
       dataField: 'spread',
       text: 'Spread',
       sort: false,
-      // value is loanRate - noteRate, Diego will provide this
+      style: { width: '85px', textAlign: 'right' },
+      headerStyle: { textAlign: 'right' },
+      filter: textFilter({
+        placeholder: ' ',
+        onFilter: (filterValue, data) => percentageFilter(filterValue, data, 'spread'),
+      }),
+      formatter: (cell) => (cell)
+        ? (<>{formatPercentage(cell)}%</>)
+        : (<></>),
     },
   ];
 
