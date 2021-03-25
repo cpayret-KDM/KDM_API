@@ -18,8 +18,6 @@ const LoansTable = (props) => {
     {ltv : 0, rate: 0},
   );
 
-  // check here if the other state values are fucked up !!!!
-
   let propertyTypeOptions = [];
   Object.entries(PROPERTY_TYPE_MAP).map((property) => {
     propertyTypeOptions.push({ value: property[0], label: property[1] });
@@ -52,7 +50,6 @@ const LoansTable = (props) => {
   }
 
   const afterFilter = (filteredLoans, newFilters) => {
-
     // LTV Weighted average
     const sumInitialAmountLTVWeight = filteredLoans.filter( (loan) => (loan.ltv != undefined) && (loan.ltv > 0) && (loan.initialAmount != undefined))
                         .map( (loan) => loan.initialAmount)

@@ -8,7 +8,7 @@ import LoansTable from './LoansTable';
 
 const LoanDashboard = (props) => {
 
-  const { loans, loansStats, report } = props;
+  const { loans, report } = props;
 
   useEffect(() => {
     if (report === 'list') {

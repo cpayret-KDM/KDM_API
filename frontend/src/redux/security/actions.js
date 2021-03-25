@@ -29,9 +29,9 @@ import {
 } from './constants';
 
 // Get Securities
-export const getSecurities = (securityNumber = '', size, page, sort = '') => ({
+export const getSecurities = (size, page, sort = '') => ({
   type: GET_SECURITIES,
-  payload: { securityNumber, size, page, sort },
+  payload: { size, page, sort },
 });
 
 export const getSecuritiesSuccess = (security) => ({

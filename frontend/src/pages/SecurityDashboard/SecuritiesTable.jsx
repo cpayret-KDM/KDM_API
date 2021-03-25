@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AvForm, AvField, AvGroup } from 'availity-reactstrap-validation';
 import moment from 'moment';
 import BootstrapTable from 'react-bootstrap-table-next';
@@ -7,15 +7,37 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import { Link } from 'react-router-dom';
 import { Card, CardBody, Spinner } from 'reactstrap';
 import { formatPercentage, DATE_FORMAT } from '../../constants/utils';
-import {paginationOptions, defaultSorted, percentageFilter} from '../../helpers/table';
+import {paginationOptions, defaultSecuritySorted, percentageFilter} from '../../helpers/table';
 import TickerColumn from '../../helpers/TickerColumn'
 
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 
 const SecuritiesTable = (props) => {
   const {securities} = props;
+ 
+  const [ securitiesStats, setSecuritiesStatsState] = useState(
+    { rate: 0 },
+  );
+
+  const afterFilter = (filteredSecurities,newFilters) => {
+    const securitiesWithRate = filteredSecurities.filter( (security) => (security.noteRate != undefined) && (security.noteRate > 0));
+    const sumRateData = securitiesWithRate
+    .map( (security) => security.noteRate)
+    .reduce( (total, rate) => total + rate);
+
+    const rate = securitiesWithRate.length > 0 ? (sumRateData / securitiesWithRate.length) : 0;
+    if (securitiesStats.rate != rate) {
+        setSecuritiesStatsState({rate: rate});
+    }
+  }
 
   const columns = [
+    {
+        dataField: 'id',
+        sort: true,
+        hidden: true,
+        footer: '',
+    },
     {
       dataField: 'number',
       text: 'Ticker (Note Number)',
@@ -51,13 +73,16 @@ const SecuritiesTable = (props) => {
       formatter: (cell) => (cell)
         ? (<>{formatPercentage(cell)}%</>)
         : (<></>),
-      footer: (columnData) => `${formatPercentage(columnData.reduce((acc, item) => acc + item, 0) / (!columnData.length ? columnData.length : 1))}%`,
+      footer: (columnData) => {
+          if (columnData.length <= 0) return "0%";
+          const average = columnData.reduce(( total, value) => total + value) / columnData.length;
+          return `${formatPercentage(average)}%`},
     },
     {
       dataField: 'tradeDate',
       text: 'Trade Date',
       sort: true,
-      style: { width: '130px' },
+      style: { width: '100px' },
       filter: dateFilter({
         placeholder: ' ',
         withoutEmptyComparatorOption: true,  // dont render empty option for comparator
@@ -137,8 +162,8 @@ const SecuritiesTable = (props) => {
                       keyField="id"
                       data={securities}
                       columns={columns}
-                      defaultSorted={defaultSorted}
-                      filter={filterFactory()}
+                      defaultSorted={defaultSecuritySorted}
+                      filter={filterFactory({ afterFilter })}
                       pagination={paginationFactory(paginationOptions)}
                       wrapperClasses="table-responsive security-list-table"
                     />

@@ -35,7 +35,7 @@ import {
 const SERVER_URL = process.env.REACT_APP_KDM_API_ENDPOINT;
 
 // Get Securities
-function* getSecurities({ payload: { size, page, sort } }) {
+function* getSecuritiesSaga({ payload: { size, page, sort } }) {
   const options = {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
@@ -261,7 +261,7 @@ function* editSecurityLoansSaga({ payload: { loans, securityId } }) {
  * Watchers
  */
 export function* watchGetSecurities() {
-  yield takeEvery(GET_SECURITIES, getSecurities);
+  yield takeEvery(GET_SECURITIES, getSecuritiesSaga);
 }
 
 export function* watchGetSecurity() {
