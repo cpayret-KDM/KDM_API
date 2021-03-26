@@ -1,4 +1,4 @@
-import React from 'react';;
+import React, { useState } from 'react';;
 import { AvForm, AvField, AvGroup } from 'availity-reactstrap-validation';
 import moment from 'moment'
 import BootstrapTable from 'react-bootstrap-table-next';
@@ -12,8 +12,12 @@ import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css
 import TickerColumn from '../../helpers/TickerColumn'
 
 const LoansTable = (props) => {
-  const { loans, loansStats } = props;
+  const { loans } = props;
   
+  const [ loansStats, setLoansStatsState] = useState(
+    {ltv : 0, rate: 0},
+  );
+
   let propertyTypeOptions = [];
   Object.entries(PROPERTY_TYPE_MAP).map((property) => {
     propertyTypeOptions.push({ value: property[0], label: property[1] });
@@ -43,6 +47,44 @@ const LoansTable = (props) => {
     }
 
     return rating;
+  }
+
+  const afterFilter = (filteredLoans, newFilters) => {
+    if (!filteredLoans) {
+        return;
+    }
+
+    // LTV Weighted average
+    let ltv = 0;
+    const filteredForLTV = filteredLoans.filter( (loan) => (loan.ltv != undefined) && (loan.ltv > 0) && (loan.initialAmount != undefined))
+    if (filteredForLTV.length > 0) {
+        const sumInitialAmountLTVWeight = filteredForLTV
+                        .map( (loan) => loan.initialAmount)
+                        .reduce( (total, initialAmount) => total + initialAmount);
+
+        const sumLtvData = filteredForLTV
+                        .map( (loan) => loan.ltv * loan.initialAmount)
+                        .reduce( (total, ltvByInitial) => total + ltvByInitial);    
+        ltv = sumLtvData / sumInitialAmountLTVWeight;
+    }
+ 
+    // Rate Weighted average
+    let rate = 0;
+    const filteredForRate = filteredLoans.filter( (loan) => (loan.loanRate != undefined) && (loan.initialAmount != undefined));
+    if (filteredForRate.length > 0) {
+        const sumInitialAmountRateWeight = filteredForRate
+                        .map( (loan) => loan.initialAmount)
+                        .reduce( (total, initialAmount) => total + initialAmount);
+
+        const sumRateData = filteredForRate
+                        .map( (loan) => loan.loanRate * loan.initialAmount)
+                        .reduce( (total, rateByInitial) => total + rateByInitial);
+        rate = sumRateData / sumInitialAmountRateWeight;
+    }
+
+    if ((loansStats.ltv != ltv) || (loansStats.rate != rate)) {
+        setLoansStatsState({ltv : ltv, rate: rate});
+    }
   }
 
   const columns = [
@@ -92,7 +134,7 @@ const LoansTable = (props) => {
       }),
       formatter: (cell, row) => {
         //TODO: refactor this into a testable function
-        if (!row || row.properties.length === 0) {
+        if (!row || !row.properties || row.properties.length === 0) {
           return '';
         }
         return (
@@ -204,7 +246,7 @@ const LoansTable = (props) => {
       formatter: (cell) => (cell)
         ? (<>{formatPercentage(cell)}%</>)
         : (<></>),
-      footer: (columnData) => `${formatPercentage(loansStats.ltv)}%`,
+      footer: (columnData) => { return `${formatPercentage(loansStats.ltv)}%`},
     },
     {
       dataField: 'loanRate',
@@ -300,7 +342,7 @@ const LoansTable = (props) => {
                       data={loans}
                       columns={columns}
                       defaultSorted={defaultSorted}
-                      filter={filterFactory()}
+                      filter={filterFactory({ afterFilter })}
                       pagination={paginationFactory(paginationOptions)}
                       wrapperClasses="table-responsive loan-list-table"
                     />

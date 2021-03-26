@@ -51,7 +51,7 @@ const Security = (state = intialState, action) => {
     case GET_SECURITIES_SUCCESS:
       return {
         ...state,
-        securities: action.payload,
+        securities: action.payload.content,
       };
     case GET_SECURITIES_FAILURE:
       return {

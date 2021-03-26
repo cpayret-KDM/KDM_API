@@ -1,9 +1,9 @@
 const formatCurrency = (currency) => {
-  return Number(currency).toLocaleString();
+  return Number(currency).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 };
 
 const formatPercentage = (percentage) => {
-  return percentage.toFixed(2);
+  return !percentage? "0.00": percentage.toFixed(2);
 };
 
 export const DATE_FORMAT = 'MM/DD/YYYY';

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AvForm, AvField, AvGroup } from 'availity-reactstrap-validation';
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
@@ -6,11 +6,53 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import { Link } from 'react-router-dom';
 import { Card, CardBody, Spinner } from 'reactstrap';
 import { formatCurrency, formatPercentage } from '../../constants/utils';
-import { paginationOptions, defaultSorted } from '../../helpers/table';
+import { paginationOptions, defaultCashflowSorted } from '../../helpers/table';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 
 const CashFlowTable = (props) => {
     const { loans } = props;
+
+    const calculateLoanRate = (loans) => {
+      if (loans) {
+        const filteredForRate = loans.filter( (loan) => (loan.loanRate != undefined) && (loan.principalBalance != undefined));
+        if (filteredForRate.length > 0) {
+          const sumPrincipalBalanceRateWeight = filteredForRate
+            .map( (loan) => loan.principalBalance)
+            .reduce( (total, principalBalance) => total + principalBalance);
+    
+          const sumRateData = filteredForRate
+            .map( (loan) => loan.loanRate * loan.principalBalance)
+            .reduce( (total, rateByPrincipal) => total + rateByPrincipal);
+        
+          return sumRateData / sumPrincipalBalanceRateWeight;
+        }
+      }
+    }
+
+    const calculateMSNRate = (loans) => {
+        if (loans) {
+          const filteredForRate = loans.filter( (loan) => (loan.msnRate != undefined) && (loan.principalBalance != undefined));
+          if (filteredForRate.length > 0) {
+            const sumPrincipalBalanceRateWeight = filteredForRate
+              .map( (loan) => loan.principalBalance)
+              .reduce( (total, principalBalance) => total + principalBalance);
+      
+            const sumRateData = filteredForRate
+              .map( (loan) => loan.msnRate * loan.principalBalance)
+              .reduce( (total, rateByPrincipal) => total + rateByPrincipal);
+          
+            return sumRateData / sumPrincipalBalanceRateWeight;
+          }
+        }
+      }
+
+    let loanRate = calculateLoanRate(loans);
+    let msnRate = calculateMSNRate(loans);
+    
+    
+    const [ cashFlowStats, setCashFlowStatsState] = useState(
+      {loanRate : loanRate, msnRate: msnRate},
+    );
 
     const title = "Cash Flow Report";
    
@@ -30,7 +72,25 @@ const CashFlowTable = (props) => {
         }
     }
 
+    const afterFilter = (filteredLoans, newFilters) => {
+        if (!filteredLoans) {
+            return;
+        }
+
+        const loanRateCalculation = calculateLoanRate(filteredLoans);
+        const msnRateCalculation = calculateMSNRate(filteredLoans);
+        if ((cashFlowStats.loanRate != loanRateCalculation) || (cashFlowStats.msnRate != msnRateCalculation)) {
+            setCashFlowStatsState({loanRate : loanRateCalculation, msnRate: msnRateCalculation});
+        }
+    }
+
     const columns = [
+        {
+            dataField: 'id',
+            sort: true,
+            hidden: true,
+            footer: '',
+        },
         {
             dataField: 'loanNumber',
             text: 'Ticker',
@@ -45,7 +105,7 @@ const CashFlowTable = (props) => {
             dataField: 'principalBalance',
             text: 'Balance',
             sort: true,
-            style: { width: '140px' },
+            style: { width: '140px', textAlign: 'right'  },
             filter: textFilter({
                 placeholder: ' ',
             }),
@@ -53,66 +113,71 @@ const CashFlowTable = (props) => {
                 ? (<>${formatCurrency(cell)}</>)
                 : (<></>),
             footer: (columnData) => `$${formatCurrency(columnData.reduce((acc, item) => acc + item, 0))}`,
+            footerStyle: { textAlign: 'right' },
         },
         {
             dataField: 'loanRate',
             text: 'Loan Rate',
             sort: true,
-            style: { width: '140px' },
+            style: { width: '100px', textAlign: 'right' },
             filter: textFilter({
                 placeholder: ' ',
             }),
             formatter: (cell) => (cell)
                 ? (<>{formatPercentage(cell)}%</>)
                 : (<></>),
-            footer: (columnData) => `${formatPercentage(columnData.reduce((acc, item) => acc + item, 0) / (!columnData.length ? columnData.length : 1))}%`,
+            //footer: (columnData) => `${formatPercentage(columnData.reduce((acc, item) => acc + item, 0) / (!columnData.length ? columnData.length : 1))}%`,
+            footerStyle: { textAlign: 'right' },
+            footer: (columnData) => { return `${formatPercentage(cashFlowStats.loanRate? cashFlowStats.loanRate : loanRate)}%`},
         },
         {
             dataField: 'msnRate',
             text: 'MSN Rate',
             sort: true,
-            style: { width: '140px' },
+            style: { width: '100px', textAlign: 'right' },
             filter: textFilter({
                 placeholder: ' ',
             }),
             formatter: (cell) => (cell)
                 ? (<>{formatPercentage(cell)}%</>)
                 : (<></>),
-            footer: (columnData) => `${formatPercentage(columnData.reduce((acc, item) => acc + item, 0) / (!columnData.length ? columnData.length : 1))}%`,
+                footer: (columnData) => { return `${formatPercentage(cashFlowStats.msnRate? cashFlowStats.msnRate : msnRate)}%`},
+            footerStyle: { textAlign: 'right' },
         },
         {
             dataField: 'anualRevenue',
             text: 'Annual Revenue',
             sort: true,
-            style: { width: '140px' },
+            style: { width: '140px', textAlign: 'right' },
             filter: textFilter({
                 placeholder: ' ',
             }),
             formatter: (cell) => (<>${formatCurrency(cell)}</>),
             footer: (columnData) => `$${formatCurrency(columnData.reduce((acc, item) => acc + item, 0))}`,
+            footerStyle: { textAlign: 'right' },
         },
         {
             dataField: 'monthlyRevenue',
             text: 'Monthly Revenue',
             sort: true,
-            style: { width: '140px' },
+            style: { width: '140px', textAlign: 'right' },
             filter: textFilter({
                 placeholder: ' ',
             }),
             formatter: (cell) => (<>${formatCurrency(cell)}</>),
             footer: (columnData) => `$${formatCurrency(columnData.reduce((acc, item) => acc + item, 0))}`,
+            footerStyle: { textAlign: 'right' },
         },
         {
-            dataField: 'dailyRevenue',
-            text: 'Daily Revenue',
+            dataField: 'monthsToMaturity',
+            text: 'Months to Maturity',
             sort: true,
-            style: { width: '140px' },
+            style: { width: '140px', textAlign: 'right' },
             filter: textFilter({
                 placeholder: ' ',
             }),
-            formatter: (cell) => (<>${formatCurrency(cell)}</>),
-            //TODO: Refactor a formatCurrency helper into utils and reuse here
-            footer: (columnData) => `$${formatCurrency(columnData.reduce((acc, item) => acc + item, 0))}`,
+            formatter: (cell) => (<>{cell}</>),
+            footer: ''
         }
     ];
 
@@ -153,8 +218,8 @@ const CashFlowTable = (props) => {
                             keyField="loanNumber"
                             data={loans}
                             columns={columns}
-                            defaultSorted={defaultSorted}
-                            filter={filterFactory()}
+                            defaultSorted={defaultCashflowSorted}
+                            filter={filterFactory({ afterFilter })}
                             pagination={paginationFactory(paginationOptions)}
                             wrapperClasses="table-responsive loan-list-table"
                         />

@@ -11,7 +11,7 @@ const SecurityDashboard = (props) => {
 
   useEffect(() => {
     if (report === 'list') {
-      props.getSecurities();
+      props.getSecurities(100);
     }
   }, [report]);
 
@@ -33,7 +33,7 @@ const SecurityDashboard = (props) => {
 
       <Row>
         <Col sm={12}>
-          <SecuritiesTable securities={securities?.content} report={report} />
+          <SecuritiesTable securities={securities} report={report} />
         </Col>
       </Row>
     </>

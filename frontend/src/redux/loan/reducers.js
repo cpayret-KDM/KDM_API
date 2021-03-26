@@ -30,7 +30,6 @@ import {
 const initialState = {
   loans: [],
   loan: {},
-  loansStats: {ltv : 0, rate: 0},
   loaded: false,
   deleted: false,
   edited: false,
@@ -46,22 +45,9 @@ const Loan = (state = initialState, action) => {
       };
     case GET_LOANS_SUCCESS:
       let loans = action.payload.content;
-
-      const loansLTV = loans.filter( (loan) => (loan.ltv != undefined) && (loan.ltv > 0)).map( (loan) => loan.ltv);
-      const averageLTV = loansLTV.reduce( (total, ltv) => total + ltv) / loansLTV.length;
-
-      const loansRate = loans.filter( (loan) => (loan.loanRate != undefined) && (loan.loanRate > 0)).map( (loan) => loan.loanRate);
-      const averageRate = loansRate.reduce( (total, rate) => total + rate) / loansRate.length;
-
-      const {ltv, rate, ...otherStats} = state.loansStats;
       return { 
         ...state, 
         loans: action.payload.content,
-        loansStats: {
-            ltv : averageLTV,
-            rate: averageRate,
-            ...otherStats
-        },
       };
     case GET_LOANS_FAILURE:
       return { 

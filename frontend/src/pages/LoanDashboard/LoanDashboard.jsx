@@ -8,7 +8,7 @@ import LoansTable from './LoansTable';
 
 const LoanDashboard = (props) => {
 
-  const { loans, loansStats, report } = props;
+  const { loans, report } = props;
 
   useEffect(() => {
     if (report === 'list') {
@@ -65,7 +65,7 @@ const LoanDashboard = (props) => {
 
         <Row>
           <Col sm={12}>
-            <LoansTable loans={loans} loansStats={loansStats} report={report} />
+            <LoansTable loans={loans} report={report} />
           </Col>
         </Row>
       </>
@@ -74,8 +74,8 @@ const LoanDashboard = (props) => {
 };
 
 const mapStateToProps = state => {
-  const { loans, loansStats } = state.Loan;
-  return { loans, loansStats };
+  const { loans } = state.Loan;
+  return { loans };
 };
 
 export default connect(

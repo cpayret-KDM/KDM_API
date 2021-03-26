@@ -11,6 +11,6 @@ import com.kdm.web.model.Lender;
 @Repository
 public interface LenderRepository extends JpaRepository<Lender, Long> {
 	
-	Optional<Lender> findByNameAndLoanId(String name, Long loanId);
+	Optional<Lender> findFirstByNameAndLoanIdOrderByIdDesc(String name, Long loanId);
 
 }
