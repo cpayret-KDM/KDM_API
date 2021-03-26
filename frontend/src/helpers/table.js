@@ -52,6 +52,13 @@ const defaultSorted = [
   },
 ];
 
+const defaultCashflowSorted = [
+  {
+    dataField: 'id',
+    order: 'desc',
+  },
+];
+
 const defaultSecuritySorted = [
     {
       dataField: 'id',
@@ -83,4 +90,4 @@ const percentageFilter = (filterValue, data, key) => {
   })
 };
 
-export { paginationOptions, defaultSorted, defaultSecuritySorted, currencyFilter, percentageFilter };
+export { paginationOptions, defaultSorted, defaultSecuritySorted, defaultCashflowSorted, currencyFilter, percentageFilter };

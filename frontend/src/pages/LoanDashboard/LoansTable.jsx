@@ -50,27 +50,37 @@ const LoansTable = (props) => {
   }
 
   const afterFilter = (filteredLoans, newFilters) => {
+    if (!filteredLoans) {
+        return;
+    }
+
     // LTV Weighted average
-    const sumInitialAmountLTVWeight = filteredLoans.filter( (loan) => (loan.ltv != undefined) && (loan.ltv > 0) && (loan.initialAmount != undefined))
+    let ltv = 0;
+    const filteredForLTV = filteredLoans.filter( (loan) => (loan.ltv != undefined) && (loan.ltv > 0) && (loan.initialAmount != undefined))
+    if (filteredForLTV.length > 0) {
+        const sumInitialAmountLTVWeight = filteredForLTV
                         .map( (loan) => loan.initialAmount)
                         .reduce( (total, initialAmount) => total + initialAmount);
 
-    const sumLtvData = filteredLoans.filter( (loan) => (loan.ltv != undefined) && (loan.ltv > 0) && (loan.initialAmount != undefined))
+        const sumLtvData = filteredForLTV
                         .map( (loan) => loan.ltv * loan.initialAmount)
-                        .reduce( (total, ltvByInitial) => total + ltvByInitial);
-
-    const ltv = sumLtvData / sumInitialAmountLTVWeight;
-
+                        .reduce( (total, ltvByInitial) => total + ltvByInitial);    
+        ltv = sumLtvData / sumInitialAmountLTVWeight;
+    }
+ 
     // Rate Weighted average
-    const sumInitialAmountRateWeight = filteredLoans.filter( (loan) => (loan.loanRate != undefined) && (loan.initialAmount != undefined))
+    let rate = 0;
+    const filteredForRate = filteredLoans.filter( (loan) => (loan.loanRate != undefined) && (loan.initialAmount != undefined));
+    if (filteredForRate.length > 0) {
+        const sumInitialAmountRateWeight = filteredForRate
                         .map( (loan) => loan.initialAmount)
                         .reduce( (total, initialAmount) => total + initialAmount);
 
-    const sumRateData = filteredLoans.filter( (loan) => (loan.loanRate != undefined) && (loan.initialAmount != undefined))
+        const sumRateData = filteredForRate
                         .map( (loan) => loan.loanRate * loan.initialAmount)
                         .reduce( (total, rateByInitial) => total + rateByInitial);
-
-    const rate = sumRateData / sumInitialAmountRateWeight;
+        rate = sumRateData / sumInitialAmountRateWeight;
+    }
 
     if ((loansStats.ltv != ltv) || (loansStats.rate != rate)) {
         setLoansStatsState({ltv : ltv, rate: rate});
@@ -124,7 +134,7 @@ const LoansTable = (props) => {
       }),
       formatter: (cell, row) => {
         //TODO: refactor this into a testable function
-        if (!row || row.properties.length === 0) {
+        if (!row || !row.properties || row.properties.length === 0) {
           return '';
         }
         return (

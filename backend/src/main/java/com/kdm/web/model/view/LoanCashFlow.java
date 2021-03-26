@@ -12,6 +12,9 @@ import lombok.Setter;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class LoanCashFlow {
 	
+	@JsonProperty(value="id")
+	private Long loanID;
+	
 	@JsonProperty
 	private String loanNumber;
 	
@@ -31,6 +34,6 @@ public class LoanCashFlow {
 	private BigDecimal monthlyRevenue;
 	
 	@JsonProperty
-	private BigDecimal dailyRevenue;
+	private Long monthsToMaturity;
 	
 }

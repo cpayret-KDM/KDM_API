@@ -448,7 +448,7 @@ logger.trace("Starting to process Loans from TMO API");
 		Long loanId = ObjectUtils.firstNonNull(lender.getLoanId(), lender.getLoan().getId());
 		
 		if (Objects.nonNull(lender) && Objects.nonNull(lenderName)  && Objects.nonNull(loanId)){
-			existingLender = lenderRepository.findByNameAndLoanId(lenderName, loanId);
+			existingLender = lenderRepository.findFirstByNameAndLoanIdOrderByIdDesc(lenderName, loanId);
 		}
 		
 		if (existingLender.isPresent()) {

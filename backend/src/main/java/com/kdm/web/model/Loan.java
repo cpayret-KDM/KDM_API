@@ -47,26 +47,27 @@ import lombok.Setter;
 	        @ConstructorResult(
 	            targetClass=LoanCashFlow.class,
 	            columns={
+	            	@ColumnResult(name="loanID", type = Long.class),
 	                @ColumnResult(name="loanNumber", type = String.class),
 	                @ColumnResult(name="principalBalance", type = BigDecimal.class),
 	                @ColumnResult(name="loanRate", type = BigDecimal.class),
 	                @ColumnResult(name="msnRate", type = BigDecimal.class),
 	                @ColumnResult(name="anualRevenue", type = BigDecimal.class),
 	                @ColumnResult(name="monthlyRevenue", type = BigDecimal.class),
-	                @ColumnResult(name="dailyRevenue", type = BigDecimal.class)
+	                @ColumnResult(name="monthsToMaturity", type = Long.class)
 	            }
 	        )
 	    }
 	)
 @NamedNativeQuery(
 		name="getCashFlowReport", 
-		query = "SELECT  l.\"loanNumber\", l.\"principalBalance\", l.\"loanRate\", m.\"noteRate\" as \"msnRate\", " + 
-			"        (l.\"principalBalance\" * m.\"noteRate\") - (l.\"principalBalance\" * l.\"loanRate\") as \"anualRevenue\", " + 
-			"        ((l.\"principalBalance\" * m.\"noteRate\") - (l.\"principalBalance\" * l.\"loanRate\"))/12 as \"monthlyRevenue\", " + 
-			"        ((l.\"principalBalance\" * m.\"noteRate\") - (l.\"principalBalance\" * l.\"loanRate\"))/365 as \"dailyRevenue\" " + 
-			"FROM    \"Loan\" as l " + 
-			"    LEFT JOIN \"MSN\" as m ON l.\"msnID\" = m.\"msnID\" " + 
-			"WHERE   l.\"loanStatus\" IN ('PERFORMING') ",
+		query = "SELECT  l.\"loanID\", l.\"loanNumber\", l.\"principalBalance\", l.\"loanRate\", m.\"noteRate\" as \"msnRate\", \n" + 
+				"			        (l.\"principalBalance\" * (m.\"noteRate\"/100)) - (l.\"principalBalance\" * (l.\"loanRate\"/100)) as \"anualRevenue\", \n" + 
+				"			        ((l.\"principalBalance\" * (m.\"noteRate\"/100)) - (l.\"principalBalance\" * (l.\"loanRate\"/100)))/12 as \"monthlyRevenue\", \n" + 
+				"			        (extract(year from age(l.\"maturityDate\", NOW())) * 12) + extract(month from age(l.\"maturityDate\", NOW())) as \"monthsToMaturity\"\n" + 
+				"			FROM    \"Loan\" as l \n" + 
+				"			    LEFT JOIN \"MSN\" as m ON l.\"msnID\" = m.\"msnID\" \n" + 
+				"		  WHERE   l.\"loanStatus\" IN ('PERFORMING') ",
 		resultSetMapping = "cashFlowMapping"
 		)
 @Entity
