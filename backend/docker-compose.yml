@@ -8,6 +8,7 @@ services:
       - spring.datasource.password=dbpassword
       - spring.flyway.enabled=true
       - spring.profiles.active=no_kdm_security
+      - tmo.api.token=FD1F722B2C3F48409050D9A52E5B2DDA
     build:
         context: ./
         dockerfile: "Dockerfile"
