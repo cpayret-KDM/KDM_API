@@ -138,6 +138,10 @@ let service = new awsx.ecs.FargateService("kdm_api", {
                     {
                         name: "tmo.api.token",
                         value: tmoAPIToken
+                    },
+                    {
+                        name: "kdm.quartz.tmoSyncJob.enable",
+                        value: "false"
                     }
                 ]
             }
