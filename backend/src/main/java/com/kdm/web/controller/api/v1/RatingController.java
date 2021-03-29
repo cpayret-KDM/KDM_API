@@ -3,6 +3,7 @@ package com.kdm.web.controller.api.v1;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -12,8 +13,6 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.kdm.web.util.View;
 import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -33,10 +32,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.kdm.web.data.repository.RatingRepository;
 import com.kdm.web.model.Rating;
 import com.kdm.web.model.view.RatingValueView;
 import com.kdm.web.service.EntityUtil;
+import com.kdm.web.util.View;
 import com.kdm.web.util.error.ErrorResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -111,6 +112,10 @@ public class RatingController {
 						Collectors.mapping( r -> createRatingValueView(r) ,
 								Collectors.toList())));
 
+		results.values().stream()
+			.forEach(list -> 
+				Collections.sort(list, RatingValueView::compareTo));
+		
 		return new ResponseEntity<Map<String, List<RatingValueView>>>(results, OK);
 
 	}

@@ -16,4 +16,12 @@ public class RatingValueView {
 
 	@JsonProperty(value = "value")
 	private String value;
+	
+	public int compareTo(RatingValueView that) {
+		if (that == null) {
+			return 1;
+		}
+		
+		return this.id.compareTo(that.getId());
+	}
 }
