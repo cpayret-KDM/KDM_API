@@ -58,9 +58,27 @@ const RatingsTable = (props) => {
   const [showDuplicateAgencyWarning, setShowDuplicateAgencyWarning] = useState(null);
   const addNewItemRating = () => {
     const newItemRatings = [...itemRatings];
+    
+    //search here for next avaiable agency
+    let availableAgenciesRating = agencyRatings.slice();
+    itemRatings.forEach( (loanRating) => {
+        let toRemoveIndex = 0;
+        availableAgenciesRating.forEach( (agency, index) => {
+            if (loanRating.agency === agency.agency) {
+                toRemoveIndex = index;
+            }
+        });
+
+        availableAgenciesRating.splice(toRemoveIndex, 1);
+    });
+
+    const availableAgencyIndex = agencyRatings.findIndex( (element) => element.agency ===  availableAgenciesRating[0].agency);
+
     newItemRatings.push({
-      agency: agencyRatings[0].agency,
-      value: agencyRatings[0].values[0].id,
+      agency: agencyRatings[availableAgencyIndex].agency,
+      value: agencyRatings[availableAgencyIndex].values[0].id,
+      rating: agencyRatings[availableAgencyIndex].values[0].value,
+      ratingId: agencyRatings[availableAgencyIndex].values[0].id,
       date: '',
       note: '',
     });
@@ -80,7 +98,9 @@ const RatingsTable = (props) => {
     newItemRatings[i].agency = newAgency;
     agencyRatings.forEach((rating) => {
       if (rating.agency === newAgency) {
-        newItemRatings[i].value = rating.values[0].value;
+        newItemRatings[i].rating = rating.values[0].value;
+        newItemRatings[i].ratingId = rating.values[0].id;
+        newItemRatings[i].value = rating.values[0].id;
       }
     });
     setItemRatings([...newItemRatings]);

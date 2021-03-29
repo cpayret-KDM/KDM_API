@@ -31,22 +31,24 @@ const LoansTable = (props) => {
   });
 
   let formatRatingString = (loan) => {
-    let rating = '';
-    if (loan.KDMRating) {
-      rating += loan.KDMRating
-    }
-    else {
-      rating += '--';
-    }
+    let kdmRating = '--';
+    let ejRating = '--';
 
-    if (loan.EJRating) {
-      rating += ` / ${loan.EJRating}`;
+    if (loan.ratings) {
+      loan.ratings.forEach( (rate) => {
+          switch (rate.agency) {
+              case "EJ":
+                  ejRating = rate.rating;
+                  break;
+              case "KDM":
+                  kdmRating = rate.rating;
+                  break;
+          }
+      });
+      
     }
-    else {
-      rating += ` / --`;
-    }
-
-    return rating;
+    
+    return kdmRating + '/' + ejRating;
   }
 
   const afterFilter = (filteredLoans, newFilters) => {
