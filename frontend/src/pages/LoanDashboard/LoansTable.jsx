@@ -139,14 +139,19 @@ const LoansTable = (props) => {
         if (!row || !row.properties || row.properties.length === 0) {
           return '';
         }
+        const onlyUnique = (value, index, self) => {
+            return self.indexOf(value) === index;
+          }
+
+        let uniquePropertyTypes = row.properties.map( (property) => property.type).filter(onlyUnique);
         return (
           <>
-            {row.properties.map((property, i) => {
+            {uniquePropertyTypes.map((propertyType, i) => {
               return (
                 <span key={i}>
-                  {PROPERTY_TYPE_MAP[property.type]}
+                  {PROPERTY_TYPE_MAP[propertyType]}
                   {/* {property.address.name && (<>{property.address.name}<br /></>)} */}
-                  {(i + 1) === row.properties.length ? ('') : (<br />)}
+                  {(i + 1) === uniquePropertyTypes.length ? ('') : (<br />)}
                   {' '}<br />
                 </span>
               );
