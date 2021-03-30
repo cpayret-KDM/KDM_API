@@ -27,6 +27,9 @@ import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -70,6 +73,7 @@ import lombok.Setter;
 				"		  WHERE   l.\"loanStatus\" IN ('PERFORMING') ",
 		resultSetMapping = "cashFlowMapping"
 		)
+@Audited
 @Entity
 @Table(name="Loan", schema = "public")
 @JsonView
@@ -189,6 +193,7 @@ public class Loan {
 	@JsonView(View.Basic.class)
 	private BigDecimal principalBalance;
 	
+	@NotAudited
 	@JsonProperty
 	@OneToMany(mappedBy="loan", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
 	@JsonView(View.All.class)

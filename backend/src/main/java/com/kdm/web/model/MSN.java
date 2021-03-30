@@ -18,6 +18,9 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.kdm.web.model.view.MSNRatingLatestByMSNView;
@@ -33,6 +36,7 @@ import lombok.Setter;
 @Table
 @JsonView
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Audited
 public class MSN {
 
 	@JsonProperty(value = "id")
@@ -70,6 +74,7 @@ public class MSN {
 	@JsonView(View.Basic.class)
 	private BigDecimal noteRate;
 
+	@NotAudited
 	@JsonProperty
 	@OneToMany(mappedBy="msn", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
 	@JsonView(View.All.class)

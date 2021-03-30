@@ -14,6 +14,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+import org.hibernate.envers.Audited;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -28,6 +30,7 @@ import lombok.Setter;
 @Entity
 @Table(name="Lender", schema = "public")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Audited
 public class Lender {
 	
 	@JsonProperty(value = "id")
