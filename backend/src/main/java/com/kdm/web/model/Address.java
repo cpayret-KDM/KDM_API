@@ -14,6 +14,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import org.hibernate.envers.Audited;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -32,6 +34,7 @@ import lombok.Setter;
 @JsonRootName("address")
 @JsonView
 @Getter @Setter @NoArgsConstructor @EqualsAndHashCode @AllArgsConstructor @Builder
+@Audited
 public class Address {
 	
 	@JsonProperty(value="id")

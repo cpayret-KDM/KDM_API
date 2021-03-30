@@ -17,6 +17,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+import org.hibernate.envers.Audited;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
@@ -33,6 +35,7 @@ import lombok.Setter;
 @Table(name="Appraisal", schema = "public")
 @JsonRootName("appraisal")
 @Getter @Setter @NoArgsConstructor @EqualsAndHashCode @AllArgsConstructor @Builder
+@Audited
 public class Appraisal {
 
 	@JsonProperty(value="id")

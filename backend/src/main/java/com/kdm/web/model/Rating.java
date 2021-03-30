@@ -18,6 +18,9 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -33,6 +36,7 @@ import lombok.Setter;
 @Entity
 @Table(name="Rating", schema = "public")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Audited
 public class Rating {
 
 	@JsonProperty(value = "id")
@@ -57,10 +61,12 @@ public class Rating {
 	@JsonView(View.Basic.class)
 	private String rating;
 	
+	@NotAudited
 	@JsonIgnore
 	@OneToMany(mappedBy = "rating", fetch = FetchType.LAZY)
 	private Set<LoanRating> loanRatings;
 	
+	@NotAudited
 	@JsonIgnore
 	@OneToMany(mappedBy = "rating", fetch = FetchType.LAZY)
 	private Set<MSNRating> msnRatings;
