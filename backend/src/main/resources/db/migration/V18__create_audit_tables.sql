@@ -1,5 +1,19 @@
 DO $$
 BEGIN
+
+	DROP VIEW "AppraisalLatestByPropertyView";
+		
+	ALTER TABLE "public"."Appraisal" ALTER COLUMN "value" TYPE numeric(12,3);
+	
+	CREATE OR REPLACE VIEW "AppraisalLatestByPropertyView" AS
+	SELECT  "appraisalID", "propertyID", "value", "date", "note"
+	FROM    "Appraisal" as appra
+	WHERE   ROW("propertyID", "date") = ( 
+	    SELECT  internal."propertyID", MAX(internal."date") as "date" 
+	    FROM    "Appraisal" as internal
+	    WHERE   appra."propertyID" = internal."propertyID"
+	    GROUP BY internal."propertyID"
+	    );
 	
 	DROP TABLE IF EXISTS "public"."Address_AUD";
 	create table "public"."Address_AUD" (
@@ -32,7 +46,7 @@ BEGIN
         "propertyID" int8,
         "updatedAt" timestamp,
         "updatedBy" varchar(255),
-        "value" numeric(5, 2),
+        "value" numeric(12, 2),
         primary key ("appraisalID", "REV")
     );
 

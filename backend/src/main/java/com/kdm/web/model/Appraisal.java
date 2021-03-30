@@ -60,7 +60,7 @@ public class Appraisal {
 	private String note;
 	
 	@JsonProperty(value = "value")
-	@Column(name = "value", precision = 5, scale = 2, nullable = false)
+	@Column(name = "value", precision = 12, scale = 2, nullable = false)
 	private BigDecimal value;
 	
 	@JsonProperty(value = "date")
