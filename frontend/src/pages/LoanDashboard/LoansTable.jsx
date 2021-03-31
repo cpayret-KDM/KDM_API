@@ -281,7 +281,7 @@ const LoansTable = (props) => {
         placeholder: ' ',
         onFilter: (filterValue, data) => percentageFilter(filterValue, data, 'spread'),
       }),
-      formatter: (cell) => (cell)
+      formatter: (cell) => (cell != undefined)
         ? (<>{formatPercentage(cell)}%</>)
         : (<></>),
     },

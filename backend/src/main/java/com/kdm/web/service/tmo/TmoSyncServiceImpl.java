@@ -73,7 +73,7 @@ public class TmoSyncServiceImpl implements TmoSyncService {
 	@Override
 	@Transactional
 	public void syncLoans() throws Exception {
-logger.trace("Starting to process Loans from TMO API");
+		logger.trace("Starting to process Loans from TMO API");
 		
 		List<com.kdm.web.restclient.tmo.model.Loan> loans = getLoans();
 		
@@ -148,7 +148,7 @@ logger.trace("Starting to process Loans from TMO API");
 			fundControlBD = terms.getFundControl();
 			principalBalanceBD = terms.getPrincipalBalance();
 			prepayMonths = terms.getPrepayMon();
-			loanRate = terms.getSoldRate();
+			loanRate = terms.getNoteRate();
 			
 			if (Objects.nonNull(terms.getMaturityDate())) {
 				maturityDate = ZonedDateTime.ofInstant(terms.getMaturityDate().toInstant(), ZoneId.systemDefault());
@@ -343,6 +343,8 @@ logger.trace("Starting to process Loans from TMO API");
 			newLoan.setId(existingLoanOp.get().getId());
 			newLoan.setProperties(existingLoanOp.get().getProperties());
 			newLoan.setRatings(existingLoanOp.get().getRatings());
+			newLoan.setMsn(existingLoanOp.get().getMsn());
+			newLoan.setMsnId(existingLoanOp.get().getMsnId());
 			return entityManager.merge(newLoan);
 		} else {
 			entityManager.persist(newLoan);

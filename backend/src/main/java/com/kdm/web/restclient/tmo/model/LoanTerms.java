@@ -26,6 +26,9 @@ public class LoanTerms {
 	@JsonProperty("PrepayMon")
 	private Long prepayMon;
 
+	@JsonProperty("NoteRate")
+	private BigDecimal noteRate;
+	
 	@JsonProperty("SoldRate")
 	private BigDecimal soldRate;
 	
@@ -39,7 +42,6 @@ public class LoanTerms {
 	private BigDecimal principalBalance;
 	
 	// interesting fields we may need
-	//    "NoteRate": "5.35000000",
 	//    "RegularPayment": "236229.43",
 	
 }

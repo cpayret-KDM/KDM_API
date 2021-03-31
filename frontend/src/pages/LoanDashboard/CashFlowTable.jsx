@@ -109,7 +109,7 @@ const CashFlowTable = (props) => {
             filter: textFilter({
                 placeholder: ' ',
             }),
-            formatter: (cell) => (cell)
+            formatter: (cell) => (cell != undefined)
                 ? (<>${formatCurrency(cell)}</>)
                 : (<></>),
             footer: (columnData) => `$${formatCurrency(columnData.reduce((acc, item) => acc + item, 0))}`,
@@ -123,7 +123,7 @@ const CashFlowTable = (props) => {
             filter: textFilter({
                 placeholder: ' ',
             }),
-            formatter: (cell) => (cell)
+            formatter: (cell) => (cell != undefined)
                 ? (<>{formatPercentage(cell)}%</>)
                 : (<></>),
             //footer: (columnData) => `${formatPercentage(columnData.reduce((acc, item) => acc + item, 0) / (!columnData.length ? columnData.length : 1))}%`,
@@ -138,7 +138,7 @@ const CashFlowTable = (props) => {
             filter: textFilter({
                 placeholder: ' ',
             }),
-            formatter: (cell) => (cell)
+            formatter: (cell) => (cell != undefined)
                 ? (<>{formatPercentage(cell)}%</>)
                 : (<></>),
                 footer: (columnData) => { return `${formatPercentage(cashFlowStats.msnRate? cashFlowStats.msnRate : msnRate)}%`},
