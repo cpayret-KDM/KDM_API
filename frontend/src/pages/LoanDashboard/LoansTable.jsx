@@ -6,7 +6,7 @@ import filterFactory, { Comparator, textFilter, dateFilter, selectFilter } from 
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { Link } from 'react-router-dom';
 import { Card, CardBody, Spinner } from 'reactstrap';
-import { formatCurrency, formatPercentage, DATE_FORMAT, LOAN_STATUS_MAP, PROPERTY_TYPE_MAP } from '../../constants/utils';
+import { formatCurrency, formatCurrencyShort, formatPercentage, DATE_FORMAT, LOAN_STATUS_MAP, PROPERTY_TYPE_MAP } from '../../constants/utils';
 import { paginationOptions, defaultSorted, percentageFilter, currencyFilter } from '../../helpers/table';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import TickerColumn from '../../helpers/TickerColumn'
@@ -235,9 +235,9 @@ const LoansTable = (props) => {
         onFilter: (filterValue, data) => currencyFilter(filterValue, data, 'initialAmount'),
       }),
       formatter: (cell) => (cell)
-        ? (<>${formatCurrency(cell)}</>)
+        ? (<>${formatCurrencyShort(cell)}</>)
         : (<></>),
-      footer: (columnData) => `$${formatCurrency(columnData.reduce((acc, item) => acc + item, 0))}`,
+      footer: (columnData) => `$${formatCurrencyShort(columnData.reduce((acc, item) => acc + item, 0))}`,
     },
     {
       dataField: 'ltv',

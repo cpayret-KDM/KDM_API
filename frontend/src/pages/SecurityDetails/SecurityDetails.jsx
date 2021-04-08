@@ -179,7 +179,7 @@ const SecurityDetails = (props) => {
                         <AvGroup className="position-relative">
                           <Label for="noteRate">Note Rate *</Label>
                           <div className="input-group">
-                            <AvInput name="noteRate" id="noteRate" value={security.noteRate || ''} required disabled={viewing} />
+                            <AvInput name="noteRate" id="noteRate" value={(security.noteRate!= undefined)? `${security.noteRate}` : ''} required disabled={viewing} />
                             <AvFeedback tooltip>Note Rate is required</AvFeedback>
                             <InputGroupAddon addonType="append">%</InputGroupAddon>
                           </div>

@@ -2,6 +2,10 @@ const formatCurrency = (currency) => {
   return Number(currency).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 };
 
+const formatCurrencyShort = (currency) => {
+    return Math.round(Number(currency)).toLocaleString();
+};  
+
 const formatPercentage = (percentage) => {
   return !percentage? "0.00": percentage.toFixed(2);
 };
@@ -130,4 +134,4 @@ export const EMPTY_LOAN = {
   tradeDate: '',
 };
 
-export { formatCurrency, formatPercentage };
+export { formatCurrency, formatCurrencyShort, formatPercentage };
