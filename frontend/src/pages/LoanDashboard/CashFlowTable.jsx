@@ -5,8 +5,9 @@ import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { Link } from 'react-router-dom';
 import { Card, CardBody, Spinner } from 'reactstrap';
-import { formatCurrency, formatPercentage } from '../../constants/utils';
+import { formatCurrencyShort, formatCurrency, formatPercentage } from '../../constants/utils';
 import { paginationOptions, defaultCashflowSorted } from '../../helpers/table';
+import TickerColumn from '../../helpers/TickerColumn'
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 
 const CashFlowTable = (props) => {
@@ -99,6 +100,7 @@ const CashFlowTable = (props) => {
             filter: textFilter({
                 placeholder: ' ',
             }),
+            formatter: TickerColumn,
             footer: ''
         },
         {
@@ -110,9 +112,9 @@ const CashFlowTable = (props) => {
                 placeholder: ' ',
             }),
             formatter: (cell) => (cell != undefined)
-                ? (<>${formatCurrency(cell)}</>)
+                ? (<>${formatCurrencyShort(cell)}</>)
                 : (<></>),
-            footer: (columnData) => `$${formatCurrency(columnData.reduce((acc, item) => acc + item, 0))}`,
+            footer: (columnData) => `$${formatCurrencyShort(columnData.reduce((acc, item) => acc + item, 0))}`,
             footerStyle: { textAlign: 'right' },
         },
         {

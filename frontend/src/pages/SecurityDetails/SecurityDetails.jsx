@@ -29,16 +29,16 @@ const SecurityDetails = (props) => {
 
   const [showDeleteSecurityModal, setShowDeleteSecurityModal] = useState(false);
 
-  const [tradeDate, setTradeDate] = useState(new Date());
+  const [settlementDate, setSettlementDate] = useState(new Date());
   const [maturityDate, setMaturityDate] = useState(new Date());
   useEffect(() => {
-    if (!security.tradeDate) {
+    if (!security.settlementDate) {
       return;
     }
     if (!security.maturityDate) {
       return;
     }
-    setTradeDate(moment(security.tradeDate).toDate());
+    setSettlementDate(moment(security.settlementDate).toDate());
     setMaturityDate(moment(security.maturityDate).toDate());
   }, [security]);
 
@@ -83,7 +83,7 @@ const SecurityDetails = (props) => {
     const newSecurity = {
       ...security,
       ...values,
-      tradeDate: tradeDate,
+      settlementDate: settlementDate,
       ratings: formatRatings(securityRatings),
       loans: formatLoans(securityLoans),
       maturityDate: maturityDate,
@@ -95,7 +95,7 @@ const SecurityDetails = (props) => {
     if (creating) {
       props.createSecurity(newSecurity);
       // temporary until specifications received on styling, UI and such
-      alert("Security Created");
+      //alert("Security Created");
       window.location.href = "/securities/list";
     }
   }
@@ -190,14 +190,14 @@ const SecurityDetails = (props) => {
                     <Row>
                       <Col sm={6}>
                         <AvGroup className="position-relative">
-                          <Label for="tradeDate">Trade Date *</Label>
+                          <Label for="settlementDate">Settlement Date *</Label>
                           <div className="input-group">
                             <DatePicker
                               className="form-control date"
                               dateFormat="MM/dd/yyyy"
-                              selected={tradeDate}
-                              // selected={tradeDate}
-                              onChange={date => setTradeDate(date)}
+                              selected={settlementDate}
+                              // selected={settlementDate}
+                              onChange={date => setSettlementDate(date)}
                               required disabled={viewing}
                             />
                           </div>
@@ -226,6 +226,15 @@ const SecurityDetails = (props) => {
                           <Label for="cusip">CUSIP *</Label>
                           <AvInput name="cusip" id="cusip" value={ security.cusip || ''} required disabled={viewing} />
                           <AvFeedback tooltip>CUSIP is required</AvFeedback>
+                        </AvGroup>
+                      </Col>
+                      <Col sm={6}>
+                        <AvGroup className="position-relative">
+                          <Label for="dealSize">Deal Size</Label>
+                          <div className="input-group">
+                            <InputGroupAddon addonType="prepend">$</InputGroupAddon>
+                            <AvInput name="dealSize" id="dealSize" value={security?.dealSize || ''} disabled={viewing} />
+                          </div>
                         </AvGroup>
                       </Col>
                     </Row>

@@ -22,6 +22,7 @@ const LoanDetails = (props) => {
   const viewing = !editing && !creating;
 
   const { id } = props?.match?.params;
+
   useEffect(() => {
     if (!creating) {
       props.getLoan(id);

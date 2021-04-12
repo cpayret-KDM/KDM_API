@@ -6,7 +6,7 @@ import filterFactory, { Comparator, textFilter, dateFilter } from 'react-bootstr
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { Link } from 'react-router-dom';
 import { Card, CardBody, Spinner } from 'reactstrap';
-import { formatPercentage, DATE_FORMAT } from '../../constants/utils';
+import { formatCurrencyShort, formatPercentage, DATE_FORMAT } from '../../constants/utils';
 import {paginationOptions, defaultSecuritySorted, percentageFilter} from '../../helpers/table';
 import TickerColumn from '../../helpers/TickerColumn'
 
@@ -79,10 +79,10 @@ const SecuritiesTable = (props) => {
           return `${formatPercentage(average)}%`},
     },
     {
-      dataField: 'tradeDate',
-      text: 'Trade Date',
+      dataField: 'settlementDate',
+      text: 'Settlement Date',
       sort: true,
-      style: { width: '100px' },
+      style: { width: '100px', textAlign: 'center' },
       filter: dateFilter({
         placeholder: ' ',
         withoutEmptyComparatorOption: true,  // dont render empty option for comparator
@@ -97,7 +97,7 @@ const SecuritiesTable = (props) => {
       dataField: 'maturityDate',
       text: 'Maturity Date',
       sort: true,
-      style: { width: '130px' },
+      style: { width: '130px', textAlign: 'center'},
       filter: dateFilter({
         placeholder: ' ',
         withoutEmptyComparatorOption: true,  // dont render empty option for comparator
@@ -107,7 +107,23 @@ const SecuritiesTable = (props) => {
         ? (<>{moment(cell).format(DATE_FORMAT)}</>)
         : (<></>),
       footer: '',
-    }
+    },
+    {
+        dataField: 'dealSize',
+        text: 'Deal Size',
+        sort: false,
+        style: { width: '110px', textAlign: 'right' },
+        headerStyle: { textAlign: 'right' },
+        footerStyle: { textAlign: 'right' },
+        filter: textFilter({
+          placeholder: ' ',
+          onFilter: (filterValue, data) => currencyFilter(filterValue, data, 'dealSize'),
+        }),
+        formatter: (cell) => (cell)
+          ? (<>${formatCurrencyShort(cell)}</>)
+          : (<></>),
+        footer: (columnData) => `$${formatCurrencyShort(columnData.reduce((acc, item) => acc + item, 0))}`,
+      }
   ];
 
   const title = ((report) => {
