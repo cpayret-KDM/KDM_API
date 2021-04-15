@@ -62,7 +62,7 @@ public class MSN {
 	@JsonProperty
 	@Column(nullable = true)
 	@JsonView(View.Basic.class)
-	private ZonedDateTime tradeDate;
+	private ZonedDateTime settlementDate;
 
 	@JsonProperty
 	@Column(nullable = false)
@@ -79,6 +79,11 @@ public class MSN {
 	@OneToMany(mappedBy="msn", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
 	@JsonView(View.All.class)
 	private Set<MSNRatingLatestByMSNView> ratings;
+	
+	@JsonProperty(value = "dealSize")
+	@Column(precision = 12, scale = 2)
+	@JsonView(View.Basic.class)
+	private BigDecimal dealSize;
 	
 	/*
 	@JsonIgnore
