@@ -41,7 +41,7 @@ jobs:
           file: ./backend/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/com.codingscape.kdm:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/kdm_api:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
       -
