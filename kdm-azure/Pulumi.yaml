@@ -1,0 +1,3 @@
+name: kdm-azure
+runtime: nodejs
+description: KDM_API Deployment to Azure
