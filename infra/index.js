@@ -90,8 +90,8 @@ const kdmPgsqlInstance = new aws.rds.Instance("kdm-db", {
 /*******************************************************************************
 *   ECR Repository and Docker Image Build/Push                                 * 
 *******************************************************************************/
-//const repo = new awsx.ecr.Repository("kdm-repo")
-//const image = repo.buildAndPushImage("../backend/")
+const repo = new awsx.ecr.Repository("kdm-repo")
+const image = repo.buildAndPushImage("../backend/")
 
 /*******************************************************************************
 *   Deploy Containers to AWS ECS using Fargate
@@ -102,7 +102,7 @@ let service = new awsx.ecs.FargateService("kdm_api", {
     taskDefinitionArgs: {
         containers: {
             spring: {
-                image: "jimmyjacobson/kdm_api:latest",
+                image: image,
                 memory: 1024,
                 portMappings: [ listener ],
                 environment: [
