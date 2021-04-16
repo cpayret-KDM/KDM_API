@@ -9,6 +9,7 @@ config:
   infra:dbusername: cs_korth
   infra:dns_dnsName: kdm-staging
   infra:dns_zoneId: Z2I7T1WMAPGFC
+  infra:dockerImageString: jimmyjacobson/kdm_api:latest
   infra:isFlyway: "true"
   infra:springProfile: no_kdm_security
   infra:tmoAPIToken:
