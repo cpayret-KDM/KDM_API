@@ -65,11 +65,11 @@ import lombok.Setter;
 @NamedNativeQuery(
 		name="getCashFlowReport", 
 		query = "SELECT  l.\"loanID\", l.\"loanNumber\", l.\"principalBalance\", l.\"loanRate\", m.\"noteRate\" as \"msnRate\", \n" + 
-				"			        (l.\"principalBalance\" * (m.\"loanRate\"/100)) - (l.\"principalBalance\" * (l.\"noteRate\"/100)) as \"anualRevenue\", \n" + 
-				"			        ((l.\"principalBalance\" * (m.\"loanRate\"/100)) - (l.\"principalBalance\" * (l.\"noteRate\"/100)))/12 as \"monthlyRevenue\", \n" + 
+				"			        (l.\"principalBalance\" * (l.\"loanRate\"/100)) - (l.\"principalBalance\" * (m.\"noteRate\"/100)) as \"anualRevenue\", \n" + 
+				"			        ((l.\"principalBalance\" * (l.\"loanRate\"/100)) - (l.\"principalBalance\" * (m.\"noteRate\"/100)))/12 as \"monthlyRevenue\", \n" + 
 				"			        (extract(year from age(l.\"maturityDate\", NOW())) * 12) + extract(month from age(l.\"maturityDate\", NOW())) as \"monthsToMaturity\"\n" + 
 				"			FROM    \"Loan\" as l \n" + 
-				"			    LEFT JOIN \"MSN\" as m ON l.\"msnID\" = m.\"msnID\" \n" + 
+				"			    RIGHT JOIN \"MSN\" as m ON l.\"msnID\" = m.\"msnID\" \n" + 
 				"		  WHERE   l.\"loanStatus\" IN ('PERFORMING') ",
 		resultSetMapping = "cashFlowMapping"
 		)
