@@ -95,7 +95,8 @@ public class BorrowerServiceImpl implements BorrowerService {
 		}
 		
 		borrower.setAddressID(address.get().getId());
-		Borrower savedBorrower = borrowerRepository.saveAndFlush(borrower);
+
+		Borrower savedBorrower = entityManager.merge(borrower);
 		
 		return savedBorrower;
 	}

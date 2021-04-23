@@ -50,4 +50,10 @@ public interface LoanService {
 	 */
 	void syncRatings(Loan loan, List<RatingValue> ratings);
 
+	/**
+	 * recalculates the LTV using the appraised value of the related properties
+	 * @param loan to calculate the LTV to
+	 */
+	void updateLTV(Loan loan);
+
 }

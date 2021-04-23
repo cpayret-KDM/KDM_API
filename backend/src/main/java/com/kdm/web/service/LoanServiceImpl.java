@@ -1,4 +1,5 @@
 package com.kdm.web.service;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -98,7 +99,7 @@ public class LoanServiceImpl implements LoanService {
 			return null;		
 		}
 		
-		property.setAddressID(address.get().getId());
+		property.setAddress(address.get());
 		
 		// link the property to a loan
 		if (property.getLoanId() != null) {
@@ -109,11 +110,11 @@ public class LoanServiceImpl implements LoanService {
 			}
 		}
 		
-		entityManager.merge(property);
-		entityManager.detach(property);
+		property = entityManager.merge(property);
+		//entityManager.detach(property);
 				
-		return entityUtil.tryGetEntity(Property.class, property.getId());
-
+		//return entityUtil.tryGetEntity(Property.class, property.getId());
+		return property;
 	}
 	
 	@Override
@@ -204,6 +205,43 @@ public class LoanServiceImpl implements LoanService {
 			rating.addLoanRating(lnRtng);
 			
 			ratingRepository.saveAndFlush(rating);
+		}
+	}
+
+	@Override
+	public void updateLTV(Loan loan) {
+		// TODO Auto-generated method stub
+		if (loan == null) {
+			return;
+		}
+		
+		List<Property> properties = loan.getProperties();
+		if ((properties == null) || (properties.size() <= 0)) {
+			return;
+		}
+		
+		BigDecimal loanLTV = this.getWeightedAverage(loan.getPrincipalBalance(), properties);
+		// we save percetage numbers as a 0% t0 100% value
+		loanLTV = loanLTV.multiply(new BigDecimal(100));
+		loan.setLtv(loanLTV);
+		
+		entityManager.merge(loan);
+		//loanRepository.saveAndFlush(loan);
+		
+	}
+	
+	private BigDecimal getWeightedAverage(BigDecimal principalBalance, List<Property> properties) {
+		double sumWeights = properties.stream()
+				.filter( property -> property.getAppraisal() != null)
+				.map( property -> property.getAppraisal().getValue())
+				.mapToDouble(BigDecimal::doubleValue)
+				.sum();
+		
+		
+		if ((principalBalance == null ) || (sumWeights == 0)) {
+			return new BigDecimal( 0 );
+		} else {
+			return principalBalance.divide(new BigDecimal(sumWeights), 2, BigDecimal.ROUND_HALF_DOWN);
 		}
 	}
 }

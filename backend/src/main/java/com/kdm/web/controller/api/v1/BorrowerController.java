@@ -5,6 +5,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -34,7 +35,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.kdm.web.data.repository.BorrowerRepository;
+import com.kdm.web.model.Address;
 import com.kdm.web.model.Borrower;
+import com.kdm.web.service.AddressService;
 import com.kdm.web.service.BorrowerService;
 import com.kdm.web.service.EntityUtil;
 import com.kdm.web.util.View;
@@ -64,6 +67,9 @@ public class BorrowerController {
 	
 	@Autowired
 	private BorrowerService borrowerService;
+	
+	@Autowired
+	private AddressService addressService;
 	
 	@Autowired
 	private EntityUtil entityUtil;
@@ -199,7 +205,10 @@ public class BorrowerController {
 			throw new BindException(bindingResult);
 		}
 		
-		Borrower prevBorrower = entityUtil.tryGetEntity(Borrower.class, borrowerId);
+		Optional<Address> address = addressService.getOrPersistAddress(null, borrower.getAddress());
+		
+		borrower.setAddress(address.get());
+		borrower.setAddressID(address.get().getId());
 		
 		Borrower updatedBorrower = borrowerService.updateBorrower(borrower);
 		

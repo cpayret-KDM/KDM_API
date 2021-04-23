@@ -15,7 +15,9 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.kdm.web.model.Property;
+import com.kdm.web.util.View;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -54,4 +56,24 @@ public class LatestAppraisalView {
 	@Column(length = 256, nullable = true)
 	@Size(max = 256)
 	private String note;
+	
+	@JsonProperty(value = "createdAt")
+	@Column(name = "createdAt", precision = 5, scale = 2, updatable = false, nullable = false)
+	@JsonView(View.ReadOnly.class)
+	private ZonedDateTime createdAt;
+
+	@JsonProperty(value = "updatedAt")
+	@Column(name = "updatedAt", precision = 5, scale = 2, nullable = false)
+	@JsonView(View.ReadOnly.class)
+	private ZonedDateTime updatedAt;
+
+	@JsonProperty(value = "createdBy")
+	@Column(name = "createdBy", nullable = false, updatable = false)
+	@JsonView(View.ReadOnly.class)
+	private String createdBy;
+
+	@JsonProperty(value = "updatedBy")
+	@Column(name = "updatedBy", nullable = false)
+	@JsonView(View.ReadOnly.class)
+	private String updatedBy;
 }

@@ -1,11 +1,14 @@
 package com.kdm.web.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 import com.kdm.web.data.repository.AddressRepository;
@@ -48,7 +51,15 @@ public class AddressServiceImpl implements AddressService {
 		// lets force Uppercasing for the state field 
 		address.setState(address.getState().toUpperCase());
 		
-		return Optional.of(addressRepository.save(address));
+		ExampleMatcher caseInsensitiveExampleMatcher = ExampleMatcher.matchingAll().withIgnoreCase();
+		//search if address already exist
+		List<Address> actualAddresses = addressRepository.findAll(Example.of(address, caseInsensitiveExampleMatcher));
+		
+		if (actualAddresses.isEmpty()) {
+			return Optional.of(addressRepository.save(address));
+		} 
+		
+		return Optional.of(actualAddresses.get(0));
 	}
 
 }

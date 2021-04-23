@@ -4,17 +4,25 @@ import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.query.AuditEntity;
+import org.hibernate.envers.query.AuditQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 import com.kdm.web.data.repository.AddressRepository;
@@ -40,6 +48,7 @@ import com.kdm.web.model.comparator.tmo.PropertyComparator;
 import com.kdm.web.restclient.tmo.model.Funding;
 import com.kdm.web.restclient.tmo.model.LoanTerms;
 import com.kdm.web.restclient.tmo.service.TMOLoanService;
+import com.kdm.web.security.SecurityUtil;
 
 @Service
 public class TmoSyncServiceImpl implements TmoSyncService {
@@ -70,6 +79,9 @@ public class TmoSyncServiceImpl implements TmoSyncService {
 	@Autowired
 	private LenderRepository lenderRepository;
 	
+	@Autowired
+	private EntityManagerFactory factory;
+	
 	@Override
 	@Transactional
 	public void syncLoans() throws Exception {
@@ -80,9 +92,12 @@ public class TmoSyncServiceImpl implements TmoSyncService {
 		loans.stream().forEach( loan -> {
 			Loan syncedLoan = syncLoan(loan);
 			
-			syncProperties(syncedLoan, loan);
+			if (syncedLoan != null) {
 			
-			syncFunding(syncedLoan, loan);
+				syncProperties(syncedLoan, loan);
+			
+				syncFunding(syncedLoan, loan);
+			}
 			
 			
 		});
@@ -127,6 +142,11 @@ public class TmoSyncServiceImpl implements TmoSyncService {
 		return loans;
 	}
 
+	/**
+	 * syncs the given loan to the database
+	 * @param loan
+	 * @return null if sync of the given loan can't be done or is not allowed
+	 */
 	@Transactional
 	private Loan syncLoan(com.kdm.web.restclient.tmo.model.Loan loan) {
 		this.logger.trace(String.format("sync loan %s", loan.getAccount()));
@@ -195,12 +215,29 @@ public class TmoSyncServiceImpl implements TmoSyncService {
 				.originationDate(closingDate)
 				.loanTermMonths(loanTermMonths)
 				.build();
+		
 		Loan savedLoan = saveLoan(newLoan);
 		savedLoan = loanRepository.getOne(savedLoan.getId());
-		
 		return savedLoan;
 	}
 	
+	private boolean allowLoanSync(Loan loan) {
+		// get overriden values from users updates
+		AuditReader auditReader = AuditReaderFactory.get(entityManager);
+		AuditQuery auditQuery = auditReader
+				.createQuery()
+				.forRevisionsOfEntity(Loan.class, true, false);
+		auditQuery.add(AuditEntity.property("loanNumber").eq(loan.getLoanNumber()));
+		List<Loan> loanRevisions = auditQuery.getResultList();
+		if (loanRevisions.size() > 0) {
+			Loan lastLoanRevision = loanRevisions.get(loanRevisions.size()-1);
+			if (!SecurityUtil.SYSTEM_USER.equalsIgnoreCase(lastLoanRevision.getUpdatedBy())) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	private BigDecimal getWeightedAverage(List<com.kdm.web.restclient.tmo.model.Property> properties) {
 		double sumWeights = properties.stream()
 				.filter( property -> property.getLtv() != null && property.getAppraiserFMV() != null)
@@ -238,11 +275,12 @@ public class TmoSyncServiceImpl implements TmoSyncService {
 	@Transactional
 	private void syncLoanProperty(Loan loan, com.kdm.web.restclient.tmo.model.Loan tmoLoan, com.kdm.web.restclient.tmo.model.Property tmoProperty) {
 		Address newAddress = Address.builder()
-				.name(tmoProperty.getDescription())
-				.street1(tmoProperty.getStreet())
-				.city(tmoProperty.getCity())
-				.state(tmoProperty.getState())
-				.zip(tmoProperty.getZipCode())
+				.name(ObjectUtils.defaultIfNull(tmoProperty.getDescription(), ""))
+				.street1(ObjectUtils.defaultIfNull(tmoProperty.getStreet(),""))
+				.street2("")
+				.city(ObjectUtils.defaultIfNull(tmoProperty.getCity(),""))
+				.state(ObjectUtils.defaultIfNull(tmoProperty.getState(),""))
+				.zip(ObjectUtils.defaultIfNull(tmoProperty.getZipCode(), ""))
 				.build();
 		
 		Address savedAddress = saveAddress(newAddress);
@@ -258,19 +296,22 @@ public class TmoSyncServiceImpl implements TmoSyncService {
 		
 		logger.trace(String.format("\tProperty = %s", savedProperty.toString()));
 		
-		if (tmoProperty.getAppraisalDate() != null) {
+		if (tmoProperty.getAppraiserFMV() != null) {
+			Date appraisalDate = tmoProperty.getAppraisalDate() != null ? tmoProperty.getAppraisalDate() : new Date(); 
+		
 			Appraisal newAppraisal = Appraisal.builder()
 					.property(savedProperty)
 					.note("appraisal from TMO data")
 					.value(tmoProperty.getAppraiserFMV())
-					.date(ZonedDateTime.ofInstant(tmoProperty.getAppraisalDate().toInstant(),
+					.date(ZonedDateTime.ofInstant(appraisalDate.toInstant(),
 	                        ZoneId.systemDefault()))
 					.build();
 			
 			Appraisal savedAppraisal = saveAppraisal(newAppraisal);
 			
-			logger.trace(String.format("\t\tAppraisal = %.2f", newAppraisal.getValue()));
+			logger.trace(String.format("\t\tAppraisal = %.2f", savedAppraisal.getValue()));
 		}
+
 		
 		if (tmoLoan.getPrimaryBorrower() != null) {
 			//Borrower
@@ -335,6 +376,10 @@ public class TmoSyncServiceImpl implements TmoSyncService {
 	private Loan saveLoan(Loan newLoan) {
 		Optional<Loan> existingLoanOp = loanRepository.findByLoanNumber(newLoan.getLoanNumber());
 		
+		if (!allowLoanSync(newLoan)) {
+			return existingLoanOp.get();
+		}
+
 		if (existingLoanOp.isPresent()) {
 			LoanComparator comparator = new LoanComparator();
 			if (comparator.compare(existingLoanOp.get(), newLoan) == 0) {
@@ -356,7 +401,13 @@ public class TmoSyncServiceImpl implements TmoSyncService {
 	private Address saveAddress(Address newAddress) {
 		Optional<Address> existingAddress = Optional.empty();
 		if (Objects.nonNull(newAddress) && Objects.nonNull(newAddress.getName())) {
-			existingAddress = addressRepository.findByNameAndStreet1(newAddress.getName(), newAddress.getStreet1());
+			ExampleMatcher caseInsensitiveExampleMatcher = ExampleMatcher.matchingAll().withIgnoreCase();
+			//search if address already exist
+			List<Address> actualAddresses = addressRepository.findAll(Example.of(newAddress, caseInsensitiveExampleMatcher));
+			
+			if (!actualAddresses.isEmpty()) {
+				existingAddress = Optional.of(actualAddresses.get(0));
+			} 
 		}
 		
 		if (existingAddress.isPresent()) {
@@ -406,12 +457,14 @@ public class TmoSyncServiceImpl implements TmoSyncService {
 			existingAppraisal = appraisalRepository.findFirstByPropertyIdOrderByIdDesc(propertyId);
 		}
 		
-		//if there is appraisal and the value is the same, then return it
-		if (existingAppraisal.isPresent() ) { //&& (existingAppraisal.get().getValue().compareTo(newAppraisal.getValue()) == 0)) {	
+		//if there is appraisal
+		if (existingAppraisal.isPresent() ) {
+			
+			// if current appraisal is from a user, or if the value is the same, then keep current appraisal
 			AppraisalComparator comparator = new AppraisalComparator();
-			if (comparator.compare(existingAppraisal.get(), newAppraisal) == 0) {
+			if ((!SecurityUtil.SYSTEM_USER.equalsIgnoreCase(existingAppraisal.get().getUpdatedBy())) 
+					|| (comparator.compare(existingAppraisal.get(), newAppraisal) == 0))
 				return existingAppraisal.get();
-			}
 		}
 		return appraisalRepository.save(newAppraisal);
 

@@ -4,6 +4,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -35,10 +36,12 @@ import org.springframework.web.server.ResponseStatusException;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.kdm.web.data.repository.AppraisalRepository;
 import com.kdm.web.data.repository.PropertyRepository;
+import com.kdm.web.model.Address;
 import com.kdm.web.model.Appraisal;
 import com.kdm.web.model.Borrower;
 import com.kdm.web.model.Property;
 import com.kdm.web.model.view.LatestAppraisalView;
+import com.kdm.web.service.AddressService;
 import com.kdm.web.service.BorrowerService;
 import com.kdm.web.service.EntityUtil;
 import com.kdm.web.service.LoanService;
@@ -78,6 +81,9 @@ public class PropertyController {
 	@Autowired
 	private BorrowerService propertyService;
 	
+	@Autowired
+	private AddressService addressService;
+		
 	@Operation(
 		summary = "Get list of proeprties according to search criteria and pagination options", 
 		tags = "property",
@@ -174,13 +180,18 @@ public class PropertyController {
 			throw new BindException(bindingResult);
 		}
 		
+		Optional<Address> address = addressService.getOrPersistAddress(null, property.getAddress());
+		
 		Property prevProperty = entityUtil.tryGetEntity(Property.class, propertyId);
 		
 		// keep the following related entities before updating 
-		property.setAppraisal(prevProperty.getAppraisal());
-		property.setBorrower(prevProperty.getBorrower());
+		//property.setAppraisal(prevProperty.getAppraisal());
+		//property.setBorrower(prevProperty.getBorrower());
+		prevProperty.setType(property.getType());
+		prevProperty.setAddress(address.get());
+		prevProperty.setAddressID(address.get().getId());
 		
-		Property updatedProperty = loanService.updateProperty(property);
+		Property updatedProperty = loanService.updateProperty(prevProperty);
 		
 		return new ResponseEntity<Property>(updatedProperty, OK);
 	}
@@ -227,6 +238,9 @@ public class PropertyController {
 		entityManager.detach(property);
 		
 		Property updatedProperty = entityUtil.tryGetEntity(Property.class, propertyId);
+		
+		// re-calculate LTV of the Loan
+		loanService.updateLTV(updatedProperty.getLoan());
 		
 		return new ResponseEntity<Property>(updatedProperty, OK);
 	}

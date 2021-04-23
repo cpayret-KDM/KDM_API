@@ -12,12 +12,14 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 
 public class SecurityUtil {
 	
+	public static String SYSTEM_USER = "SYSTEM";
+	
 	private static Logger logger = LoggerFactory.getLogger(SecurityUtil.class);
 
 	public static String getSystemOrLoggedInUserName() {
 		String userName = SecurityUtil.getLoggedInUserName();
 		if (StringUtils.isBlank(userName)) {
-			userName = "SYSTEM";
+			userName = SYSTEM_USER;
 		}
 		return userName;
 	}
