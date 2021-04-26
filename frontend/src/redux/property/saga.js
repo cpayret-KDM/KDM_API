@@ -151,7 +151,6 @@ function* assignAppraisal(propertyId, loanId, appraisal) {
 
   const response = yield call(fetchJSON, `${SERVER_URL}/property/${propertyId}/appraisal`, options);
   if (!response.status || response.status === 200) {
-      debugger;
     yield put(assignAppraisalSuccess(response));
     yield put(editPropertyLoanSuccess(response));
   } else {

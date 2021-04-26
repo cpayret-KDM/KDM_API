@@ -194,7 +194,7 @@ const Loan = (state = initialState, action) => {
         error: action.payload,
       };
     case EDIT_PROPERTY_SUCCESS:
-      let index = 0;
+      let index = state.loan.properties.findIndex((property)=> property.id === action.payload.id);
       const proper = [
         ...state.loan.properties.slice(0,index),
         action.payload,
