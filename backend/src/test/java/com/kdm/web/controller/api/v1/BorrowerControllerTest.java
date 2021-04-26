@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Optional;
+
 import javax.persistence.EntityManager;
 
 import org.junit.Before;
@@ -26,6 +28,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.kdm.web.data.repository.BorrowerRepository;
 import com.kdm.web.model.Address;
 import com.kdm.web.model.Borrower;
+import com.kdm.web.service.AddressService;
 import com.kdm.web.service.BorrowerService;
 
 @WebMvcTest(controllers = BorrowerController.class)
@@ -42,6 +45,9 @@ public class BorrowerControllerTest extends BaseControllerTest {
 	
 	@MockBean
 	private BorrowerService borrowerService;
+	
+	@MockBean
+	private AddressService addressService;
 	
 	private String borrowerOnlyJson;
 	
@@ -134,11 +140,14 @@ public class BorrowerControllerTest extends BaseControllerTest {
 		when(entityManager.find(any(), any()))
 		.thenReturn(borrower);
 		
+		when(addressService.getOrPersistAddress(any(), any()))
+		.thenReturn(Optional.ofNullable(null));
+		
 		mvc.perform(
 				put(ApiConstants.BORROWER_MAPPING + "/1").contentType(MediaType.APPLICATION_JSON)
 				.content(borrowerJson))
 			//.andDo(print())
-			.andExpect(status().is2xxSuccessful());
+			.andExpect(status().is4xxClientError());
 	}
 	
 	@Test
@@ -155,6 +164,9 @@ public class BorrowerControllerTest extends BaseControllerTest {
 		
 		when(entityManager.find(any(), any()))
 		.thenReturn(borrower);
+		
+		when(addressService.getOrPersistAddress(any(), any()))
+		.thenReturn(Optional.of(address));
 		
 		when(borrowerService.updateBorrower(any()))
 		.thenReturn(borrower);

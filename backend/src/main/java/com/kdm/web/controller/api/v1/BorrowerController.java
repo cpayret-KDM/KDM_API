@@ -207,6 +207,10 @@ public class BorrowerController {
 		
 		Optional<Address> address = addressService.getOrPersistAddress(null, borrower.getAddress());
 		
+		if (!address.isPresent()) {
+			throw new IllegalArgumentException(messageSource.getMessage("common.invalid_parameter", Arrays.array("address object is null"), Locale.US));
+		}
+		
 		borrower.setAddress(address.get());
 		borrower.setAddressID(address.get().getId());
 		
