@@ -12,7 +12,6 @@ const LoanTable = (props) => {
 
   /* Get list of Security Loans onPageLoad*/
   useEffect(() => {
-    props.getSecurityLoans(securityId);
     props.getLoans(true);
   }, []);
 
@@ -142,8 +141,9 @@ const LoanTable = (props) => {
 
 const mapStateToProps = state => {
   const security = {...state.Security.security};
+  const loaded = {...state.Security.loaded}
   const loans = state.Loan.loans;
-  return { security, loans };
+  return { security, loans, loaded };
 };
 
 export default connect(

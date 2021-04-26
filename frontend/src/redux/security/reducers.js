@@ -35,6 +35,7 @@ const intialState = {
   securities: [],
   security: {},
   loaded: false,
+  loansLoaded: false,
   deleted: false,
   edited: false
 
@@ -47,6 +48,7 @@ const Security = (state = intialState, action) => {
       return {
         ...state,
         securities: null,
+        security: {},
       };
     case GET_SECURITIES_SUCCESS:
       return {
@@ -63,8 +65,11 @@ const Security = (state = intialState, action) => {
     case GET_SECURITY:
       return {
         ...state,
+        loaded: false,
+        loansLoaded: false,
       };
     case GET_SECURITY_SUCCESS:
+        console.log(`security GET_SECURITY_SUCCESS`)
       return {
         ...state,
         security: action.payload,
@@ -162,13 +167,13 @@ const Security = (state = intialState, action) => {
           loans: action.payload
         },
         error: false,
-        loaded: true,
+        loansLoaded: true,
       };
     case GET_SECURITY_LOANS_FAILURE:
       return {
         ...state,
         error: true,
-        loaded: true,
+        loansLoaded: true,
       };
 
     case EDIT_SECURITY_LOANS:

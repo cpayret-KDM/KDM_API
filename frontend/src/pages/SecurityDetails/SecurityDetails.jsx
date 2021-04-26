@@ -6,14 +6,14 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Row, Col, Label, Button, InputGroupAddon, Card, CardBody, Spinner } from 'reactstrap';
 import PageTitle from '../../components/PageTitle';
-import { getSecurity, createSecurity, editSecurity, deleteSecurity, clearSecurity } from '../../redux/actions';
+import { getSecurity, createSecurity, editSecurity, deleteSecurity, clearSecurity, getSecurityLoans } from '../../redux/actions';
 import RatingsTable from '../LoanDetails/RatingsTable';
 import LoanTable from './LoanTable';
 import ModalDeleteSecurity from './ModalDeleteSecurity';
 
 
 const SecurityDetails = (props) => {
-  const { security = {}, loaded } = props;
+  const { security = {}, loaded, loansLoaded } = props;
   const creating = (props.mode === 'create');
   const editing = (props.mode === 'edit');
   const viewing = !editing && !creating;
@@ -40,7 +40,13 @@ const SecurityDetails = (props) => {
     }
     setSettlementDate(moment(security.settlementDate).toDate());
     setMaturityDate(moment(security.maturityDate).toDate());
-  }, [security]);
+
+    console.log(`loaded=${loaded} security = ${security}, id= ${(security !== null)? security.id : 'undefined' }`);
+
+    if ((loaded) && (security != null) && (!loansLoaded)) {
+        props.getSecurityLoans(security.id);
+    }
+  }, [security, loaded]);
 
   const [isSaving, setIsSaving] = useState(false);
   useEffect(() => {
@@ -322,5 +328,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { getSecurity, createSecurity, editSecurity, deleteSecurity, clearSecurity }
+  { getSecurity, createSecurity, editSecurity, deleteSecurity, clearSecurity, getSecurityLoans }
 )(SecurityDetails);

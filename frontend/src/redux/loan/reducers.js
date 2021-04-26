@@ -43,6 +43,7 @@ const Loan = (state = initialState, action) => {
       return {
         ...state,
         loans: undefined,
+        loan: {}
       };
     case GET_LOANS_SUCCESS:
       let loans = action.payload.content;
