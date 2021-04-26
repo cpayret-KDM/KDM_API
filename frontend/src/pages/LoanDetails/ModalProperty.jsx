@@ -201,7 +201,7 @@ const ModalProperty = (props) => {
                           <Label for="appraisalValue">Appraisal Amount</Label>
                           <div className="input-group">
                             <InputGroupAddon addonType="prepend">$</InputGroupAddon>
-                            <AvInput name="appraisalValue" id="appraisalValue" value={property?.appraisal?.value} />
+                            <AvInput name="appraisalValue" id="appraisalValue" value={property?.appraisal?.value || ''} />
                           </div>
                         </AvGroup>
                       </Col>
@@ -222,7 +222,7 @@ const ModalProperty = (props) => {
                       <Col sm={12}>
                         <AvGroup className="position-relative">
                           <Label for="appraisalNote">Appraisal Note</Label>
-                          <AvInput name="appraisalNote" id="appraisalNote" value={property?.appraisal?.note} />
+                          <AvInput name="appraisalNote" id="appraisalNote" value={property?.appraisal?.note || ''} />
                         </AvGroup>
                       </Col>
                     </Row>
@@ -232,7 +232,7 @@ const ModalProperty = (props) => {
                       <Col sm={12}>
                         <AvGroup className="position-relative">
                           <Label for="borrowerCompany">Company</Label>
-                          <AvInput name="borrowerCompany" id="borrowerCompany" value={property?.borrower?.company} />
+                          <AvInput name="borrowerCompany" id="borrowerCompany" value={property?.borrower?.company || ''} />
                         </AvGroup>
                       </Col>
                     </Row>
@@ -274,7 +274,7 @@ const ModalProperty = (props) => {
                       <Col sm={6}>
                         <AvGroup className="position-relative">
                           <Label for="borrowerStreet2">Street Address 2</Label>
-                          <AvInput name="borrowerStreet2" id="borrowerStreet2" value={property?.borrower?.address.street2} />
+                          <AvInput name="borrowerStreet2" id="borrowerStreet2" value={property?.borrower?.address.street2 || ''} />
                         </AvGroup>
                       </Col>
                     </Row>
@@ -282,7 +282,7 @@ const ModalProperty = (props) => {
                       <Col sm={4}>
                         <AvGroup className="position-relative">
                           <Label for="borrowerCity">City</Label>
-                          <AvInput name="borrowerCity" id="borrowerCity" value={property?.borrower?.address.city} />
+                          <AvInput name="borrowerCity" id="borrowerCity" value={property?.borrower?.address.city || ''} />
                         </AvGroup>
                       </Col>
                       <Col sm={4}>
@@ -304,7 +304,7 @@ const ModalProperty = (props) => {
                       <Col sm={4}>
                         <AvGroup className="position-relative">
                           <Label for="borrowerZip">Zip Code</Label>
-                          <AvInput name="borrowerZip" id="borrowerZip" value={property?.borrower?.address.zip} />
+                          <AvInput name="borrowerZip" id="borrowerZip" value={property?.borrower?.address.zip || ''} />
                         </AvGroup>
                       </Col>
                     </Row>

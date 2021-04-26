@@ -1,6 +1,6 @@
 import { all, call, put, takeEvery, fork } from 'redux-saga/effects';
 import { fetchJSON } from '../../helpers/api';
-import { getLoan } from '../loan/actions';
+import { getLoan, editPropertyLoanSuccess } from '../loan/actions';
 import {
   getPropertySuccess,
   getPropertyFailure,
@@ -151,7 +151,9 @@ function* assignAppraisal(propertyId, loanId, appraisal) {
 
   const response = yield call(fetchJSON, `${SERVER_URL}/property/${propertyId}/appraisal`, options);
   if (!response.status || response.status === 200) {
+      debugger;
     yield put(assignAppraisalSuccess(response));
+    yield put(editPropertyLoanSuccess(response));
   } else {
     let message;
     switch (response.status) {

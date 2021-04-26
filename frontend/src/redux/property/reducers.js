@@ -153,6 +153,7 @@ const property = (state = initialState, action) => {
         ...state,
       };
     case ASSIGN_APPRAISAL_SUCCESS:
+      debugger;
       return {
         ...state,
       };

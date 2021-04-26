@@ -24,6 +24,7 @@ import {
   EDIT_LOAN_RATINGS,
   EDIT_LOAN_RATINGS_SUCCESS,
   EDIT_LOAN_RATINGS_FAILURE,
+  EDIT_PROPERTY_SUCCESS,
 } from './constants';
 
 // Get Loans
@@ -158,4 +159,9 @@ export const editLoanRatingsSuccess = (ratings) => ({
 export const editLoanRatingsFailure = (err) => ({
   type: EDIT_LOAN_RATINGS_FAILURE,
   payload: err,
+});
+
+export const editPropertyLoanSuccess = (property) => ({
+  type: EDIT_PROPERTY_SUCCESS,
+  payload: property,
 });

@@ -24,6 +24,7 @@ import {
   EDIT_LOAN_RATINGS,
   EDIT_LOAN_RATINGS_SUCCESS,
   EDIT_LOAN_RATINGS_FAILURE,
+  EDIT_PROPERTY_SUCCESS,
 } from './constants';
 
 
@@ -192,6 +193,20 @@ const Loan = (state = initialState, action) => {
         edited: false,
         error: action.payload,
       };
+    case EDIT_PROPERTY_SUCCESS:
+      let index = 0;
+      const proper = [
+        ...state.loan.properties.slice(0,index),
+        action.payload,
+        ...state.loan.properties.slice(index+1)
+      ]; 
+      return {
+        ...state,
+        loan: {
+            ...state.loan,
+            properties: proper
+        }
+      }
 
     default:
       return state;
