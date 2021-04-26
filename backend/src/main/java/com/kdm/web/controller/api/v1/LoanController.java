@@ -221,6 +221,8 @@ public class LoanController {
 		//sync the related entities
 		loan.setProperties(prevloan.getProperties());
 		loan.setRatings(prevloan.getRatings());
+		loan.setMsn(prevloan.getMsn());
+		loan.setMsnId(prevloan.getMsnId());
 		
 		// merge will update the entity give by its id
 		Loan updatedLoan = entityManager.merge(loan);
