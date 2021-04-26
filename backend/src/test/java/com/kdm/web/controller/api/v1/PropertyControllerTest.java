@@ -21,8 +21,9 @@ import com.kdm.web.data.repository.AppraisalRepository;
 import com.kdm.web.data.repository.PropertyRepository;
 import com.kdm.web.model.Address;
 import com.kdm.web.model.Property;
-import com.kdm.web.service.LoanService;
+import com.kdm.web.service.AddressService;
 import com.kdm.web.service.BorrowerService;
+import com.kdm.web.service.LoanService;
 
 @WebMvcTest(controllers = PropertyController.class)
 public class PropertyControllerTest extends BaseControllerTest {
@@ -44,6 +45,9 @@ public class PropertyControllerTest extends BaseControllerTest {
 	
 	@MockBean
 	private BorrowerService propertyService;
+	
+	@MockBean
+	private AddressService addressService;
 	
 	@Test
 	public void getPropertyTest() throws Exception {
