@@ -243,7 +243,11 @@ const LoanDetails = (props) => {
                         <Label for="initialAmount">Initial Amount *</Label>
                           <div className="input-group">
                             <InputGroupAddon addonType="prepend">$</InputGroupAddon>
-                            <AvInput name="initialAmount" id="initialAmount" value={loan?.initialAmount || ''} required disabled={viewing} />
+                            <AvInput name="initialAmount" id="initialAmount" 
+                                value={loan?.initialAmount || '0'} disabled={viewing} 
+                                type="number"
+                                required
+                                min={0}/>
                             <AvFeedback tooltip>Initial Amount is required</AvFeedback>
                           </div>
                       </AvGroup>
@@ -264,7 +268,11 @@ const LoanDetails = (props) => {
                         <Label for="principalBalance">Principal Amount *</Label>
                           <div className="input-group">
                             <InputGroupAddon addonType="prepend">$</InputGroupAddon>
-                            <AvInput name="principalBalance" id="principalBalance" value={loan?.principalBalance || ''} required disabled={viewing} />
+                            <AvInput name="principalBalance" id="principalBalance" 
+                                value={loan?.principalBalance || '0'} disabled={viewing} 
+                                type="number"
+                                required
+                                min={0}/>
                             <AvFeedback tooltip>Principal Amount is required</AvFeedback>
                           </div>
                         </AvGroup>
@@ -312,7 +320,11 @@ const LoanDetails = (props) => {
                         <AvGroup className="position-relative">
                           <Label for="loanRate">Loan Rate *</Label>
                           <div className="input-group">
-                            <AvInput name="loanRate" id="loanRate" value={loan?.loanRate} required disabled={viewing} />
+                            <AvInput name="loanRate" id="loanRate" 
+                                value={loan?.loanRate || '0'} disabled={viewing} 
+                                type="number"
+                                required
+                                min={0}/>
                             <AvFeedback tooltip>Loan Rate is required</AvFeedback>
                             <InputGroupAddon addonType="append">%</InputGroupAddon>
                           </div>
@@ -343,7 +355,11 @@ const LoanDetails = (props) => {
                       <Col sm={6}>
                         <AvGroup className="position-relative">
                           <Label for="loanTermMonths">Loan Term (months) *</Label>
-                          <AvInput type="number" name="loanTermMonths" id="loanTermMonths" value={loan?.loanTermMonths} required disabled={viewing} />
+                          <AvInput name="loanTermMonths" id="loanTermMonths" 
+                                value={loan?.loanTermMonths || '0'} disabled={viewing} 
+                                type="number"
+                                required
+                                min={0}/>
                           <AvFeedback tooltip>Loan Term is required</AvFeedback>
                         </AvGroup>
                       </Col>
@@ -351,7 +367,11 @@ const LoanDetails = (props) => {
                       <Col sm={6}>
                         <AvGroup className="position-relative">
                           <Label for="prepayMonths">Prepay (months) *</Label>
-                          <AvInput type="number" name="prepayMonths" id="prepayMonths" value={loan?.prepayMonths} required disabled={viewing} />
+                          <AvInput name="prepayMonths" id="prepayMonths" 
+                                value={loan?.prepayMonths || '0'} disabled={viewing} 
+                                type="number"
+                                required
+                                min={0}/>
                           <AvFeedback tooltip>Prepay is required</AvFeedback>
                         </AvGroup>
                       </Col>

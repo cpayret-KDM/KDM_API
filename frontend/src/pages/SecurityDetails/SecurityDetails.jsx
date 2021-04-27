@@ -185,7 +185,11 @@ const SecurityDetails = (props) => {
                         <AvGroup className="position-relative">
                           <Label for="noteRate">Note Rate *</Label>
                           <div className="input-group">
-                            <AvInput name="noteRate" id="noteRate" value={(security.noteRate!= undefined)? `${security.noteRate}` : ''} required disabled={viewing} />
+                            <AvInput name="noteRate" id="noteRate" 
+                                value={security?.noteRate || '0'} disabled={viewing} 
+                                type="number"
+                                required
+                                min={0}/>
                             <AvFeedback tooltip>Note Rate is required</AvFeedback>
                             <InputGroupAddon addonType="append">%</InputGroupAddon>
                           </div>
@@ -239,7 +243,10 @@ const SecurityDetails = (props) => {
                           <Label for="dealSize">Deal Size</Label>
                           <div className="input-group">
                             <InputGroupAddon addonType="prepend">$</InputGroupAddon>
-                            <AvInput name="dealSize" id="dealSize" value={security?.dealSize || ''} disabled={viewing} />
+                            <AvInput name="dealSize" id="dealSize" 
+                                value={security?.dealSize || '0'} disabled={viewing} 
+                                type="number"
+                                min={0}/>
                           </div>
                         </AvGroup>
                       </Col>
