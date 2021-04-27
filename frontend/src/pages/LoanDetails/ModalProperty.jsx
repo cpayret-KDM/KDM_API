@@ -201,7 +201,10 @@ const ModalProperty = (props) => {
                           <Label for="appraisalValue">Appraisal Amount</Label>
                           <div className="input-group">
                             <InputGroupAddon addonType="prepend">$</InputGroupAddon>
-                            <AvInput name="appraisalValue" id="appraisalValue" value={property?.appraisal?.value || ''} />
+                            <AvInput name="appraisalValue" id="appraisalValue" 
+                                value={property?.appraisalValue || '0'}
+                                type="number"
+                                min={0}/>
                           </div>
                         </AvGroup>
                       </Col>
