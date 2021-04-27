@@ -1,0 +1,14 @@
+config:
+  aws:region: us-west-2
+  cloud:provider: aws
+  cloud-aws:useFargate: "true"
+  infra:allowedOrigins: http://localhost:8080,https://kdm.codingscape.com,https://mystifying-hermann-512e08.netlify.app
+  infra:dbdb: kdm
+  infra:dbpassword:
+    secure: AAABADk61c1uOFmjbtgnQAyRfzULDNjJgMUQ7sHQM0TOqx5s9vv8Uhmk6YCUFe8CTphPxYrRJ6M=
+  infra:dbusername: kdm_user
+  infra:dns_dnsName: kdm-api
+  infra:dns_zoneId: Z2I7T1WMAPGFC
+  infra:isFlyway: "true"
+  infra:tmoAPIToken:
+    secure: AAABAOKm4obIDs+Sx/l1KGPAI25kWU/sT6QafOyLNQmKbfbDZCZaOPQ7lyPewx2sf5tOuiyCpIZoeILuMWmTgA==

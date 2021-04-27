@@ -13,7 +13,7 @@ const db = {
     password: config.requireSecret("dbpassword"),
     db: config.require("dbdb")
 }
-const springProfile = config.require("springProfile")
+const springProfile = config.get("springProfile")
 const isFlyway = config.get("isFlyway") || "false"
 const allowedOrigins = config.get("allowedOrigins")
 const dns = {
@@ -72,10 +72,10 @@ const listener = target.createListener("kdm-web-listener", {
 *   Create a pgsql RDS instance and make it publicly accessible
 *******************************************************************************/
 const kdmPgsqlInstance = new aws.rds.Instance("kdm-db", {
-    allocatedStorage: 20,
+    allocatedStorage: 100,
     engine: "postgres",
-    engineVersion: "12.4",
-    instanceClass: "db.t2.micro",
+    engineVersion: "11",
+    instanceClass: "db.t2.medium",
     name: db.db,
     password: db.password,
     storageType: "gp2",
@@ -102,7 +102,8 @@ let service = new awsx.ecs.FargateService("kdm_api", {
     taskDefinitionArgs: {
         containers: {
             spring: {
-                image: image,
+                //image: image,
+                image: "jimmyjacobson/kdm_api:latest",
                 memory: 1024,
                 portMappings: [ listener ],
                 environment: [
@@ -110,7 +111,6 @@ let service = new awsx.ecs.FargateService("kdm_api", {
                         name: "spring.datasource.url",
                         value: pulumi.all([kdmPgsqlInstance.endpoint]).apply(([server]) => `jdbc:postgresql://${server}/kdm`)
                     },
-
                     { 
                         name: "spring.datasource.username",
                         value: db.username
@@ -138,10 +138,6 @@ let service = new awsx.ecs.FargateService("kdm_api", {
                     {
                         name: "tmo.api.token",
                         value: tmoAPIToken
-                    },
-                    {
-                        name: "kdm.quartz.tmoSyncJob.enable",
-                        value: "false"
                     }
                 ]
             }
