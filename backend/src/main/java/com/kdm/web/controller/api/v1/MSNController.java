@@ -273,6 +273,10 @@ public class MSNController {
 		
 		loanRepository.clearMSNFromLoans(msn.getId());
 		
+		msnRatingRepository.clearMSNRatings(msn.getId());
+		
+		msn.setRatings(null);
+		
 		msnRepository.delete(msn);
 		
 		return new ResponseEntity<Void>(OK);

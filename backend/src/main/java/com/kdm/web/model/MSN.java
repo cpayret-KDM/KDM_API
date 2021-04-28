@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -76,7 +75,7 @@ public class MSN {
 
 	@NotAudited
 	@JsonProperty
-	@OneToMany(mappedBy="msn", fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, orphanRemoval = true)
+	@OneToMany(mappedBy="msn", fetch = FetchType.EAGER, orphanRemoval = false)
 	@JsonView(View.All.class)
 	private Set<MSNRatingLatestByMSNView> ratings;
 	
