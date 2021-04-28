@@ -271,6 +271,8 @@ public class MSNController {
 	public ResponseEntity<Void> deleteMSN(@PathVariable("msnId") Long msnId) {
 		MSN msn = entityUtil.tryGetEntity(MSN.class, msnId);
 		
+		loanRepository.clearMSNFromLoans(msn.getId());
+		
 		msnRepository.delete(msn);
 		
 		return new ResponseEntity<Void>(OK);

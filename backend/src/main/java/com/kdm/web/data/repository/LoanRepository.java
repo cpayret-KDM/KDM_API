@@ -7,9 +7,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.kdm.web.model.Loan;
 import com.kdm.web.model.view.LoanCashFlow;
@@ -36,5 +38,10 @@ public interface LoanRepository extends JpaRepository<Loan, Long>, JpaSpecificat
 	List<LoanCashFlow> getCashFlowReport();
 	
 	List<Loan> findByMsnId(Long msnID);
+	
+	@Transactional
+	@Modifying(clearAutomatically = true)
+	@Query(nativeQuery = true, value = "UPDATE \"Loan\" SET \"msnID\" = NULL WHERE \"msnID\" = :msnId")
+	void clearMSNFromLoans(@Param("msnId") Long msnId);
 	
 }
