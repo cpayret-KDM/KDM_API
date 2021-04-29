@@ -1,4 +1,4 @@
-name: Pulumi
+name: Staging Deploy
 on: workflow_dispatch
 jobs:
   up:
